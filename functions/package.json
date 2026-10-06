@@ -1,0 +1,26 @@
+{
+  "name": "meatbush-functions",
+  "private": true,
+  "main": "lib/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test lib/**/*.test.js",
+    "migrate:firestore-asia": "node scripts/migrate-firestore-database.mjs",
+    "provision:super-admin": "npm run build && node scripts/provision-super-admin.mjs",
+    "seed:demo-orders": "node scripts/seed-demo-orders.mjs",
+    "seed:demo-customers": "node scripts/seed-demo-customers.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.3.0",
+    "firebase-functions": "^7.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}

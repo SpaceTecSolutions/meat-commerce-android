@@ -1,0 +1,44 @@
+<resources>
+    <string name="auth_country_code" translatable="false">+91</string>
+    <string name="auth_welcome">Welcome Back!</string>
+    <string name="auth_login_description">Login to continue</string>
+    <string name="auth_mobile">Mobile Number</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_login">Login</string>
+    <string name="auth_forgot_password">Forgot Password?</string>
+    <string name="auth_register">Register</string>
+    <string name="auth_remember_me">Remember Me</string>
+    <string name="auth_new_here">New here?</string>
+    <string name="auth_create_account">Create account</string>
+    <string name="auth_register_description">Customer accounts only</string>
+    <string name="auth_full_name">Full Name</string>
+    <string name="auth_first_name">First Name</string>
+    <string name="auth_last_name">Last Name</string>
+    <string name="auth_get_otp">Get OTP</string>
+    <string name="auth_resend_otp">Resend OTP</string>
+    <string name="auth_change_number">Change number</string>
+    <string name="auth_verify_mobile">Verify Mobile Number</string>
+    <string name="auth_your_details">Your details</string>
+    <string name="auth_details_description">Create your secure customer account</string>
+    <string name="auth_account_exists_title">Account already exists</string>
+    <string name="auth_account_exists_description">This mobile number is already registered. Please login to continue.</string>
+    <string name="auth_go_to_login">Go to Login</string>
+    <string name="auth_confirm_password">Confirm Password</string>
+    <string name="auth_already_registered">Already registered? Login</string>
+    <string name="auth_reset_password">Reset password</string>
+    <string name="auth_reset_description">We’ll send a verification code to your registered mobile number</string>
+    <string name="auth_send_code">Send code</string>
+    <string name="auth_verification">Verification</string>
+    <string name="auth_verification_description">Enter the 6-digit code sent to %1$s</string>
+    <string name="auth_verification_code">Verification Code</string>
+    <string name="auth_verify">Verify</string>
+    <string name="auth_new_password">New password</string>
+    <string name="auth_new_password_description">Choose a strong password for your account</string>
+    <string name="auth_update_password">Update password</string>
+    <string name="auth_reset_complete">Password updated</string>
+    <string name="auth_reset_complete_description">You can now sign in with your new password</string>
+    <string name="auth_back_to_login">Back to login</string>
+    <string name="auth_show_password">Show password</string>
+    <string name="auth_hide_password">Hide password</string>
+    <string name="auth_loading">Please wait</string>
+</resources>

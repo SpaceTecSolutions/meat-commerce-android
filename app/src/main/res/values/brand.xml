@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MeatBush</string>
+    <string name="auth_country_code" translatable="false">+91</string>
+    <string name="deep_link_scheme" translatable="false">meatbush</string>
+    <string name="firebase_functions_region" translatable="false">asia-south1</string>
+    <string name="firestore_database_id" translatable="false">default</string>
+    <string name="firebase_realtime_database_url" translatable="false">https://meatbush-c157e-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+    <integer name="auth_national_number_length">10</integer>
+    <color name="brand_primary">#D71920</color>
+    <color name="brand_secondary">#CCD71920</color>
+    <color name="launcher_background">#FFF8F7</color>
+    <item name="img_splash_brand" type="drawable">@drawable/ic_launcher_foreground</item>
+</resources>

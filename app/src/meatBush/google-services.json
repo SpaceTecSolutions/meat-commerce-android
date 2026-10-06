@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "194944170505",
+    "firebase_url": "https://meatbush-c157e-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "meatbush-c157e",
+    "storage_bucket": "meatbush-c157e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194944170505:android:0c3a2e1053b856471696d8",
+        "android_client_info": {
+          "package_name": "com.meatbush.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVKPPWm4fv-q30ZVIy-wRS1ihMhVNSKbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Stable white-label illustration resource contract. -->
+    <item name="img_login_background" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_auth_illustration" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_empty_cart" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_empty_orders" type="drawable">@drawable/empty_cart_2</item>
+    <item name="img_empty_products" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_empty_categories" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_empty_customers" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_empty_notifications" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_empty_delivery" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_empty_search" type="drawable">@drawable/empty_cart_1</item>
+    <item name="img_no_internet" type="drawable">@drawable/illustration_offline</item>
+    <item name="img_generic_error" type="drawable">@drawable/illustration_error</item>
+    <item name="img_payment_success" type="drawable">@drawable/illustration_success</item>
+    <item name="img_payment_failed" type="drawable">@drawable/illustration_error</item>
+    <item name="img_order_success" type="drawable">@drawable/illustration_success</item>
+    <item name="img_order_cancelled" type="drawable">@drawable/illustration_error</item>
+    <item name="img_delivery_success" type="drawable">@drawable/illustration_success</item>
+    <item name="img_location_permission" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_tracking_disabled" type="drawable">@drawable/illustration_offline</item>
+    <item name="img_no_address" type="drawable">@drawable/illustration_empty</item>
+    <item name="img_maintenance" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_placeholder_product" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_placeholder_category" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_placeholder_banner" type="drawable">@drawable/illustration_placeholder</item>
+    <item name="img_placeholder_profile" type="drawable">@drawable/illustration_placeholder</item>
+</resources>

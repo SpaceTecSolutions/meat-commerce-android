@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "trackingAuthorizations": {
+      "$sessionId": {
+        ".read": "auth != null && (data.child('writerUid').val() == auth.uid || data.child('customerUid').val() == auth.uid)",
+        ".write": false
+      }
+    },
+    "activeDeliveryTracking": {
+      "$sessionId": {
+        ".read": "auth != null && root.child('trackingAuthorizations').child($sessionId).child('active').val() == true && (root.child('trackingAuthorizations').child($sessionId).child('writerUid').val() == auth.uid || root.child('trackingAuthorizations').child($sessionId).child('customerUid').val() == auth.uid)",
+        ".write": "auth != null && root.child('trackingAuthorizations').child($sessionId).child('active').val() == true && root.child('trackingAuthorizations').child($sessionId).child('writerUid').val() == auth.uid",
+        "location": {
+          ".validate": "newData.hasChildren(['latitude','longitude','accuracyMeters','recordedAtEpochMillis']) && newData.child('latitude').isNumber() && newData.child('latitude').val() >= -90 && newData.child('latitude').val() <= 90 && newData.child('longitude').isNumber() && newData.child('longitude').val() >= -180 && newData.child('longitude').val() <= 180 && newData.child('accuracyMeters').isNumber() && newData.child('accuracyMeters').val() >= 0 && (!newData.child('headingDegrees').exists() || (newData.child('headingDegrees').isNumber() && newData.child('headingDegrees').val() >= 0 && newData.child('headingDegrees').val() <= 360)) && newData.child('recordedAtEpochMillis').isNumber() && newData.child('recordedAtEpochMillis').val() <= now + 60000"
+        }
+      }
+    }
+  }
+}

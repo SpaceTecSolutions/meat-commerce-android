@@ -1,0 +1,57 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() { return request.auth != null; }
+    function profile() { return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data; }
+    function activeAdmin(shopId) {
+      return signedIn() && profile().active == true
+        && profile().role == 'ADMIN' && profile().shopId == shopId;
+    }
+    function imageUnder(maxBytes) {
+      return request.resource.size > 0 && request.resource.size <= maxBytes
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+    match /shops/{shopId}/categories/uploads/{fileName} {
+      allow create: if activeAdmin(shopId) && imageUnder(5 * 1024 * 1024);
+      allow read, update, delete: if false;
+    }
+    match /shops/{shopId}/subcategories/uploads/{fileName} {
+      allow create: if activeAdmin(shopId) && imageUnder(5 * 1024 * 1024);
+      allow read, update, delete: if false;
+    }
+    match /shops/{shopId}/products/uploads/{fileName} {
+      allow create: if activeAdmin(shopId) && request.resource.size > 0
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType == 'image/jpeg';
+      allow read, update, delete: if false;
+    }
+    match /shops/{shopId}/banners/uploads/{fileName} {
+      allow create: if activeAdmin(shopId) && request.resource.size > 0
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType == 'image/jpeg';
+      allow read, update, delete: if false;
+    }
+    match /shops/{shopId}/categories/{categoryId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /shops/{shopId}/subcategories/{subcategoryId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /shops/{shopId}/products/{productId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /shops/{shopId}/banners/{bannerId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /users/{userId}/profile/{fileName} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow create, update: if signedIn() && request.auth.uid == userId && imageUnder(2 * 1024 * 1024);
+      allow delete: if signedIn() && request.auth.uid == userId;
+    }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

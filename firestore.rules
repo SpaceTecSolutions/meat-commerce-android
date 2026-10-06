@@ -1,0 +1,113 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function profile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function activeRole(role) { return signedIn() && profile().active == true && profile().role == role; }
+    function superAdmin() { return activeRole('SUPER_ADMIN'); }
+    function sameShop(shopId) { return signedIn() && profile().active == true && profile().shopId == shopId; }
+    function shopAdmin(shopId) { return activeRole('ADMIN') && profile().shopId == shopId; }
+    function delivery(shopId) { return activeRole('DELIVERY') && profile().shopId == shopId; }
+    function customer(shopId) { return activeRole('CUSTOMER') && profile().shopId == shopId; }
+    function staffPermission(shopId, permission) {
+      return activeRole('STAFF') && profile().shopId == shopId
+        && profile().permissions is list && profile().permissions.hasAny([permission]);
+    }
+    function publicShopActive(shopId) {
+      return exists(/databases/$(database)/documents/shops/$(shopId))
+        && get(/databases/$(database)/documents/shops/$(shopId)).data.get('active', true) == true;
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || superAdmin());
+      allow create, delete: if false;
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'updatedAt'])
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.displayName.size() <= 80;
+      match /addresses/{addressId} {
+        allow read: if signedIn() && request.auth.uid == userId && profile().active == true;
+        allow write: if false;
+      }
+      match /notifications/{notificationId} {
+        allow read: if signedIn() && request.auth.uid == userId && profile().active == true;
+        allow write: if false;
+      }
+      match /devices/{deviceId} { allow read, write: if false; }
+    }
+
+    // Server-only authentication material. Admin SDK bypasses rules; every client is denied.
+    match /authCredentials/{credentialId} { allow read, write: if false; }
+    match /authRateLimits/{limitId} { allow read, write: if false; }
+    match /authFlowTokens/{tokenId} { allow read, write: if false; }
+
+    // Privileged configuration remains readable only by active signed-in users.
+    match /appConfig/features {
+      allow read: if signedIn() && profile().active == true;
+      allow write: if false;
+    }
+    // Narrow public projection for guest/customer in-app UI visibility.
+    match /appConfig/publicCustomerFeatures {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /shops/{shopId} {
+      allow read: if superAdmin() || sameShop(shopId) || resource.data.get('active', true) == true;
+      allow write: if false;
+      match /config/{configId} {
+        allow read: if superAdmin() || sameShop(shopId);
+        allow write: if false;
+      }
+      match /counters/{counterId} {
+        allow read: if superAdmin() || shopAdmin(shopId);
+        allow write: if false;
+      }
+      match /categories/{categoryId} {
+        allow read: if superAdmin() || shopAdmin(shopId) || staffPermission(shopId, 'MANAGE_PRODUCTS') ||
+          staffPermission(shopId, 'MANAGE_STOCK')
+          || (resource.data.active == true && publicShopActive(shopId));
+        allow write: if false;
+      }
+      match /products/{productId} {
+        allow read: if superAdmin() || shopAdmin(shopId) ||
+          staffPermission(shopId, 'MANAGE_PRODUCTS') || staffPermission(shopId, 'MANAGE_STOCK')
+          || (resource.data.active == true && resource.data.archived != true && publicShopActive(shopId));
+        allow write: if false;
+      }
+      match /subcategories/{subcategoryId} {
+        allow read: if superAdmin() || shopAdmin(shopId) || staffPermission(shopId, 'MANAGE_PRODUCTS')
+          || (resource.data.active == true && publicShopActive(shopId));
+        allow write: if false;
+      }
+      match /faqs/{faqId} {
+        allow read: if superAdmin() || shopAdmin(shopId) || staffPermission(shopId, 'MANAGE_FAQ')
+          || (resource.data.active == true && publicShopActive(shopId));
+        allow write: if false;
+      }
+      match /offers/{offerId} {
+        allow read: if superAdmin() || shopAdmin(shopId) || staffPermission(shopId, 'VIEW_ORDERS')
+          || (resource.data.active == true && publicShopActive(shopId));
+        allow write: if false;
+      }
+      match /coupons/{couponId} {
+        allow read: if superAdmin() || shopAdmin(shopId)
+          || (resource.data.active == true && publicShopActive(shopId));
+        allow write: if false;
+      }
+      match /orders/{orderId} {
+        allow read: if superAdmin() || shopAdmin(shopId)
+          || (customer(shopId) && resource.data.customerId == request.auth.uid)
+          || (delivery(shopId) && resource.data.assignedDeliveryUserId == request.auth.uid);
+        allow create, update, delete: if false;
+      }
+      match /notifications/{notificationId} {
+        allow read: if superAdmin() || (sameShop(shopId) && resource.data.recipientUid == request.auth.uid);
+        allow write: if false;
+      }
+      match /auditLogs/{entryId} { allow read, write: if false; }
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
