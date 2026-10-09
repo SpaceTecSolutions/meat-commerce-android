@@ -10,6 +10,16 @@
   },
   "database": { "rules": "database.rules.json" },
   "storage": { "rules": "storage.rules" },
+  "hosting": {
+    "public": "hosting/public",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
   "emulators": {
     "firestore": { "host": "127.0.0.1", "port": 8189 },
     "storage": { "host": "127.0.0.1", "port": 9299 },
