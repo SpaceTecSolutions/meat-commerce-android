@@ -28,6 +28,7 @@ import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.designsystem.theme.CustomerAddressTokens as T
 import com.spacetecsolutions.meatapp.core.model.DetectedAddress
+import java.util.ServiceConfigurationError
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -57,6 +58,8 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                     val point = Places.createClient(context).fetchPlace(request).await().place.location
                     if (point != null) map?.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 17f))
                     else searchError = "This result has no map location. Try another."
+                } catch (_: ServiceConfigurationError) {
+                    searchError = "Search is temporarily unavailable. Move the map or retry."
                 } catch (_: Exception) {
                     searchError = "Search is temporarily unavailable. Move the map or retry."
                 } finally { searching = false }

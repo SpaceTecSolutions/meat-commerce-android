@@ -28,7 +28,6 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
     androidx.activity.compose.BackHandler(enabled = !submitting, onBack = onDismiss)
     com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar()
     Scaffold(
-        modifier = Modifier.imePadding(),
         containerColor = T.canvas, topBar = {
         TopAppBar(title = { Text(if (form.editing) "Edit Delivery Location" else "Add New Address",
             fontWeight = FontWeight.Bold) }, navigationIcon = {
@@ -36,7 +35,7 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
-            Row(Modifier.fillMaxWidth().navigationBarsPadding().imePadding()
+            Row(Modifier.fillMaxWidth().navigationBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onDismiss, Modifier.weight(1f).height(52.dp), enabled = !submitting,

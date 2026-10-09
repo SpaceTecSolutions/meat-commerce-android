@@ -76,7 +76,11 @@ fun AdminFaqManagementRoute(back: () -> Unit, onMessage: (String) -> Unit,
     val filtered = remember(state.items, state.query) { state.items.filter {
         state.query.isBlank() || it.question.contains(state.query, true) || it.answer.contains(state.query, true) } }
     Scaffold(topBar = { AppBackTopBar("FAQ Management", back) }, floatingActionButton = {
-        ExtendedFloatingActionButton(viewModel::create) { Icon(AppIcons.Add, null); Spacer(Modifier.width(8.dp)); Text("Add FAQ") }
+        ExtendedFloatingActionButton(
+            onClick = viewModel::create,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+        ) { Icon(AppIcons.Add, null); Spacer(Modifier.width(8.dp)); Text("Add FAQ") }
     }) { padding -> Column(Modifier.fillMaxSize().padding(padding).widthIn(max = 560.dp)) {
         OutlinedTextField(state.query, viewModel::search, Modifier.fillMaxWidth().padding(16.dp), singleLine = true,
             leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text("Search FAQs") })
