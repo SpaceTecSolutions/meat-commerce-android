@@ -45,7 +45,8 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
     fun refresh() = viewModelScope.launch { mutable.update { it.copy(loading = true, error = null) }
         when (val result = repository.getSubcategories(categoryId, true)) {
             is AppResult.Success -> mutable.update { it.copy(loading = false, items = result.value.sortedBy(ProductSubcategory::sortOrder)) }
-            is AppResult.Failure -> mutable.update { it.copy(loading = false, error = "Unable to load subcategories") }
+            is AppResult.Failure -> mutable.update { it.copy(loading = false,
+                error = result.error.subcategoryMessage("Unable to load subcategories")) }
         } }
     fun create() = mutable.update { it.copy(form = SubcategoryForm()) }
     fun edit(item: ProductSubcategory) = mutable.update { it.copy(form = SubcategoryForm(
@@ -63,7 +64,8 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
                 else -> when (val upload = repository.uploadSubcategoryImage(uri)) {
                     is AppResult.Success -> upload.value.uploadToken
                     is AppResult.Failure -> {
-                        mutable.update { it.copy(saving = false, error = "Unable to upload subcategory image") }
+                        mutable.update { it.copy(saving = false,
+                            error = upload.error.subcategoryMessage("Unable to upload subcategory image")) }
                         return@launch
                     }
                 }
@@ -76,7 +78,8 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
                 is AppResult.Success -> mutable.update { current -> current.copy(saving = false, form = null,
                     items = (current.items.filterNot { it.id == result.value.id } + result.value).sortedBy(ProductSubcategory::sortOrder),
                     message = CategoryMessage("Subcategory saved", true)) }
-                is AppResult.Failure -> mutable.update { it.copy(saving = false, error = "Unable to save subcategory") }
+                is AppResult.Failure -> mutable.update { it.copy(saving = false,
+                    error = result.error.subcategoryMessage("Unable to save subcategory")) }
             } }
     }
     fun delete(item: ProductSubcategory) = viewModelScope.launch { when (repository.deleteSubcategory(item.id)) {
@@ -86,6 +89,15 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
             message = CategoryMessage("Unable to delete subcategory. Refresh and try again.", false)) }
     } }
     fun consume() = mutable.update { it.copy(message = null) }
+}
+
+private fun AppError.subcategoryMessage(fallback: String): String = when (this) {
+    is AppError.Validation -> message
+    AppError.Unauthorized -> "Your session expired. Sign in again and retry."
+    AppError.Forbidden -> "Admin permission is required to manage subcategories."
+    AppError.Network, AppError.Offline, AppError.Timeout ->
+        "Unable to reach the service. Check your connection and retry."
+    else -> fallback
 }
 
 @Composable

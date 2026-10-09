@@ -23,11 +23,21 @@ android {
         applicationId = "com.spacetecsolutions.meatapp"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0.0"
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
         manifestPlaceholders["deepLinkScheme"] = "meatbush"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions += "client"
+
+    productFlavors {
+        create("meatstation") {
+            dimension = "client"
+            applicationId = "com.spacetecsolutions.meatstation"
+            manifestPlaceholders["deepLinkScheme"] = "meatstation"
+        }
     }
 
     buildTypes {

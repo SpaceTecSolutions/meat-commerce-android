@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
+import java.util.ServiceConfigurationError
 import javax.inject.Inject
 
 class AddressMapResolver @Inject constructor(@param:ApplicationContext private val context: Context) {
@@ -51,7 +52,11 @@ class AddressMapResolver @Inject constructor(@param:ApplicationContext private v
             Lookup.Found(DetectedAddress(address = place.formattedAddress.orEmpty(), city = form.city,
                 state = form.state, postalCode = form.postalCode,
                 latitude = point.latitude, longitude = point.longitude))
-        } catch (_: Exception) { Lookup.Unavailable }
+        } catch (_: ServiceConfigurationError) {
+            Lookup.Unavailable
+        } catch (_: Exception) {
+            Lookup.Unavailable
+        }
     }
 
     @Suppress("DEPRECATION")

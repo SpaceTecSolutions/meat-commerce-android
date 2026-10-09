@@ -65,7 +65,9 @@ private fun Throwable.toAddressError(): AppError {
         FirebaseFunctionsException.Code.NOT_FOUND -> AppError.NotFound
         FirebaseFunctionsException.Code.INVALID_ARGUMENT -> AppError.Validation(message = "Check the address details")
         FirebaseFunctionsException.Code.ABORTED -> AppError.Validation(message = "The address changed. Refresh and try again")
-        FirebaseFunctionsException.Code.UNAVAILABLE -> AppError.Network
+        FirebaseFunctionsException.Code.UNAVAILABLE,
+        FirebaseFunctionsException.Code.DEADLINE_EXCEEDED,
+        FirebaseFunctionsException.Code.RESOURCE_EXHAUSTED -> AppError.Network
         else -> AppError.Unknown(this)
     }
 }
