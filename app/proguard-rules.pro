@@ -10,3 +10,9 @@
 -keepclasseswithmembers class * {
     public void onPayment*(...);
 }
+
+# Places SDK 5.1.1 instantiates internal service providers through reflection.
+# Required by Google's release notes when R8 full mode is enabled.
+-keepclassmembers class com.google.android.libraries.places.internal.** {
+    <init>();
+}

@@ -30,7 +30,7 @@ fun MeatBushTheme(
         surfaceContainerLow = LightSurface,
         surfaceContainerHigh = LightSurfaceVariant,
     )
-    val darkColors = darkColorScheme(
+    /*val darkColors = darkColorScheme(
         primary = brandColors.primary,
         onPrimary = brandColors.onPrimary,
         secondary = brandColors.secondary,
@@ -38,7 +38,26 @@ fun MeatBushTheme(
         background = DarkBackground,
         surface = DarkSurface,
         onSurface = DarkOnSurface,
+    )*/
+    val darkColors = lightColorScheme(
+        primary = brandColors.primary,
+        onPrimary = brandColors.onPrimary,
+        secondary = brandColors.secondary,
+        onSecondary = brandColors.onSecondary,
+        secondaryContainer = SoftRed,
+        onSecondaryContainer = brandColors.primary,
+        background = LightBackground,
+        surface = LightSurface,
+        onSurface = LightOnSurface,
+        surfaceVariant = LightSurfaceVariant,
+        onSurfaceVariant = LightOnSurfaceVariant,
+        outline = LightOutline,
+        outlineVariant = LightOutlineVariant,
+        surfaceContainer = LightSurface,
+        surfaceContainerLow = LightSurface,
+        surfaceContainerHigh = LightSurfaceVariant,
     )
+
     MaterialTheme(
         colorScheme = if (darkTheme) darkColors else lightColors,
         shapes = MaterialTheme.shapes.copy(
