@@ -51,6 +51,10 @@ internal fun CustomerAddressDetail(order: CodOrder, model: CustomerOrderUiModel,
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.SemiBold, color = T.ink)
             }
+            order.deliverySlotChangeReason?.takeIf(String::isNotBlank)?.let { reason ->
+                Text("Delivery time changed: $reason", style = MaterialTheme.typography.bodySmall,
+                    color = T.muted)
+            }
         }
     }
 }

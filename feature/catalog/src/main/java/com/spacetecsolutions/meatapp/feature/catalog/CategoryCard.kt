@@ -1,6 +1,7 @@
 package com.spacetecsolutions.meatapp.feature.catalog
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,6 +11,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppImage
+import com.spacetecsolutions.meatapp.core.designsystem.component.appSwitchColors
 import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.designsystem.theme.*
 import com.spacetecsolutions.meatapp.core.model.ProductCategory
@@ -81,32 +83,37 @@ internal fun AdminCategoryRow(
             Modifier.fillMaxWidth().padding(horizontal = AppSpacing.small, vertical = AppSpacing.compact),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            CategoryImage(category.imageUrl, category.name, Modifier.size(54.dp))
-            Column(Modifier.weight(1f).padding(horizontal = AppSpacing.small)) {
-                Text(category.name, style = MaterialTheme.typography.titleSmall)
-                Text(
-                    "${category.productCount} ${if (category.productCount == 1) "Product" else "Products"}",
-                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if (!category.active) Text(
-                    "Inactive", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error,
-                )
+            Row(
+                Modifier.weight(1f).clickable(enabled = !busy, onClick = onSubcategories ?: onEdit),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                CategoryImage(category.imageUrl, category.name, Modifier.size(54.dp))
+                Column(Modifier.weight(1f).padding(horizontal = AppSpacing.small)) {
+                    Text(category.name, style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        "${category.productCount} ${if (category.productCount == 1) "Product" else "Products"}",
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (!category.active) Text(
+                        "Inactive", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
+            Switch(
+                checked = category.active,
+                onCheckedChange = { onStatus() },
+                enabled = !busy,
+                colors = appSwitchColors(),
+            )
             Box {
                 IconButton({ menu = true }, enabled = !busy) { Icon(AppIcons.MoreVertical, "Category actions") }
                 DropdownMenu(menu, { menu = false }) {
                     DropdownMenuItem({ Text("Edit") }, { menu = false; onEdit() },
                         leadingIcon = { Icon(AppIcons.Edit, null) })
-                    DropdownMenuItem(
-                        { Text(if (category.active) "Deactivate" else "Activate") },
-                        { menu = false; onStatus() },
-                        leadingIcon = { Icon(if (category.active) AppIcons.Cancel else AppIcons.Check, null) },
-                    )
                     DropdownMenuItem({ Text("Delete") }, { menu = false; onDelete() },
                         leadingIcon = { Icon(AppIcons.Delete, null) })
                 }
             }
-            onSubcategories?.let { TextButton(it) { Text("Cuts") } }
         }
     }
 }

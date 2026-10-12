@@ -33,7 +33,7 @@ internal fun DeliveryOrderDetailsDialog(
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(Modifier.weight(1f)) {
                         Text(item.name, style = MaterialTheme.typography.titleSmall)
-                        Text("Quantity ${item.quantity}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Quantity ${item.quantityLabel}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text(item.lineTotalMinor.money(order.currencyCode))
                 }

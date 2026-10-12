@@ -50,16 +50,47 @@ internal class FirebaseCodOrderRepository @Inject constructor(
     override suspend fun getOrders(actor: CodActor) = listCall(
         if (actor == CodActor.ADMIN) "adminGetOrders" else "deliveryGetAssignedCodOrders",
     )
-    override suspend fun confirm(orderId: String, expectedRevision: Long, adjustments: List<FinalWeightAdjustment>) = orderCall(
-        "adminConfirmCodOrder", payload(orderId, expectedRevision) + ("adjustments" to adjustments.map {
-            mapOf("productId" to it.productId, "finalQuantity" to it.finalQuantity)
-        }),
+    override suspend fun confirm(orderId: String, expectedRevision: Long) = orderCall(
+        "adminConfirmCodOrder", payload(orderId, expectedRevision),
     )
     override suspend fun startPreparing(orderId: String, expectedRevision: Long) = orderCall(
         "adminStartPreparingOrder", payload(orderId, expectedRevision),
     )
-    override suspend fun markReadyForDelivery(orderId: String, expectedRevision: Long) = orderCall(
-        "adminMarkOrderReadyForDelivery", payload(orderId, expectedRevision),
+    override suspend fun markReadyForDelivery(orderId: String, expectedRevision: Long,
+        adjustments: List<FinalWeightAdjustment>) = orderCall(
+        "adminMarkOrderReadyForDelivery", payload(orderId, expectedRevision) + ("adjustments" to adjustments.map {
+            mapOf("productId" to it.productId, "finalQuantity" to it.finalQuantity)
+        }),
+    )
+    override suspend fun getOrderSlotOptions(): AppResult<OrderSlotOptions> = try {
+        val data = functions.getHttpsCallable("adminGetOrderSlotOptions").call().await().data as? Map<*, *>
+            ?: error("Invalid delivery slot response")
+        AppResult.Success(OrderSlotOptions(
+            deliveryDates = (data["deliveryDates"] as? List<*>).orEmpty().mapNotNull { raw ->
+                val date = raw as? Map<*, *> ?: return@mapNotNull null
+                CheckoutDeliveryDate(
+                    id = date["id"] as? String ?: return@mapNotNull null,
+                    label = date["label"] as? String ?: return@mapNotNull null,
+                    availableSlotIds = (date["availableSlotIds"] as? List<*>)?.filterIsInstance<String>()?.toSet().orEmpty(),
+                )
+            },
+            deliverySlots = (data["deliverySlots"] as? List<*>).orEmpty().mapNotNull { raw ->
+                val slot = raw as? Map<*, *> ?: return@mapNotNull null
+                DeliverySlot(
+                    id = slot["id"] as? String ?: return@mapNotNull null,
+                    label = slot["label"] as? String ?: return@mapNotNull null,
+                    startMinutes = (slot["startMinutes"] as? Number)?.toInt() ?: return@mapNotNull null,
+                    endMinutes = (slot["endMinutes"] as? Number)?.toInt() ?: return@mapNotNull null,
+                    active = slot["active"] as? Boolean ?: true,
+                )
+            },
+        ))
+    } catch (error: Exception) { AppResult.Failure(error.toCodError()) }
+    override suspend fun updateOrderDeliverySlot(orderId: String, expectedRevision: Long,
+        deliveryDateId: String, deliverySlotId: String, reason: String) = orderCall(
+        "adminUpdateOrderDeliverySlot", payload(orderId, expectedRevision) + mapOf(
+            "deliveryDateId" to deliveryDateId, "deliverySlotId" to deliverySlotId, "reason" to reason,
+        ),
     )
     override suspend fun cancel(orderId: String, expectedRevision: Long, reason: String) = orderCall(
         "adminCancelCodOrder", payload(orderId, expectedRevision) + ("reason" to reason),
@@ -140,6 +171,7 @@ internal fun Map<*, *>.toCodOrder(): CodOrder {
         ?: ((this["deliverySlotSnapshot"] as? Map<*, *>)?.get("startMinutes") as? Number)?.toInt(),
     deliverySlotEndMinutes = (this["deliverySlotEndMinutes"] as? Number)?.toInt()
         ?: ((this["deliverySlotSnapshot"] as? Map<*, *>)?.get("endMinutes") as? Number)?.toInt(),
+    deliverySlotChangeReason = this["deliverySlotChangeReason"] as? String,
     amountDueMinor = firstLong("amountDueMinor", "totalAmount", "totalMinor"),
     currencyCode = this["currencyCode"] as? String ?: "INR",
     orderStatus = enum("orderStatus", OrderStatus.PENDING),
@@ -152,6 +184,7 @@ internal fun Map<*, *>.toCodOrder(): CodOrder {
     preparingByAdminId = this["preparingByAdminId"] as? String,
     readyForDeliveryAtEpochMillis = optionalLong("readyForDeliveryAtEpochMillis"),
     readyForDeliveryByAdminId = this["readyForDeliveryByAdminId"] as? String,
+    billFinalizedAtEpochMillis = optionalLong("billFinalizedAtEpochMillis"),
     assignedDeliveryUserId = this["assignedDeliveryUserId"] as? String,
     assignedDeliveryUserName = this["assignedDeliveryUserName"] as? String,
     assignedAtEpochMillis = optionalLong("assignedAtEpochMillis"),
@@ -182,6 +215,7 @@ private fun Map<*, *>.toSnapshot() = OrderItemSnapshot(
     unit = enum("unit", ProductUnit.PIECE), quantity = long("quantity").toInt(),
     unitPriceMinor = long("unitPriceMinor"), regularPriceMinor = long("regularPriceMinor"),
     lineTotalMinor = long("lineTotalMinor"),
+    finalQuantity = (this["finalQuantity"] as? Number)?.toDouble(),
     attributes = (this["attributes"] as? Map<*, *>).orEmpty().entries.mapNotNull { (key, value) ->
         if (key is String && value is String) key to value else null
     }.toMap(),
@@ -230,6 +264,9 @@ private fun Throwable.toCodError(): AppError {
         exception?.code == FirebaseFunctionsException.Code.NOT_FOUND -> AppError.NotFound
         exception?.code == FirebaseFunctionsException.Code.ABORTED ->
             AppError.Validation(message = "Order changed. Refresh and try again")
+        exception?.code == FirebaseFunctionsException.Code.INVALID_ARGUMENT ||
+            exception?.code == FirebaseFunctionsException.Code.FAILED_PRECONDITION ->
+            AppError.Validation(message = exception.message ?: "Check the order details")
         exception?.code == FirebaseFunctionsException.Code.UNAVAILABLE -> AppError.Network
         else -> AppError.Unknown(this)
     }

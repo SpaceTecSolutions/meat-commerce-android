@@ -76,7 +76,9 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
                 expectedRevision = form.revision, imageUploadToken = uploadToken,
             ))) {
                 is AppResult.Success -> mutable.update { current -> current.copy(saving = false, form = null,
-                    items = (current.items.filterNot { it.id == result.value.id } + result.value).sortedBy(ProductSubcategory::sortOrder),
+                    items = (current.items.filterNot { it.id == result.value.id } + result.value.copy(
+                        productCount = current.items.firstOrNull { it.id == result.value.id }?.productCount ?: 0,
+                    )).sortedBy(ProductSubcategory::sortOrder),
                     message = CategoryMessage("Subcategory saved", true)) }
                 is AppResult.Failure -> mutable.update { it.copy(saving = false,
                     error = result.error.subcategoryMessage("Unable to save subcategory")) }
@@ -88,6 +90,25 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
         is AppResult.Failure -> mutable.update { it.copy(
             message = CategoryMessage("Unable to delete subcategory. Refresh and try again.", false)) }
     } }
+    fun toggleActive(item: ProductSubcategory) {
+        if (state.value.saving) return
+        viewModelScope.launch {
+            mutable.update { it.copy(saving = true) }
+            when (val result = repository.saveSubcategory(SubcategoryInput(
+                subcategoryId = item.id, categoryId = item.categoryId, name = item.name,
+                description = item.description, sortOrder = item.sortOrder,
+                active = !item.active, expectedRevision = item.revision,
+            ))) {
+                is AppResult.Success -> mutable.update { current -> current.copy(
+                    saving = false,
+                    items = current.items.map { if (it.id == item.id) result.value.copy(productCount = it.productCount) else it },
+                    message = CategoryMessage(if (result.value.active) "Subcategory enabled" else "Subcategory disabled", true),
+                ) }
+                is AppResult.Failure -> mutable.update { it.copy(saving = false,
+                    message = CategoryMessage(result.error.subcategoryMessage("Unable to change subcategory status"), false)) }
+            }
+        }
+    }
     fun consume() = mutable.update { it.copy(message = null) }
 }
 
@@ -130,14 +151,18 @@ fun AdminSubcategoriesRoute(parent: ProductCategory, back: () -> Unit, message: 
         else -> LazyColumn(Modifier.fillMaxSize().padding(padding).widthIn(max = AppDimensions.contentMaxWidth),
             contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             item { Text("Parent Category: ${parent.name}", fontWeight = FontWeight.SemiBold) }
-            if (state.items.isEmpty()) item { Text("No subcategories yet. Add the first cut for ${parent.name}.") }
+            if (state.items.isEmpty()) item { Text("No subcategories yet. Add the first subcategory for ${parent.name}.") }
             items(state.items, key = ProductSubcategory::id) { item -> ElevatedCard(onClick = { viewModel.edit(item) }) {
                 Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     CategoryImage(item.imageUrl, item.name, Modifier.size(54.dp))
                     Column(Modifier.weight(1f).padding(horizontal = 12.dp)) { Text(item.name, fontWeight = FontWeight.Bold)
                         Text("${if (item.active) "Active" else "Inactive"} · Order ${item.sortOrder}",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("${item.productCount} ${if (item.productCount == 1) "Product" else "Products"}",
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                    Icon(AppIcons.Edit, "Edit")
+                    Switch(item.active, { viewModel.toggleActive(item) }, enabled = !state.saving,
+                        colors = appSwitchColors())
                 } }
             }
         }

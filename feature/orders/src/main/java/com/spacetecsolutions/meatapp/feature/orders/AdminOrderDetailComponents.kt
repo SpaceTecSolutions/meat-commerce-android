@@ -58,7 +58,7 @@ internal fun OrderItemRow(item: OrderItemSnapshot, currencyCode: String) {
             Text(listOf(item.unit.name.pretty(), attributes).filter(String::isNotBlank).joinToString(" · "),
                 style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("×${item.quantity}", Modifier.padding(horizontal = AppSpacing.small),
+        Text("×${item.quantityLabel}", Modifier.padding(horizontal = AppSpacing.small),
             style = MaterialTheme.typography.labelLarge)
         Text(item.lineTotalMinor.money(currencyCode), fontWeight = FontWeight.SemiBold)
     }

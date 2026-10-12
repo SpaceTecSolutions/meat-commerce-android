@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.spacetecsolutions.meatapp.core.model.*
+import kotlin.math.roundToLong
 
 @Composable
 internal fun FinalBillConfirmationDialog(
@@ -23,24 +24,24 @@ internal fun FinalBillConfirmationDialog(
     val values = remember(order) { mutableStateMapOf<String, String>().apply {
         weighted.forEach { put(it.productId, it.quantity.toString()) }
     } }
-    val valid = values.values.all { it.toDoubleOrNull()?.let { value -> value > 0 && value <= 1000 } == true }
+    val valid = values.values.all { it.toDoubleOrNull()?.let { value -> value >= .001 && value <= 1000 } == true }
     val adjustedSubtotal = order.items.sumOf { item ->
         val quantity = values[item.productId]?.toDoubleOrNull() ?: item.quantity.toDouble()
-        (item.unitPriceMinor * quantity).toLong()
+        (item.unitPriceMinor * quantity).roundToLong()
     }
     val adjustedTotal = (adjustedSubtotal - order.discountMinor + order.deliveryFeeMinor + order.taxMinor)
         .coerceAtLeast(0)
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
-        title = { Text("Review final bill") },
+        title = { Text("Confirm packed weight") },
         text = {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                item { Text("Confirm the packed weight before accepting. The customer is charged only after this final bill is saved.",
+                item { Text("Adjust the packed weight before marking this order ready. The final amount will update when you save.",
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 if (weighted.isEmpty()) item { Text("No weight-based items require adjustment.") }
                 items(weighted, key = { it.productId }) { item ->
                     val quantity = values[item.productId]?.toDoubleOrNull()
-                    val lineTotal = quantity?.let { (item.unitPriceMinor * it).toLong() }
+                    val lineTotal = quantity?.let { (item.unitPriceMinor * it).roundToLong() }
                     ElevatedCard(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(item.name, fontWeight = FontWeight.SemiBold)
@@ -49,7 +50,10 @@ internal fun FinalBillConfirmationDialog(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                             OutlinedTextField(
                                 value = values[item.productId].orEmpty(),
-                                onValueChange = { values[item.productId] = it.filter { char -> char.isDigit() || char == '.' }.take(8) },
+                                onValueChange = { input ->
+                                    if (input.length <= 8 && input.matches(Regex("\\d*(\\.\\d{0,3})?")))
+                                        values[item.productId] = input
+                                },
                                 label = { Text("Final ${item.unit.weightLabel()}") },
                                 suffix = { Text(item.unit.weightLabel()) },
                                 supportingText = { if (lineTotal != null) Text("Updated item total: ${lineTotal.money(order.currencyCode)}") },
@@ -74,9 +78,10 @@ internal fun FinalBillConfirmationDialog(
         },
         confirmButton = { Button(
             onClick = { onConfirm(weighted.mapNotNull { item -> values[item.productId]?.toDoubleOrNull()
+                ?.takeIf { it != item.quantity.toDouble() }
                 ?.let { FinalWeightAdjustment(item.productId, it) } }) },
             enabled = valid && !busy,
-        ) { Text("Finalize & confirm") } },
+        ) { Text("Save & mark ready") } },
         dismissButton = { TextButton(onDismiss, enabled = !busy) { Text("Cancel") } },
     )
 }

@@ -221,14 +221,14 @@ private fun AdminOrdersFlow(
     staffPresentation: Boolean,
     actions: CodOrdersViewModel,
 ) {
-    var confirmationOrder by remember { mutableStateOf<CodOrder?>(null) }
+    var readyOrder by remember { mutableStateOf<CodOrder?>(null) }
     androidx.compose.animation.AnimatedContent(
         targetState = state.selectedOrder,
         label = "admin order navigation",
     ) { selected ->
         if (selected == null) {
             AdminOrdersListScreen(state, actions::selectOrder, actions::refresh,
-                { confirmationOrder = it }, actions::showCancel,
+                actions::confirm, actions::showCancel,
                 permissions == null || StaffPermission.ADJUST_FINAL_BILL in permissions,
                 permissions == null || StaffPermission.UPDATE_ORDER_STATUS in permissions,
                 staffPresentation)
@@ -240,10 +240,16 @@ private fun AdminOrdersFlow(
                 onBack = { actions.selectOrder(null) },
                 onCall = onCall,
                 onNavigate = onNavigate,
-                onConfirm = { confirmationOrder = selected },
+                onConfirm = { actions.confirm(selected) },
                 onCancel = { actions.showCancel(selected) },
                 onStartPreparing = { actions.startPreparing(selected) },
-                onMarkReady = { actions.markReadyForDelivery(selected) },
+                onMarkReady = {
+                    if (selected.paymentMethod == CheckoutPaymentMethod.COD &&
+                        selected.billFinalizedAtEpochMillis == null &&
+                        (permissions == null || StaffPermission.ADJUST_FINAL_BILL in permissions)) readyOrder = selected
+                    else actions.markReadyForDelivery(selected)
+                },
+                onChangeDeliverySlot = { actions.showSlotChange(selected) },
                 onDeliverMyself = { actions.startPersonalDelivery(selected) },
                 onAssignDelivery = { actions.requestAssignment(selected) },
                 onStartDelivery = { actions.startDelivery(selected) },
@@ -257,15 +263,28 @@ private fun AdminOrdersFlow(
             )
         }
     }
-    confirmationOrder?.let { order -> FinalBillConfirmationDialog(
+    readyOrder?.let { order -> FinalBillConfirmationDialog(
         order = order,
         busy = state.busyOrderId == order.id,
-        onDismiss = { confirmationOrder = null },
+        onDismiss = { readyOrder = null },
         onConfirm = { adjustments ->
-            confirmationOrder = null
-            actions.selectOrder(null)
-            actions.confirm(order, adjustments)
+            readyOrder = null
+            actions.markReadyForDelivery(order, adjustments)
         },
+    ) }
+    state.slotChangeOrder?.let { order -> OrderSlotChangeDialog(
+        order = order,
+        options = state.slotOptions,
+        loading = state.slotOptionsLoading,
+        busy = state.busyOrderId == order.id,
+        selectedDateId = state.slotDateId,
+        selectedSlotId = state.slotId,
+        reason = state.slotReason,
+        onDate = actions::selectSlotDate,
+        onSlot = actions::selectSlot,
+        onReason = actions::setSlotReason,
+        onConfirm = actions::updateDeliverySlot,
+        onDismiss = { actions.showSlotChange(null) },
     ) }
     state.collectionOrder?.let { CollectionDialog(it, state.collectedAmount,
         actions::setCollectedAmount, actions::completeDelivery, actions::reportMismatch,

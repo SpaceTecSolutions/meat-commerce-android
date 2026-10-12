@@ -149,7 +149,7 @@ private fun ProductImageField(
         AppImageCarousel(
             images = images,
             contentDescription = "Product photos",
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier.fillMaxWidth().height(176.dp),
             autoSlide = images.size > 1,
             onRemove = if (submitting) null else remove,
         )

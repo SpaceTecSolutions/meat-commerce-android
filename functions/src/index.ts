@@ -54,6 +54,8 @@ export {
   adminConfirmCodOrder,
   adminStartPreparingOrder,
   adminMarkOrderReadyForDelivery,
+  adminGetOrderSlotOptions,
+  adminUpdateOrderDeliverySlot,
   adminCancelCodOrder,
   adminAssignOrderToSelf,
   adminAssignDeliveryUser,

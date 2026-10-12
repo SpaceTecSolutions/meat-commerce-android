@@ -3,8 +3,10 @@ import {randomUUID} from "node:crypto";
 import {getFirestore} from "./database.js";
 import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
 import {deliveryOtpRef, requireVerifiedOtpForCompletion} from "./delivery-otp.js";
+import {availableDeliveryDates} from "./customer-checkout.js";
 
-const options = {region: "asia-south1", enforceAppCheck: true, timeoutSeconds: 30, memory: "256MiB" as const};
+const options = {region: "asia-south1", enforceAppCheck: true, invoker: "public" as const,
+  timeoutSeconds: 30, memory: "256MiB" as const};
 const defaultShopId = "default";
 const allowedCancellationStates = new Set(["PENDING", "CONFIRMED", "PREPARING", "OUT_FOR_DELIVERY"]);
 
@@ -51,29 +53,68 @@ export const adminConfirmCodOrder = mutate(async (value, context, request) => {
   const method = text(value.paymentMethod, "COD");
   const payment = text(value.paymentStatus, "PENDING");
   if ((method === "COD" && payment !== "PENDING") || (method !== "COD" && payment !== "PAID")) invalidTransition();
+  const legacyAdjustments = Array.isArray(request.data?.adjustments) ? request.data.adjustments : [];
+  if (legacyAdjustments.length) {
+    await requireOperator(request, "ADJUST_FINAL_BILL");
+    if (method !== "COD") throw new HttpsError("failed-precondition", "Paid online orders cannot be repriced");
+  }
+  return {...(legacyAdjustments.length ? {...finalBillForReady(value, legacyAdjustments),
+    billFinalizedAtEpochMillis: Date.now(), billFinalizedByAdminId: context.uid} : {}),
+  confirmedAtEpochMillis: Date.now(), confirmedByAdminId: context.uid, orderStatus: "CONFIRMED"};
+}, "ORDER_CONFIRMED");
+
+export const adminStartPreparingOrder = transition("PREPARING", (value, context) => {
+  requireState(value, "CONFIRMED");
+  return {preparingAtEpochMillis: Date.now(), preparingByAdminId: context.uid};
+});
+
+export const adminMarkOrderReadyForDelivery = mutate(async (value, context, request) => {
+  requireState(value, "PREPARING");
+  if (number(value.readyForDeliveryAtEpochMillis) > 0) invalidTransition();
   const requested = Array.isArray(request.data?.adjustments) ? request.data.adjustments : [];
-  if (method !== "COD" && requested.length) {
+  if (requested.length) await requireOperator(request, "ADJUST_FINAL_BILL");
+  if (value.billFinalizedAtEpochMillis && requested.length) {
+    throw new HttpsError("failed-precondition", "This order's bill is already finalized");
+  }
+  if (value.billFinalizedAtEpochMillis) {
+    return {readyForDeliveryAtEpochMillis: Date.now(), readyForDeliveryByAdminId: context.uid};
+  }
+  if (text(value.paymentMethod) !== "COD" && requested.length) {
     throw new HttpsError("failed-precondition", "Paid online orders cannot be repriced");
   }
+  if (text(value.paymentMethod) !== "COD") {
+    return {billFinalizedAtEpochMillis: Date.now(), billFinalizedByAdminId: context.uid,
+      readyForDeliveryAtEpochMillis: Date.now(), readyForDeliveryByAdminId: context.uid};
+  }
+  return {...finalBillForReady(value, requested), billFinalizedAtEpochMillis: Date.now(),
+    billFinalizedByAdminId: context.uid,
+    readyForDeliveryAtEpochMillis: Date.now(), readyForDeliveryByAdminId: context.uid};
+}, "ORDER_READY_FOR_DELIVERY");
+
+export function finalBillForReady(value: FirebaseFirestore.DocumentData, requested: any[]) {
   const byProduct = new Map<string, number>();
   requested.forEach((raw: any) => {
     const id = text(raw?.productId); const quantity = Number(raw?.finalQuantity);
     if (!id || !Number.isFinite(quantity) || quantity <= 0 || quantity > 1000 || byProduct.has(id)) {
       throw new HttpsError("invalid-argument", "Invalid final quantity");
     }
-    byProduct.set(id, Math.round(quantity * 1000) / 1000);
+    const rounded = Math.round(quantity * 1000) / 1000;
+    if (rounded <= 0) throw new HttpsError("invalid-argument", "Invalid final quantity");
+    byProduct.set(id, rounded);
   });
+  let weightAdjusted = false;
   const items = rawItems(value).map((item) => {
     const unit = text(item.unit, "PIECE");
-    const estimated = number(item.quantity, 1);
-    const finalQuantity = byProduct.get(text(item.productId)) ?? estimated;
+    const estimated = number(item.estimatedQuantity ?? item.quantity, 1);
+    const finalQuantity = byProduct.get(text(item.productId)) ?? number(item.finalQuantity ?? item.quantity, estimated);
     if (byProduct.has(text(item.productId)) && unit !== "KILOGRAM" && unit !== "GRAM") {
       throw new HttpsError("invalid-argument", "Only weight-based items can be adjusted");
     }
+    if (finalQuantity !== estimated) weightAdjusted = true;
     const unitPrice = number(item.unitPriceMinor);
     const finalLine = Math.max(0, Math.round(unitPrice * finalQuantity));
     return {...item, estimatedQuantity: estimated, finalQuantity,
-      estimatedLineTotalMinor: number(item.lineTotalMinor), finalLineTotalMinor: finalLine,
+      estimatedLineTotalMinor: number(item.estimatedLineTotalMinor ?? item.lineTotalMinor), finalLineTotalMinor: finalLine,
       lineTotalMinor: finalLine};
   });
   if ([...byProduct.keys()].some((id) => !items.some((item) => text((item as FirebaseFirestore.DocumentData).productId) === id))) {
@@ -83,22 +124,43 @@ export const adminConfirmCodOrder = mutate(async (value, context, request) => {
   const totalMinor = Math.max(0, subtotalMinor - number(value.discountMinor) +
     number(value.deliveryFeeMinor) + number(value.taxMinor));
   return {items, subtotalMinor, totalMinor, amountDueMinor: totalMinor,
-    estimatedTotalMinor: number(value.totalMinor), finalTotalMinor: totalMinor,
-    finalBillAdjusted: byProduct.size > 0, billFinalizedAtEpochMillis: Date.now(),
-    billFinalizedByAdminId: context.uid, confirmedAtEpochMillis: Date.now(),
-    confirmedByAdminId: context.uid, orderStatus: "CONFIRMED"};
-}, "ORDER_FINAL_BILL_CONFIRMED", "ADJUST_FINAL_BILL");
+    estimatedTotalMinor: number(value.estimatedTotalMinor ?? value.totalMinor), finalTotalMinor: totalMinor,
+    finalBillAdjusted: weightAdjusted};
+}
 
-export const adminStartPreparingOrder = transition("PREPARING", (value, context) => {
-  requireState(value, "CONFIRMED");
-  return {preparingAtEpochMillis: Date.now(), preparingByAdminId: context.uid};
+export const adminGetOrderSlotOptions = onCall(options, async (request) => {
+  const context = await requireOperator(request, "UPDATE_ORDER_STATUS");
+  const config = await getFirestore().collection("shops").doc(context.shopId).collection("config").doc("delivery").get();
+  const slots = configuredSlots(config.get("slots"));
+  return {deliveryDates: availableDeliveryDates(slots), deliverySlots: slots};
 });
 
-export const adminMarkOrderReadyForDelivery = mutate(async (value, context) => {
-  requireState(value, "PREPARING");
-  if (number(value.readyForDeliveryAtEpochMillis) > 0) invalidTransition();
-  return {readyForDeliveryAtEpochMillis: Date.now(), readyForDeliveryByAdminId: context.uid};
-}, "ORDER_READY_FOR_DELIVERY");
+export const adminUpdateOrderDeliverySlot = mutate(async (value, context, request, transaction) => {
+  if (!["PENDING", "CONFIRMED", "PREPARING"].includes(text(value.orderStatus)) ||
+      number(value.readyForDeliveryAtEpochMillis) > 0) invalidTransition();
+  const reason = text(request.data?.reason).trim();
+  const dateId = text(request.data?.deliveryDateId); const slotId = text(request.data?.deliverySlotId);
+  if (reason.length < 10 || reason.length > 200) {
+    throw new HttpsError("invalid-argument", "Provide a reason of 10 to 200 characters");
+  }
+  const config = await transaction.get(getFirestore().collection("shops").doc(context.shopId)
+    .collection("config").doc("delivery"));
+  const slots = configuredSlots(config.get("slots"));
+  const date = availableDeliveryDates(slots).find((item) => item.id === dateId);
+  const slot = slots.find((item) => item.id === slotId && date?.availableSlotIds.includes(item.id));
+  if (!date || !slot) throw new HttpsError("failed-precondition", "Selected delivery slot is no longer available");
+  if (text(value.deliveryDate ?? value.deliverySlotSnapshot?.date) === dateId &&
+      text(value.deliverySlotSnapshot?.id) === slotId) {
+    throw new HttpsError("invalid-argument", "Choose a different delivery slot");
+  }
+  return {deliveryDate: dateId,
+    deliverySlotSnapshot: {id: slot.id, date: dateId, dateLabel: date.label,
+      timeLabel: slot.label, startMinutes: slot.startMinutes, endMinutes: slot.endMinutes},
+    deliverySlotDateLabel: date.label, deliverySlotTimeLabel: slot.label,
+    deliverySlotChangeReason: reason, deliverySlotChangedAtEpochMillis: Date.now(),
+    deliverySlotChangedByUserId: context.uid,
+    previousDeliverySlotSnapshot: value.deliverySlotSnapshot ?? null};
+}, "ORDER_DELIVERY_SLOT_UPDATED");
 
 export const adminCancelCodOrder = mutate(async (value, context, request, transaction) => {
   if (!allowedCancellationStates.has(text(value.orderStatus))) invalidTransition();
@@ -254,10 +316,12 @@ export function orderResponse(id: string, value: FirebaseFirestore.DocumentData)
     deliveryDateIso: value.deliveryDate ?? value.deliverySlotSnapshot?.date ?? null,
     deliverySlotStartMinutes: value.deliverySlotSnapshot?.startMinutes ?? null,
     deliverySlotEndMinutes: value.deliverySlotSnapshot?.endMinutes ?? null,
+    deliverySlotChangeReason: value.deliverySlotChangeReason ?? null,
     revision: number(value.revision), customerCancellationAllowed: value.customerCancellationAllowed === true,
     confirmedAtEpochMillis: epoch(value.confirmedAtEpochMillis), confirmedByAdminId: value.confirmedByAdminId ?? null,
     preparingAtEpochMillis: epoch(value.preparingAtEpochMillis), preparingByAdminId: value.preparingByAdminId ?? null,
     readyForDeliveryAtEpochMillis: epoch(value.readyForDeliveryAtEpochMillis), readyForDeliveryByAdminId: value.readyForDeliveryByAdminId ?? null,
+    billFinalizedAtEpochMillis: epoch(value.billFinalizedAtEpochMillis),
     assignedDeliveryUserId: value.assignedDeliveryUserId ?? null, assignedDeliveryUserName: value.assignedDeliveryUserName ?? null,
     assignedDeliveryRole: value.assignedDeliveryRole ?? null, assignedAtEpochMillis: epoch(value.assignedAtEpochMillis),
     assignedByAdminId: value.assignedByAdminId ?? null, deliveryStartedAtEpochMillis: epoch(value.deliveryStartedAtEpochMillis),
@@ -284,6 +348,13 @@ async function trackingPreparation(shopId: string, transaction: FirebaseFirestor
 }
 
 function epoch(value: unknown): number | null { return value instanceof Timestamp ? value.toMillis() : number(value) || null; }
+function configuredSlots(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((slot) => slot?.active !== false).map((slot) => ({
+    id: text(slot?.id), label: text(slot?.label),
+    startMinutes: number(slot?.startMinutes, -1), endMinutes: number(slot?.endMinutes, -1), active: true,
+  })).filter((slot) => slot.id && slot.label && slot.startMinutes >= 0 && slot.endMinutes > slot.startMinutes);
+}
 function text(value: unknown, fallback = ""): string { return typeof value === "string" ? value : fallback; }
 function number(value: unknown, fallback = 0): number { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : fallback; }
 function invalidTransition(): never { throw new HttpsError("aborted", "Order changed", {reason: "INVALID_TRANSITION"}); }

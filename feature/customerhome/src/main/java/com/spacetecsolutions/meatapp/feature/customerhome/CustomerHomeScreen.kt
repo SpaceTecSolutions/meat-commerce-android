@@ -24,6 +24,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spacetecsolutions.meatapp.core.designsystem.component.AppAnimation
+import com.spacetecsolutions.meatapp.core.designsystem.component.AppLottieAnimation
 import com.spacetecsolutions.meatapp.core.designsystem.component.ContentState
 import com.spacetecsolutions.meatapp.core.designsystem.component.ContentStateView
 import com.spacetecsolutions.meatapp.core.designsystem.theme.*
@@ -167,7 +169,7 @@ private fun CustomerHomeScreen(
                 ContentState.Error(title = "Unable to load Home", description = state.error),
                 onAction = onRefresh,
             )
-            data == null || data.isEmpty() -> ContentStateView(
+            data == null -> ContentStateView(
                 ContentState.Empty(
                     title = "The shop is getting ready",
                     description = "Fresh products and categories will appear here soon.",
@@ -229,6 +231,22 @@ private fun HomeContent(
     hasCartBar: Boolean,
 ) {
     val fallbackProduct = data.bestSellers.firstOrNull() ?: data.recommended.firstOrNull()
+    if (data.hasNoProducts()) {
+        HomeWithoutProducts(
+            data = data,
+            error = error,
+            onRefresh = onRefresh,
+            onViewAllCategories = onViewAllCategories,
+            onCategory = onCategory,
+            onProduct = onProduct,
+            onAbout = onAbout,
+            onFaq = onFaq,
+            onPrivacy = onPrivacy,
+            onTerms = onTerms,
+            hasCartBar = hasCartBar,
+        )
+        return
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
             .widthIn(max = AppDimensions.contentMaxWidth),
@@ -272,6 +290,78 @@ private fun HomeContent(
             HomeProductSpotlight("Picked for You", data.quickPicks, onProduct)
         }
         item { HomeTrustFooter(onAbout, onFaq, onPrivacy, onTerms) }
+    }
+}
+
+@Composable
+private fun HomeWithoutProducts(
+    data: CustomerHomeData,
+    error: String?,
+    onRefresh: () -> Unit,
+    onViewAllCategories: () -> Unit,
+    onCategory: (String, String) -> Unit,
+    onProduct: (String) -> Unit,
+    onAbout: () -> Unit,
+    onFaq: () -> Unit,
+    onPrivacy: () -> Unit,
+    onTerms: () -> Unit,
+    hasCartBar: Boolean,
+) {
+    BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        val tablet = maxWidth >= AppDimensions.expandedContentBreakpoint
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().widthIn(max = AppDimensions.contentMaxWidth)
+                .then(if (tablet) Modifier.navigationBarsPadding() else Modifier),
+            contentPadding = PaddingValues(start = 16.dp, top = 14.dp, end = 16.dp,
+                bottom = if (hasCartBar) 110.dp else if (tablet) 24.dp else 12.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                    if (error != null || data.catalogStale) HomeSavedDataNotice(error, onRefresh)
+                    if (data.banners.isNotEmpty()) {
+                        HomeBannerCarousel(data.banners) { banner ->
+                            val action = banner.actionRoute.orEmpty()
+                            val productId = action.productId()
+                            when {
+                                productId != null -> onProduct(productId)
+                                action.startsWith("category:") -> {
+                                    val id = action.removePrefix("category:")
+                                    onCategory(id,
+                                        data.categories.firstOrNull { it.id == id }?.name ?: "Products")
+                                }
+                                else -> onViewAllCategories()
+                            }
+                        }
+                    }
+                    if (data.categories.isNotEmpty()) {
+                        HomeCategories(data.categories, onViewAllCategories, onCategory)
+                    }
+                }
+            }
+            item { HomeEmptyAnimalScene(onRefresh) }
+            item { HomeTrustFooter(onAbout, onFaq, onPrivacy, onTerms) }
+        }
+    }
+}
+
+@Composable
+private fun HomeEmptyAnimalScene(onRefresh: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        AppLottieAnimation(
+            animation = AppAnimation.EmptyData,
+            modifier = Modifier.size(156.dp),
+            loop = true,
+        )
+        Text(
+            "Fresh choices are on the way",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        TextButton(onClick = onRefresh) { Text("Refresh") }
     }
 }
 
@@ -376,5 +466,5 @@ private fun String.productId(): String? = when {
     else -> null
 }
 
-private fun CustomerHomeData.isEmpty() = banners.isEmpty() && categories.isEmpty() &&
-    bestSellers.isEmpty() && recommended.isEmpty() && popularThisWeek.isEmpty() && quickPicks.isEmpty()
+private fun CustomerHomeData.hasNoProducts() = bestSellers.isEmpty() && recommended.isEmpty() &&
+    popularThisWeek.isEmpty() && quickPicks.isEmpty()

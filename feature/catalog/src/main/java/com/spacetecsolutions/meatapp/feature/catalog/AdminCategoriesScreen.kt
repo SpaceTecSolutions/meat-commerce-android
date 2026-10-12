@@ -97,13 +97,20 @@ private fun AdminCategoriesScreen(
                     state.search, onSearch, "Search categories",
                     Modifier.padding(horizontal = AppSpacing.medium, vertical = AppSpacing.small),
                 )
+                val visible = state.categories.filter { it.matchesSearch(state.search) }
+                Text(
+                    "${visible.size} ${if (visible.size == 1) "Category" else "Categories"} · " +
+                        "${visible.sumOf(ProductCategory::productCount)} Products",
+                    modifier = Modifier.padding(horizontal = AppSpacing.medium, vertical = AppSpacing.extraSmall),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 LazyColumn(
                 Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = AppSpacing.medium, vertical = AppSpacing.small),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.extraSmall),
             ) {
                 if (state.error != null) item { Text(state.error, color = MaterialTheme.colorScheme.error) }
-                val visible = state.categories.filter { it.matchesSearch(state.search) }
                 if (visible.isEmpty()) item {
                     ContentStateView(ContentState.Empty(
                         title = "No matching categories",

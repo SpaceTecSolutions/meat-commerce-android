@@ -3,6 +3,8 @@ package com.spacetecsolutions.meatapp.core.domain.repository
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
 import com.spacetecsolutions.meatapp.core.model.CodActor
 import com.spacetecsolutions.meatapp.core.model.CodOrder
+import com.spacetecsolutions.meatapp.core.model.FinalWeightAdjustment
+import com.spacetecsolutions.meatapp.core.model.OrderSlotOptions
 import kotlinx.coroutines.flow.Flow
 
 interface CodOrderRepository {
@@ -18,10 +20,13 @@ interface CodOrderRepository {
     suspend fun confirm(
         orderId: String,
         expectedRevision: Long,
-        adjustments: List<com.spacetecsolutions.meatapp.core.model.FinalWeightAdjustment> = emptyList(),
     ): AppResult<CodOrder>
     suspend fun startPreparing(orderId: String, expectedRevision: Long): AppResult<CodOrder>
-    suspend fun markReadyForDelivery(orderId: String, expectedRevision: Long): AppResult<CodOrder>
+    suspend fun markReadyForDelivery(orderId: String, expectedRevision: Long,
+        adjustments: List<FinalWeightAdjustment>): AppResult<CodOrder>
+    suspend fun getOrderSlotOptions(): AppResult<OrderSlotOptions>
+    suspend fun updateOrderDeliverySlot(orderId: String, expectedRevision: Long,
+        deliveryDateId: String, deliverySlotId: String, reason: String): AppResult<CodOrder>
     suspend fun cancel(orderId: String, expectedRevision: Long, reason: String): AppResult<CodOrder>
     suspend fun startPersonalDelivery(orderId: String, expectedRevision: Long): AppResult<CodOrder>
     suspend fun assignDeliveryUser(

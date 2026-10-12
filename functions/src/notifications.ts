@@ -125,13 +125,22 @@ export const notifyOrderUpdated = onDocumentUpdated(trigger, async (event) => {
   const revision = Number(after.revision ?? 0); const customerUid = text(after.customerId);
   const finalAmountChanged = Number(before.totalMinor ?? before.amountDueMinor ?? 0) !==
     Number(after.finalTotalMinor ?? after.totalMinor ?? after.amountDueMinor ?? 0);
-  if (before.orderStatus === "PENDING" && after.orderStatus === "CONFIRMED" &&
-      after.finalBillAdjusted === true && finalAmountChanged) {
+  if (!before.billFinalizedAtEpochMillis && after.billFinalizedAtEpochMillis &&
+      after.finalBillAdjusted === true) {
     await notify({recipientUid: customerUid, recipientRole: "CUSTOMER", event: "ORDER_FINAL_AMOUNT_UPDATED",
       category: "ORDER", priority: "HIGH", title: "Order updated",
-      body: `The final weight was adjusted. Your final amount is ${money(after.finalTotalMinor ?? after.totalMinor,
-        text(after.currencyCode, "INR"))} and ${number} is confirmed.`,
+      body: `The packed weight for ${number} was adjusted. ${finalAmountChanged ? "Your final amount is" : "The final amount remains"} ${money(after.finalTotalMinor ?? after.totalMinor,
+        text(after.currencyCode, "INR"))}. ${after.readyForDeliveryAtEpochMillis ? "Your order is ready for delivery." : "Your order is confirmed."}`,
       eventKey: `${orderId}:final-amount:${revision}`, shopId, orderId, deepLinkRoute: "customer/orders"});
+  }
+  if (before.deliverySlotSnapshot?.date !== after.deliverySlotSnapshot?.date ||
+      before.deliverySlotSnapshot?.id !== after.deliverySlotSnapshot?.id) {
+    if (before.deliverySlotSnapshot && after.deliverySlotSnapshot) {
+      await notify({recipientUid: customerUid, recipientRole: "CUSTOMER", event: "ORDER_DELIVERY_SLOT_UPDATED",
+        category: "DELIVERY", priority: "HIGH", title: "Delivery time updated",
+        body: `${number} is now scheduled for ${text(after.deliverySlotDateLabel)}, ${text(after.deliverySlotTimeLabel)}. Reason: ${text(after.deliverySlotChangeReason)}`,
+        eventKey: `${orderId}:slot:${revision}`, shopId, orderId, deepLinkRoute: "customer/orders"});
+    }
   }
   if (before.orderStatus !== after.orderStatus) {
     const status = statusNotification(text(after.orderStatus), number);

@@ -9,6 +9,7 @@ data class ProductSubcategory(
     val sortOrder: Int = 0,
     val revision: Long = 0,
     val imageUrl: String? = null,
+    val productCount: Int = 0,
 )
 
 data class SubcategoryInput(

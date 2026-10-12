@@ -4,6 +4,7 @@ import com.spacetecsolutions.meatapp.core.model.CodActor
 import com.spacetecsolutions.meatapp.core.model.CodOrder
 import com.spacetecsolutions.meatapp.core.model.OrderStatus
 import com.spacetecsolutions.meatapp.core.model.ProductCategory
+import com.spacetecsolutions.meatapp.core.model.OrderSlotOptions
 import com.spacetecsolutions.meatapp.core.model.DeliveryTrackingLifecycle
 import com.spacetecsolutions.meatapp.core.model.UserRole
 
@@ -24,6 +25,12 @@ data class CodOrdersUiState(
     val otpBusy: Boolean = false,
     val otpVerifiedSessionId: String? = null,
     val cancelReason: String = "",
+    val slotChangeOrder: CodOrder? = null,
+    val slotOptions: OrderSlotOptions? = null,
+    val slotOptionsLoading: Boolean = false,
+    val slotDateId: String? = null,
+    val slotId: String? = null,
+    val slotReason: String = "",
     val deliveryStaffAllowed: Boolean = false,
     val realtimeTrackingAllowed: Boolean = false,
     val realtimeTrackingAdminEnabled: Boolean = false,
