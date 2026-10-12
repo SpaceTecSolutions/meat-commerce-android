@@ -37,7 +37,7 @@ internal fun AdminOrderDetailsDialog(
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Column(Modifier.weight(1f)) {
                             Text(item.name, style = MaterialTheme.typography.titleSmall)
-                            Text("${item.quantity} × ${item.unitPriceMinor.money(order.currencyCode)}",
+                            Text("${item.quantityLabel} × ${item.unitPriceMinor.money(order.currencyCode)}",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Text(item.lineTotalMinor.money(order.currencyCode))

@@ -70,6 +70,7 @@ private fun Map<*, *>.subcategory() = ProductSubcategory(
     active = this["active"] as? Boolean ?: false, sortOrder = (this["sortOrder"] as? Number)?.toInt() ?: 0,
     revision = (this["revision"] as? Number)?.toLong() ?: 0,
     imageUrl = this["imageUrl"] as? String,
+    productCount = (this["productCount"] as? Number)?.toInt() ?: 0,
 )
 private fun Map<*, *>.faq() = FaqEntry(
     id = this["id"] as? String ?: error("Missing id"), question = this["question"] as? String ?: "",

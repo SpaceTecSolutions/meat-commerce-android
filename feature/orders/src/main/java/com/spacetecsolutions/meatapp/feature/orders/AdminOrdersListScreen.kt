@@ -242,9 +242,9 @@ internal fun AdminOrderCard(order: CodOrder, busy: Boolean, onClick: () -> Unit,
                     style = MaterialTheme.typography.labelSmall, color = T.muted)
             }
             if (busy) LinearProgressIndicator(Modifier.fillMaxWidth(), color = T.red)
-            if (order.canConfirm && (canAdjustFinalBill || canUpdateStatus)) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (order.canConfirm && canUpdateStatus) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (canUpdateStatus) OutlinedButton(onReject, Modifier.weight(1f), enabled = !busy) { Text("Reject") }
-                if (canAdjustFinalBill) Button(onConfirm, Modifier.weight(1f), enabled = !busy,
+                if (canUpdateStatus) Button(onConfirm, Modifier.weight(1f), enabled = !busy,
                     colors = ButtonDefaults.buttonColors(containerColor = T.red)) {
                     Text("Accept Order")
                 }

@@ -182,7 +182,7 @@ internal fun CustomerOrderItemRow(item: OrderItemSnapshot, currencyCode: String)
             Text(item.name, style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold, maxLines = 2,
                 overflow = TextOverflow.Ellipsis, color = T.ink)
-            Text(item.quantity.toString() + " " + item.unit.shortLabel(),
+            Text(item.quantityLabel + " " + item.unit.shortLabel(),
                 style = MaterialTheme.typography.bodySmall, color = T.muted)
         }
         Spacer(Modifier.width(8.dp))

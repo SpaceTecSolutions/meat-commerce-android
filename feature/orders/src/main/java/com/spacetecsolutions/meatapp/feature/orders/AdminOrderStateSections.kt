@@ -162,7 +162,7 @@ private fun AdminOrderTableRow(item: OrderItemSnapshot, currencyCode: String) {
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
-        Text(item.quantity.toString(), Modifier.width(34.dp), style = MaterialTheme.typography.labelMedium,
+        Text(item.quantityLabel, Modifier.width(34.dp), style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center)
         Text(item.unit.name.lowercase(), Modifier.width(42.dp), style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center, color = T.muted)

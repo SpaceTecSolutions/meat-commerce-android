@@ -30,10 +30,11 @@ fun CustomerSupportRoute(back: () -> Unit, call: (String) -> Unit,
     Column(Modifier.fillMaxSize().background(AccountStyle.canvas)
         .statusBarsPadding().navigationBarsPadding()) {
         AccountTopBar("Help & Support", back)
-        Column(Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
-            .widthIn(max = 440.dp).verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(22.dp)) {
+        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            val contentMaxWidth = if (maxWidth >= 600.dp) 600.dp else 440.dp
+            Column(Modifier.fillMaxSize().widthIn(max = contentMaxWidth).verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(22.dp)) {
             AccountCard(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.Top) {
                     Box(Modifier.size(52.dp).background(Color(0xFFFFECEC), RoundedCornerShape(15.dp)),
@@ -92,6 +93,7 @@ fun CustomerSupportRoute(back: () -> Unit, call: (String) -> Unit,
                 }
                 Text("Direct assistance with your orders and deliveries.",
                     Modifier.padding(top = 11.dp), fontSize = 12.sp, color = AccountStyle.muted)
+            }
             }
         }
     }

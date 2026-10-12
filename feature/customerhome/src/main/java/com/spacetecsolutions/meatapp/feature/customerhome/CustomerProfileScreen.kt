@@ -46,12 +46,13 @@ fun CustomerProfileRoute(
     Column(Modifier.fillMaxSize().background(CustomerProfileColors.canvas)
         .statusBarsPadding().navigationBarsPadding()) {
         CustomerProfileHeader(onBack, onHelp = openSupport)
-        Column(
-            Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
-                .widthIn(max = 440.dp).verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
+        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            val contentMaxWidth = if (maxWidth >= AppDimensions.expandedContentBreakpoint) 600.dp else 440.dp
+            Column(
+                Modifier.fillMaxSize().widthIn(max = contentMaxWidth).verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
             CustomerIdentityCard(user, onEdit = openProfileInformation)
             Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
                 CustomerProfileSectionLabel("Order Management")
@@ -104,6 +105,7 @@ fun CustomerProfileRoute(
                 style = MaterialTheme.typography.labelSmall, color = CustomerProfileColors.muted,
                 textAlign = TextAlign.Center) }
             Spacer(Modifier.height(20.dp))
+            }
         }
     }
     if (confirmLogout) AlertDialog(

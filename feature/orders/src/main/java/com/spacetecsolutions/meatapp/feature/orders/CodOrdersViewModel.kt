@@ -68,14 +68,50 @@ class CodOrdersViewModel @Inject constructor(
         }
     }
 
-    fun confirm(order: CodOrder, adjustments: List<FinalWeightAdjustment> = emptyList()) = mutate(order.id, "Final bill saved and order confirmed") {
-        repository.confirm(order.id, order.revision, adjustments)
+    fun confirm(order: CodOrder) = mutate(order.id, "Order confirmed") {
+        repository.confirm(order.id, order.revision)
     }
     fun startPreparing(order: CodOrder) = mutate(order.id, "Order is now preparing") {
         repository.startPreparing(order.id, order.revision)
     }
-    fun markReadyForDelivery(order: CodOrder) = mutate(order.id, "Ready for delivery assignment") {
-        repository.markReadyForDelivery(order.id, order.revision)
+    fun markReadyForDelivery(order: CodOrder, adjustments: List<FinalWeightAdjustment> = emptyList()) =
+        mutate(order.id, "Final bill saved; ready for delivery assignment") {
+            repository.markReadyForDelivery(order.id, order.revision, adjustments)
+        }
+    fun showSlotChange(order: CodOrder?) {
+        if (order == null) {
+            mutableState.update { it.copy(slotChangeOrder = null, slotOptions = null,
+                slotDateId = null, slotId = null, slotReason = "", slotOptionsLoading = false) }
+            return
+        }
+        if (order.orderStatus !in setOf(OrderStatus.PENDING, OrderStatus.CONFIRMED, OrderStatus.PREPARING) ||
+            order.readyForDeliveryAtEpochMillis != null) return
+        mutableState.update { it.copy(slotChangeOrder = order, slotOptions = null,
+            slotDateId = null, slotId = null, slotReason = "", slotOptionsLoading = true) }
+        viewModelScope.launch {
+            when (val result = repository.getOrderSlotOptions()) {
+                is AppResult.Success -> mutableState.update { it.copy(slotOptionsLoading = false,
+                    slotOptions = result.value) }
+                is AppResult.Failure -> mutableState.update { it.copy(slotOptionsLoading = false,
+                    message = CodOrderMessage(result.error.text(), false)) }
+            }
+        }
+    }
+    fun selectSlotDate(id: String) = mutableState.update { it.copy(slotDateId = id, slotId = null) }
+    fun selectSlot(id: String) = mutableState.update { it.copy(slotId = id) }
+    fun setSlotReason(value: String) = mutableState.update { it.copy(slotReason = value.take(200)) }
+    fun updateDeliverySlot() {
+        val current = state.value
+        val order = current.slotChangeOrder ?: return
+        val date = current.slotDateId ?: return
+        val slot = current.slotId ?: return
+        val reason = current.slotReason.trim()
+        if (reason.length < 10 || current.slotOptions?.deliveryDates?.none {
+                it.id == date && slot in it.availableSlotIds
+            } != false) return
+        mutate(order.id, "Delivery slot updated; customer notified", onSuccess = {
+            showSlotChange(null)
+        }) { repository.updateOrderDeliverySlot(order.id, order.revision, date, slot, reason) }
     }
     fun selectStatus(status: OrderStatus) = mutableState.update { it.copy(selectedStatus = status) }
     fun selectOrder(order: CodOrder?) = mutableState.update { it.copy(selectedOrder = order) }

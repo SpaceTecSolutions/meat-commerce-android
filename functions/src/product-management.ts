@@ -126,7 +126,7 @@ export function cartProductCount(existingLines: number, lineAlreadyExists: boole
   return existingLines + (lineAlreadyExists ? 0 : 1);
 }
 
-export const adminCreateProduct = onCall(catalogOptions, async (request) => {
+export const adminCreateProduct = onCall({...catalogOptions, invoker: "public"}, async (request) => {
   const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS"); const input = productInput(request.data);
   const reference = shop(context).collection("products").doc();
   const uploads = await finalizeImages(context, imageTokens(request.data?.imageUploadTokens), reference.id);

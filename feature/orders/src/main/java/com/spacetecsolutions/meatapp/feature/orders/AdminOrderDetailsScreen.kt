@@ -28,6 +28,7 @@ internal fun AdminOrderDetailsScreen(
     onCancel: () -> Unit,
     onStartPreparing: () -> Unit,
     onMarkReady: () -> Unit,
+    onChangeDeliverySlot: () -> Unit,
     onDeliverMyself: () -> Unit,
     onAssignDelivery: () -> Unit,
     onStartDelivery: () -> Unit,
@@ -90,7 +91,20 @@ internal fun AdminOrderDetailsScreen(
                 item { OrderBillSummary(order) }
                 item { PaymentDetailsSection(order) }
                 if (!order.deliverySlotDateLabel.isNullOrBlank() || !order.deliverySlotTimeLabel.isNullOrBlank()) {
-                    item { DeliverySlotSection(order) }
+                    item {
+                        Column {
+                            DeliverySlotSection(order)
+                            if (canUpdateStatus && order.orderStatus in setOf(
+                                    OrderStatus.PENDING, OrderStatus.CONFIRMED, OrderStatus.PREPARING) &&
+                                order.readyForDeliveryAtEpochMillis == null) {
+                                TextButton(onChangeDeliverySlot) { Text("Change delivery slot") }
+                            }
+                            order.deliverySlotChangeReason?.takeIf(String::isNotBlank)?.let { reason ->
+                                Text("Latest change: $reason", style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    }
                 }
                 if (order.instructions.isNotBlank()) item { CustomerNoteSection(order.instructions) }
                 order.assignedDeliveryUserName?.let { name ->
@@ -161,7 +175,7 @@ private fun CodOrder.actions(
     canAdjustFinalBill: Boolean, canUpdateStatus: Boolean,
 ): List<DetailAction> = when {
     canConfirm -> buildList { if (canUpdateStatus) add(DetailAction("Reject Order", true, cancel));
-        if (canAdjustFinalBill) add(DetailAction("Confirm Order", click = confirm)) }
+        if (canUpdateStatus) add(DetailAction("Confirm Order", click = confirm)) }
     canStartPreparing && canUpdateStatus -> listOf(DetailAction("Cancel Order", true, cancel), DetailAction("Mark as Preparing", click = prepare))
     canMarkReadyForDelivery && canUpdateStatus -> listOf(DetailAction("Cancel Order", true, cancel), DetailAction("Mark Ready", click = ready))
     canAssignDelivery && canUpdateStatus -> buildList {

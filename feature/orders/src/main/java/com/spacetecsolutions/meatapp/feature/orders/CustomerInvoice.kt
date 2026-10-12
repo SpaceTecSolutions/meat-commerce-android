@@ -125,7 +125,7 @@ private fun createInvoicePdf(context: Context, order: CodOrder): ByteArray {
     paint.color = Color.BLACK
     paint.typeface = Typeface.DEFAULT
     order.items.take(24).forEach { item ->
-        canvas.drawText(item.name.take(48), 45f, y, paint); canvas.drawText(item.quantity.toString(), 390f, y, paint)
+        canvas.drawText(item.name.take(48), 45f, y, paint); canvas.drawText(item.quantityLabel, 390f, y, paint)
         canvas.drawText(money(item.lineTotalMinor), 470f, y, paint); y += 20f
     }
     y += 10f; paint.typeface = Typeface.DEFAULT_BOLD; paint.textSize = 16f

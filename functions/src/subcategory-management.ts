@@ -15,7 +15,8 @@ async function enabled() {
 function response(id: string, value: FirebaseFirestore.DocumentData) {
   return {id, categoryId: text(value.categoryId), name: text(value.name), description: text(value.description),
     imageUrl: value.imageUrl ?? null, active: value.active === true,
-    sortOrder: integer(value.sortOrder), revision: integer(value.revision)};
+    sortOrder: integer(value.sortOrder), revision: integer(value.revision),
+    productCount: integer(value.productCount)};
 }
 function input(data: any) {
   const categoryId = text(data?.categoryId); const name = text(data?.name).trim();
@@ -37,8 +38,18 @@ export const customerGetActiveSubcategories = onCall(catalogOptions, async (requ
 export const adminGetSubcategories = onCall(catalogOptions, async (request) => {
   const context = await requireAdmin(request); if (!await enabled()) throw new HttpsError("failed-precondition", "Subcategories disabled");
   const categoryId = text(request.data?.categoryId); if (!categoryId) throw new HttpsError("invalid-argument", "Category required");
-  const snap = await shop(context).collection("subcategories").where("categoryId", "==", categoryId).limit(100).get();
-  return {subcategories: snap.docs.map((doc) => response(doc.id, doc.data()))};
+  const [snap, products] = await Promise.all([
+    shop(context).collection("subcategories").where("categoryId", "==", categoryId).limit(100).get(),
+    shop(context).collection("products").where("categoryId", "==", categoryId).get(),
+  ]);
+  const counts = new Map<string, number>();
+  products.docs.forEach((doc) => {
+    if (doc.get("archived") === true) return;
+    const subcategoryId = text(doc.get("subcategoryId"));
+    if (subcategoryId) counts.set(subcategoryId, (counts.get(subcategoryId) ?? 0) + 1);
+  });
+  return {subcategories: snap.docs.map((doc) => ({...response(doc.id, doc.data()),
+    productCount: counts.get(doc.id) ?? 0}))};
 });
 export const adminSaveSubcategory = onCall(catalogOptions, async (request) => {
   const context = await requireAdmin(request); if (!await enabled()) throw new HttpsError("failed-precondition", "Subcategories disabled");

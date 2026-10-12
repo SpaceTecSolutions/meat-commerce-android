@@ -9,6 +9,11 @@ data class CheckoutDeliveryDate(
     val availableSlotIds: Set<String>,
 )
 
+data class OrderSlotOptions(
+    val deliveryDates: List<CheckoutDeliveryDate>,
+    val deliverySlots: List<DeliverySlot>,
+)
+
 data class CheckoutQuote(
     val quoteToken: String,
     val cart: CustomerCart,
@@ -48,13 +53,19 @@ data class OrderItemSnapshot(
     val unitPriceMinor: Long,
     val regularPriceMinor: Long,
     val lineTotalMinor: Long,
+    val finalQuantity: Double? = null,
     val attributes: Map<String, String> = emptyMap(),
 ) {
     init {
         require(productId.isNotBlank() && name.isNotBlank())
         require(quantity > 0)
         require(unitPriceMinor >= 0 && regularPriceMinor >= 0 && lineTotalMinor >= 0)
+        require(finalQuantity == null || finalQuantity > 0)
     }
+
+    val quantityLabel: String get() = finalQuantity?.let {
+        java.math.BigDecimal.valueOf(it).stripTrailingZeros().toPlainString()
+    } ?: quantity.toString()
 }
 
 data class FinalWeightAdjustment(

@@ -41,6 +41,7 @@ data class CodOrder(
     val deliveryDateIso: String? = null,
     val deliverySlotStartMinutes: Int? = null,
     val deliverySlotEndMinutes: Int? = null,
+    val deliverySlotChangeReason: String? = null,
     val currencyCode: String = "INR",
     val orderStatus: OrderStatus,
     val paymentStatus: PaymentStatus,
@@ -52,6 +53,7 @@ data class CodOrder(
     val preparingByAdminId: String? = null,
     val readyForDeliveryAtEpochMillis: Long? = null,
     val readyForDeliveryByAdminId: String? = null,
+    val billFinalizedAtEpochMillis: Long? = null,
     val assignedDeliveryUserId: String? = null,
     val assignedDeliveryUserName: String? = null,
     val assignedAtEpochMillis: Long? = null,
@@ -82,6 +84,7 @@ data class CodOrder(
         require(revision >= 0)
         require(listOfNotNull(
             confirmedAtEpochMillis, preparingAtEpochMillis, readyForDeliveryAtEpochMillis,
+            billFinalizedAtEpochMillis,
             assignedAtEpochMillis, deliveryStartedAtEpochMillis, createdAtEpochMillis,
             deliveredAtEpochMillis, cancelledAtEpochMillis,
         ).all { it >= 0 })

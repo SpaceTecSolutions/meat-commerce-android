@@ -19,7 +19,7 @@ import com.spacetecsolutions.meatapp.core.designsystem.theme.AppDimensions
 import com.spacetecsolutions.meatapp.core.designsystem.theme.CustomerAddressTokens as T
 import com.spacetecsolutions.meatapp.core.model.AddressType
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
     verification: AddressVerification, update: ((AddressFormState) -> AddressFormState) -> Unit,
@@ -27,6 +27,7 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
     onChooseOnMap: () -> Unit, onDelete: (() -> Unit)? = null) {
     androidx.activity.compose.BackHandler(enabled = !submitting, onBack = onDismiss)
     com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar()
+    val imeVisible = WindowInsets.isImeVisible
     Scaffold(
         containerColor = T.canvas, topBar = {
         TopAppBar(title = { Text(if (form.editing) "Edit Delivery Location" else "Add New Address",
@@ -34,20 +35,22 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
             IconButton({ if (!submitting) onDismiss() }) { Icon(AppIcons.Back, "Back") }
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
-        Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
-            Row(Modifier.fillMaxWidth().navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onDismiss, Modifier.weight(1f).height(52.dp), enabled = !submitting,
-                    colors = ButtonDefaults.buttonColors(containerColor = T.soft, contentColor = T.ink),
-                    shape = RoundedCornerShape(10.dp)) { Text("Cancel") }
-                Button(onSave, Modifier.weight(1.5f).height(52.dp), enabled = !submitting,
-                    colors = ButtonDefaults.buttonColors(containerColor = T.red),
-                    shape = RoundedCornerShape(10.dp)) {
-                    if (submitting) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp,
-                        color = T.surface)
-                    else { Icon(AppIcons.Check, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp))
-                        Text(if (form.editing) "Update Address" else "Save Address") }
+        if (!imeVisible) Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
+            Box(Modifier.fillMaxWidth().navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 10.dp), contentAlignment = Alignment.Center) {
+                Row(Modifier.fillMaxWidth().widthIn(max = AppDimensions.formMaxWidth),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onDismiss, Modifier.weight(1f).height(52.dp), enabled = !submitting,
+                        colors = ButtonDefaults.buttonColors(containerColor = T.soft, contentColor = T.ink),
+                        shape = RoundedCornerShape(10.dp)) { Text("Cancel") }
+                    Button(onSave, Modifier.weight(1.5f).height(52.dp), enabled = !submitting,
+                        colors = ButtonDefaults.buttonColors(containerColor = T.red),
+                        shape = RoundedCornerShape(10.dp)) {
+                        if (submitting) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp,
+                            color = T.surface)
+                        else { Icon(AppIcons.Check, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp))
+                            Text(if (form.editing) "Update Address" else "Save Address") }
+                    }
                 }
             }
         }
