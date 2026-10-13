@@ -31,12 +31,12 @@ internal fun AdminAccountTopBar(title: String, back: () -> Unit, help: (() -> Un
     Surface(color = Color.White, border = BorderStroke(1.dp, Color(0xFFF3F4F6))) {
         Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).padding( 12.dp),
             verticalAlignment = Alignment.CenterVertically) {
-//            IconButton(back, Modifier.size(40.dp)) { Icon(AppIcons.Back, "Back", tint = AdminAccountColors.ink) }
+//            IconButton(back, Modifier.size(40.dp)) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_back_b52b36b), tint = AdminAccountColors.ink) }
             Text(title, Modifier.weight(1f).padding(start = 10.dp),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
                 color = AdminAccountColors.ink)
             help?.let { IconButton(it, Modifier.size(40.dp)) {
-                Icon(AppIcons.Help, "Help and support", tint = AdminAccountColors.muted)
+                Icon(AppIcons.Help, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_help_and_support_2ef172c), tint = AdminAccountColors.muted)
             } }
         }
     }
@@ -60,14 +60,14 @@ internal fun AdminIdentityCard(user: User?, edit: () -> Unit) {
                     color = AdminAccountColors.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(user?.mobileNumber.orEmpty(), style = MaterialTheme.typography.bodySmall,
                     color = AdminAccountColors.muted)
-                if (user?.active == true) Text("●  Active account",
+                if (user?.active == true) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_account_9d3c24d),
                     style = MaterialTheme.typography.labelSmall, color = Color(0xFF059669))
             }
-            /*Surface(onClick = edit, modifier = Modifier.size(38.dp), shape = RoundedCornerShape(12.dp),
+            Surface(onClick = edit, modifier = Modifier.size(38.dp), shape = RoundedCornerShape(12.dp),
                 color = Color.White, border = BorderStroke(1.dp, AdminAccountColors.border)) {
-                Box(contentAlignment = Alignment.Center) { Icon(AppIcons.Edit, "Edit profile",
+                Box(contentAlignment = Alignment.Center) { Icon(AppIcons.Edit, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_profile_15141ea),
                     Modifier.size(19.dp), tint = AdminAccountColors.muted) }
-            }*/
+            }
         }
     }
 }

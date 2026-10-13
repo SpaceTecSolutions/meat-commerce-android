@@ -62,10 +62,10 @@ class AuditLogViewModel @Inject constructor(private val repository: AuditLogRepo
 fun AuditLogRoute(back: () -> Unit, viewModel: AuditLogViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Audit Log", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_audit_log_28dd753), back)
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = AppSpacing.medium),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
-            FilterChip(state.filter == null, { viewModel.filter(null) }, { Text("All") })
+            FilterChip(state.filter == null, { viewModel.filter(null) }, { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_all_6a72085)) })
             PrivilegedAuditAction.entries.forEach { action -> FilterChip(state.filter == action,
                 { viewModel.filter(action) }, { Text(action.label()) }) }
         }
@@ -78,7 +78,7 @@ fun AuditLogRoute(back: () -> Unit, viewModel: AuditLogViewModel = hiltViewModel
                 items(state.entries, key = AuditLogEntry::id) { entry -> AuditEntryCard(entry) }
                 state.error?.let { item { Text(it, color = MaterialTheme.colorScheme.error) } }
                 if (state.nextCursor != null) item { OutlinedButton(viewModel::loadMore, Modifier.fillMaxWidth(), enabled = !state.loadingMore) {
-                    if (state.loadingMore) CircularProgressIndicator(Modifier.size(AppDimensions.iconSmall)) else Text("Load more")
+                    if (state.loadingMore) CircularProgressIndicator(Modifier.size(AppDimensions.iconSmall)) else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_load_more_dfe60ca))
                 } }
             }
         }
@@ -92,9 +92,9 @@ fun AuditLogRoute(back: () -> Unit, viewModel: AuditLogViewModel = hiltViewModel
             Icon(AppIcons.Privacy, null, tint = MaterialTheme.colorScheme.primary)
         }
         Text(entry.summary)
-        Text("By ${entry.actorDisplayName} · ${entry.occurredAtEpochMillis.date()}", style = MaterialTheme.typography.bodySmall,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_by_entry_actordisplayname_entry_occurredatepo_7409bb3, entry.actorDisplayName, entry.occurredAtEpochMillis.date()), style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text("Reference ${entry.correlationId}", style = MaterialTheme.typography.labelSmall)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_reference_entry_correlationid_2524645, entry.correlationId), style = MaterialTheme.typography.labelSmall)
     }
 }
 private fun PrivilegedAuditAction.label() = name.lowercase().replace('_', ' ').replaceFirstChar(Char::uppercase)

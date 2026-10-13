@@ -37,20 +37,20 @@ fun AdminProfileInformationRoute(
         topBar = { Row(Modifier.fillMaxWidth().height(64.dp).background(Color.White)
             .statusBarsPadding()
             .padding( horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(leave) { Icon(AppIcons.Back, "Back") }
-            Text("Profile Information", Modifier.weight(1f).padding(start = 12.dp),
+            IconButton(leave) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_back_b52b36b)) }
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_profile_information_53910b4), Modifier.weight(1f).padding(start = 12.dp),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             if (!editing) OutlinedButton({ editing = true }, shape = CircleShape,
                 border = BorderStroke(1.dp, Color(0xFFFECACA))) {
                 Icon(AppIcons.Edit, null, Modifier.size(17.dp), tint = AdminAccountColors.red)
-                Text("Edit", color = AdminAccountColors.red)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_5301648), color = AdminAccountColors.red)
             }
         } },
         bottomBar = { if (editing) Surface(color = Color.Transparent) {
             Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp)) {
                 Button(viewModel::save, Modifier.fillMaxWidth().height(54.dp), enabled = !state.saving,
-                    shape = RoundedCornerShape(12.dp)) { Text(if (state.saving) "Saving…" else "Save Profile") }
-                TextButton(leave, Modifier.align(Alignment.CenterHorizontally)) { Text("Cancel") }
+                    shape = RoundedCornerShape(12.dp)) { Text(if (state.saving) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_saving_56a2285) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_profile_909bf3e)) }
+                TextButton(leave, Modifier.align(Alignment.CenterHorizontally)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) }
             }
         } },
     ) { padding ->
@@ -59,9 +59,12 @@ fun AdminProfileInformationRoute(
             state.error != null && state.mobile.isBlank() -> ContentStateView(
                 ContentState.Error(description = state.error), onAction = viewModel::refresh,
             )
-            else -> Column(
-                Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())
-                    .wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = 440.dp)
+            else -> BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+                val contentMaxWidth =
+                    if (maxWidth >= AppDimensions.expandedContentBreakpoint) 600.dp else 440.dp
+            Column(
+                Modifier.fillMaxSize()
+                    .widthIn(max = contentMaxWidth).padding(padding).verticalScroll(rememberScrollState())
                     .padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
             ) {
@@ -77,28 +80,29 @@ fun AdminProfileInformationRoute(
                 Surface(Modifier.fillMaxWidth(), RoundedCornerShape(16.dp), color = Color.White,
                     border = BorderStroke(1.dp, AdminAccountColors.border), shadowElevation = 2.dp) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        Text("PERSONAL DETAILS", color = AdminAccountColors.muted,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_personal_details_0a8c4d3), color = AdminAccountColors.muted,
                             style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        if (!editing) Text("Read-Only  ·  Tap Edit to change",
+                        if (!editing) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_read_only_tap_edit_to_cfd5a8b),
                             style = MaterialTheme.typography.labelSmall, color = AdminAccountColors.muted)
                         OutlinedTextField(state.firstName, viewModel::firstName, Modifier.fillMaxWidth(),
-                            label = { Text("First Name") }, singleLine = true, enabled = editing && !state.saving)
+                            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_first_name_b6ea992)) }, singleLine = true, enabled = editing && !state.saving)
                         OutlinedTextField(state.lastName, viewModel::lastName, Modifier.fillMaxWidth(),
-                            label = { Text("Last Name") }, singleLine = true, enabled = editing && !state.saving)
+                            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_last_name_863cb39)) }, singleLine = true, enabled = editing && !state.saving)
                     }
                 }
                 Surface(Modifier.fillMaxWidth(), RoundedCornerShape(16.dp), color = Color.White,
                     border = BorderStroke(1.dp, AdminAccountColors.border), shadowElevation = 2.dp) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        Text("SECURITY & IDENTIFIER", color = AdminAccountColors.muted,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_security_identifier_f35c008), color = AdminAccountColors.muted,
                             style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                         OutlinedTextField(state.mobile, {}, Modifier.fillMaxWidth(),
-                            label = { Text("Login Mobile Number") }, readOnly = true, enabled = false)
+                            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_login_mobile_number_c5f9d36)) }, readOnly = true, enabled = false)
                         OutlinedTextField("Administrator", {}, Modifier.fillMaxWidth(),
-                            label = { Text("Account Role") }, readOnly = true, enabled = false)
+                            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_account_role_f5ab433)) }, readOnly = true, enabled = false)
                     }
                 }
                 state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+               }
             }
         }
     }

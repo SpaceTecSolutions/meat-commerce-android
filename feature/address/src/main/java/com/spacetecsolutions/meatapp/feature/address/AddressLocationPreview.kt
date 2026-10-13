@@ -43,14 +43,14 @@ internal fun AddressLocationPreview(form: AddressFormState, enabled: Boolean, se
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = T.surface, contentColor = T.ink)) {
             Icon(AppIcons.Search, null, tint = T.red); Spacer(Modifier.width(8.dp))
-            Text("Search address or landmark...", Modifier.weight(1f), maxLines = 1)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_address_or_landmark_dcd28a7), Modifier.weight(1f), maxLines = 1)
         }
         if (form.latitude != null && form.longitude != null)
-            Icon(AppIcons.Location, "Selected delivery location",
+            Icon(AppIcons.Location, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_location_df7899b),
                 Modifier.align(Alignment.Center).size(34.dp), tint = T.red)
         SmallFloatingActionButton({ if (enabled) locate() }, Modifier.align(Alignment.BottomEnd).padding(12.dp),
             containerColor = T.surface) {
-            Icon(AppIcons.LiveTracking, "Use current location", tint = T.red)
+            Icon(AppIcons.LiveTracking, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_use_current_location_622c745), tint = T.red)
         }
     }
 }

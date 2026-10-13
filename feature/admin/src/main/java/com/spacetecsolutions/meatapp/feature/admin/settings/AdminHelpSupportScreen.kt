@@ -61,26 +61,26 @@ private fun SupportContent(
                 border = BorderStroke(1.dp, AdminAccountColors.border), shadowElevation = 1.dp) {
             Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("Need some help?", style = MaterialTheme.typography.headlineSmall)
-                    Text("These contacts are displayed in the customer app.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_need_some_help_f77b2b8), style = MaterialTheme.typography.headlineSmall)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_these_contacts_are_displayed_in_bf1fd03),
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                if (!editing) OutlinedButton({ editing = true }) { Text("Edit") }
+                if (!editing) OutlinedButton({ editing = true }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_5301648)) }
             }
             }
         }
         item { OutlinedTextField(value.supportEmail.orEmpty(),
             { actions.update(value.copy(supportEmail = it.take(120).blankNull())) },
-            Modifier.fillMaxWidth(), label = { Text("Support email") }, enabled = editing && !state.saving) }
+            Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_support_email_017868e)) }, enabled = editing && !state.saving) }
         item { OutlinedTextField(value.supportPhone.orEmpty(),
             { actions.update(value.copy(supportPhone = it.take(20).blankNull())) },
-            Modifier.fillMaxWidth(), label = { Text("Call number") }, enabled = editing && !state.saving) }
+            Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_call_number_1dbac31)) }, enabled = editing && !state.saving) }
         item { OutlinedTextField(value.supportWhatsApp.orEmpty(),
             { actions.update(value.copy(supportWhatsApp = it.take(20).blankNull())) },
-            Modifier.fillMaxWidth(), label = { Text("WhatsApp number") }, enabled = editing && !state.saving) }
+            Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_whatsapp_number_4955eb6)) }, enabled = editing && !state.saving) }
         state.error?.let { item { Text(it, color = MaterialTheme.colorScheme.error) } }
         if (editing) item { Button(actions::save, Modifier.fillMaxWidth(), enabled = !state.saving) {
-            Text(if (state.saving) "Saving…" else "Save Support Details")
+            Text(if (state.saving) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_saving_56a2285) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_support_details_d4e2dd6))
         } }
     }
 }

@@ -33,19 +33,19 @@ internal fun FinalBillConfirmationDialog(
         .coerceAtLeast(0)
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
-        title = { Text("Confirm packed weight") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_confirm_packed_weight_6d0629e)) },
         text = {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                item { Text("Adjust the packed weight before marking this order ready. The final amount will update when you save.",
+                item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_adjust_the_packed_weight_before_2540d98),
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                if (weighted.isEmpty()) item { Text("No weight-based items require adjustment.") }
+                if (weighted.isEmpty()) item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_weight_based_items_require_2bef9fe)) }
                 items(weighted, key = { it.productId }) { item ->
                     val quantity = values[item.productId]?.toDoubleOrNull()
                     val lineTotal = quantity?.let { (item.unitPriceMinor * it).roundToLong() }
                     ElevatedCard(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(item.name, fontWeight = FontWeight.SemiBold)
-                            Text("Estimated ${item.quantity} ${item.unit.weightLabel()} • ${item.lineTotalMinor.money(order.currencyCode)}",
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_estimated_item_quantity_item_unit_d184cd6, item.quantity, item.unit.weightLabel(), item.lineTotalMinor.money(order.currencyCode)),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                             OutlinedTextField(
@@ -54,9 +54,9 @@ internal fun FinalBillConfirmationDialog(
                                     if (input.length <= 8 && input.matches(Regex("\\d*(\\.\\d{0,3})?")))
                                         values[item.productId] = input
                                 },
-                                label = { Text("Final ${item.unit.weightLabel()}") },
+                                label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_final_item_unit_weightlabel_11f75b2, item.unit.weightLabel())) },
                                 suffix = { Text(item.unit.weightLabel()) },
-                                supportingText = { if (lineTotal != null) Text("Updated item total: ${lineTotal.money(order.currencyCode)}") },
+                                supportingText = { if (lineTotal != null) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_updated_item_total_linetotal_money_0da3d43, lineTotal.money(order.currencyCode))) },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 singleLine = true,
                             )
@@ -69,7 +69,7 @@ internal fun FinalBillConfirmationDialog(
                         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             BillPreviewRow("Original estimate", order.totalMinor.money(order.currencyCode), false)
                             BillPreviewRow("Final amount", adjustedTotal.money(order.currencyCode), true)
-                            Text("Discount, delivery and tax already included.", style = MaterialTheme.typography.labelSmall,
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_discount_delivery_and_tax_already_63a875c), style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
@@ -81,8 +81,8 @@ internal fun FinalBillConfirmationDialog(
                 ?.takeIf { it != item.quantity.toDouble() }
                 ?.let { FinalWeightAdjustment(item.productId, it) } }) },
             enabled = valid && !busy,
-        ) { Text("Save & mark ready") } },
-        dismissButton = { TextButton(onDismiss, enabled = !busy) { Text("Cancel") } },
+        ) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_save_mark_ready_02d7c4f)) } },
+        dismissButton = { TextButton(onDismiss, enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_77dfd21)) } },
     )
 }
 

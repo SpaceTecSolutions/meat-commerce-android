@@ -42,12 +42,15 @@ internal fun SelectableAddressCard(address: CustomerAddress, selected: Boolean, 
                             fontWeight = FontWeight.Bold, color = T.ink)
                         if (address.isDefault) Surface(color = T.rose,
                             shape = RoundedCornerShape(50)) {
-                            Text("DEFAULT", Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_default_c189207), Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                                 style = MaterialTheme.typography.labelSmall, color = T.red)
                         }
                     }
-                    Text(if (highlighted) "Active delivery destination" else if (address.isDefault)
-                        "Preferred address" else "Set as Default",
+                    Text(androidx.compose.ui.res.stringResource(when {
+                        highlighted -> R.string.ui_active_delivery_destination
+                        address.isDefault -> R.string.ui_preferred_address
+                        else -> R.string.ui_set_as_default
+                    }),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (highlighted || address.isDefault) T.red else T.muted)
                 }
@@ -70,7 +73,7 @@ internal fun SelectableAddressCard(address: CustomerAddress, selected: Boolean, 
                     .filter(String::isNotBlank).joinToString(", "),
                     style = MaterialTheme.typography.bodyMedium, color = T.ink)
             }
-            if (address.landmark.isNotBlank()) Text("Landmark: " + address.landmark,
+            if (address.landmark.isNotBlank()) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_landmark_367f9d8) + address.landmark,
                 Modifier.padding(start = 26.dp), style = MaterialTheme.typography.bodySmall,
                 color = T.muted)
             HorizontalDivider(color = T.border)
@@ -78,16 +81,16 @@ internal fun SelectableAddressCard(address: CustomerAddress, selected: Boolean, 
                 horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 if (!address.isDefault) TextButton(onDefault, enabled = !busy,
                     contentPadding = PaddingValues(horizontal = 4.dp)) {
-                    Text("Set Default", color = T.red, style = MaterialTheme.typography.labelMedium)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_set_default_6eaa24b), color = T.red, style = MaterialTheme.typography.labelMedium)
                 } else Spacer(Modifier.weight(1f))
                 if (!address.isDefault) Spacer(Modifier.weight(1f))
                 TextButton(onEdit, enabled = !busy) {
                     Icon(AppIcons.Edit, null, Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp)); Text("Edit")
+                    Spacer(Modifier.width(4.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_edit_5301648))
                 }
                 TextButton(onDelete, enabled = !busy) {
                     Icon(AppIcons.Delete, null, Modifier.size(16.dp), tint = T.red)
-                    Spacer(Modifier.width(4.dp)); Text("Delete", color = T.red)
+                    Spacer(Modifier.width(4.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_delete_f6fdbe4), color = T.red)
                 }
             }
         }

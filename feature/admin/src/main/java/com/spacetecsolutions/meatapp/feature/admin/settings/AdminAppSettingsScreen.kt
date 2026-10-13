@@ -62,7 +62,7 @@ fun AdminAppSettingsRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.saved) { if (state.saved) { onSaved("App settings saved"); viewModel.consumeSaved() } }
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("App Settings", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_app_settings_09439e4), back)
         when {
             state.loading -> ContentStateView(ContentState.Loading)
             state.settings == null -> ContentStateView(ContentState.Error(description = state.error), onAction = viewModel::refresh)
@@ -78,10 +78,10 @@ private fun AppSettingsForm(state: AdminAppSettingsState, actions: AdminAppSetti
         Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = AppDimensions.formMaxWidth),
         contentPadding = PaddingValues(AppSpacing.medium), verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
     ) {
-        item { Text("App name, logo, launcher icon and brand colors are controlled by the client product flavor.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_app_name_logo_launcher_icon_11019d7), color = MaterialTheme.colorScheme.onSurfaceVariant) }
         item { ContentStateView(ContentState.Empty(
-            title = "Brand settings are flavor controlled",
-            description = "Use the separate Home Banners section to manage customer carousel images and messages.",
+            title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_brand_settings_are_flavor_controlled_a609f02),
+            description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_use_the_separate_home_banners_df2afd2),
         )) }
     }
 }

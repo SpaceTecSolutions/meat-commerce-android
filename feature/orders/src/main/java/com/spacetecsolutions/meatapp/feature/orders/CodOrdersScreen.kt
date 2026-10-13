@@ -91,7 +91,7 @@ private fun CodOrdersScreen(
             state.error != null -> ContentStateView(
                 ContentState.Error(description = state.error), onAction = actions::refresh)
             state.ordersForDisplay().isEmpty() -> ContentStateView(ContentState.Empty(
-                title = "No ${state.selectedStatus.label().lowercase()} orders",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_state_selectedstatus_label_lowercase_1931b02, state.selectedStatus.label().lowercase()),
                 description = if (state.actor == CodActor.DELIVERY) "Assigned COD orders will appear here."
                 else "Orders in this state will appear here.",
             ))
@@ -184,26 +184,26 @@ private fun CodOrderCard(
         Column(Modifier.fillMaxWidth().padding(AppSpacing.medium),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Order ${order.displayNumber}", style = MaterialTheme.typography.titleMedium)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_order_displaynumber_5a620eb, order.displayNumber), style = MaterialTheme.typography.titleMedium)
                 SuggestionChip(onClick = {}, enabled = false,
                     label = { Text(order.orderStatus.label()) })
             }
-            Text("${order.customerName} · ${order.customerMobile}")
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_customername_order_customermobile_d849bc0, order.customerName, order.customerMobile))
             Text(order.addressSummary, color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall)
-            Text("Total: ${order.totalMinor.money(order.currencyCode)}",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_total_order_totalminor_money_order_1330a8a, order.totalMinor.money(order.currencyCode)),
                 style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
-            Text("Payment: ${order.paymentMethod.name} · ${order.paymentStatus.name}",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_payment_order_paymentmethod_name_order_8e99c10, order.paymentMethod.name, order.paymentStatus.name),
                 style = MaterialTheme.typography.labelMedium)
-            if (order.adminDeliveringPersonally) Text("Admin delivering personally",
+            if (order.adminDeliveringPersonally) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_admin_delivering_personally_5e11907),
                 color = MaterialTheme.colorScheme.secondary)
-            if (order.codMismatchReported) Text("COD amount mismatch reported — collection pending",
+            if (order.codMismatchReported) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cod_amount_mismatch_reported_collection_88892c6),
                 color = MaterialTheme.colorScheme.error)
-            if (order.readyForDeliveryAssignment) Text("Ready for delivery assignment",
+            if (order.readyForDeliveryAssignment) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_ready_for_delivery_assignment_afc413b),
                 color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
-            order.assignedDeliveryUserName?.let { Text("Assigned to $it") }
-            if (order.adminDeliveringPersonally) Text("Assigned to you")
-            if (order.orderStatus == OrderStatus.CANCELLED) Text("Cancelled — no further action allowed",
+            order.assignedDeliveryUserName?.let { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_assigned_to_it_b1e6247, it)) }
+            if (order.adminDeliveringPersonally) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_assigned_to_you_cac5d74))
+            if (order.orderStatus == OrderStatus.CANCELLED) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancelled_no_further_action_allowed_0a18270),
                 color = MaterialTheme.colorScheme.error)
             if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
             ActionButtons(order, actor, busy, confirm, cancel, personal, collect, startPreparing,
@@ -314,44 +314,44 @@ private fun ActionButtons(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
         if (actor == CodActor.ADMIN && order.canConfirm) {
-            Button({ confirm(order) }, Modifier.fillMaxWidth(), enabled = !busy) { Text("Confirm") }
+            Button({ confirm(order) }, Modifier.fillMaxWidth(), enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_confirm_04a2122)) }
         }
         if (actor == CodActor.ADMIN && order.canStartPreparing) {
             Button({ startPreparing(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Text("Start Preparing")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_start_preparing_b18be6d))
             }
         }
         if (actor == CodActor.ADMIN && order.canMarkReadyForDelivery) {
             Button({ markReady(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Text("Mark Ready for Delivery")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_mark_ready_for_delivery_ccb4f40))
             }
         }
         if (actor == CodActor.ADMIN && order.canStartPersonalDelivery) {
             OutlinedButton({ personal(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Icon(AppIcons.Delivery, null); Text("Deliver Myself")
+                Icon(AppIcons.Delivery, null); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_deliver_myself_7cb17ce))
             }
         }
         if (actor == CodActor.ADMIN && staffAllowed && order.canAssignDelivery) {
             OutlinedButton({ assign(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Icon(AppIcons.Admin, null); Text("Assign Delivery User")
+                Icon(AppIcons.Admin, null); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_assign_delivery_user_024f586))
             }
         }
         if (actor == CodActor.ADMIN && order.adminDeliveringPersonally && order.canStartDelivery) {
             OutlinedButton({ navigate(order.addressSummary) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Text("Navigate")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_navigate_1eee3af))
             }
             Button({ startDelivery(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Text("Start Delivery")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_start_delivery_a40db5d))
             }
         }
         if (order.canOpenDeliveryCompletion && (actor == CodActor.DELIVERY || order.adminDeliveringPersonally)) {
             Button({ collect(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Icon(AppIcons.Delivery, null); Text("Reached Customer")
+                Icon(AppIcons.Delivery, null); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reached_customer_cb3b1c4))
             }
         }
         if (actor == CodActor.ADMIN && order.canCancel) {
             TextButton({ cancel(order) }, Modifier.fillMaxWidth(), enabled = !busy) {
-                Text(if (order.canReject) "Reject" else "Cancel order", color = MaterialTheme.colorScheme.error)
+                Text(if (order.canReject) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reject_2b03b59) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_order_5ae39c4), color = MaterialTheme.colorScheme.error)
             }
         }
     }

@@ -36,7 +36,7 @@ fun QuickAccessSection(
         ),
     )
     Column(modifier, verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
-        Text("Quick access", style = MaterialTheme.typography.titleMedium)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_quick_access_d6fe3d8), style = MaterialTheme.typography.titleMedium)
         actions.chunked(columns).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),

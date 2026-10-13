@@ -48,16 +48,16 @@ internal fun CustomerSearchTopBar(
             title = {
                 Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             },
-            navigationIcon = { AppBarIcon(AppIcons.Back, "Back", onBack) },
+            navigationIcon = { AppBarIcon(AppIcons.Back, androidx.compose.ui.res.stringResource(R.string.ui_back_icon_description), onBack) },
             actions = {
-                AppBarIcon(AppIcons.Search, "Search $title", onSearch)
+                AppBarIcon(AppIcons.Search, androidx.compose.ui.res.stringResource(R.string.ui_search_for_title, title), onSearch)
                 if (cartCount != null && onCart != null) {
                     IconButton(onClick = onCart) {
                         BadgedBox(badge = {
                             if (cartCount > 0) Badge {
-                                Text(if (cartCount > 99) "99+" else cartCount.toString())
+                                Text(if (cartCount > 99) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_badge_overflow_99_plus) else cartCount.toString())
                             }
-                        }) { Icon(AppIcons.Cart, "Cart, $cartCount items") }
+                        }) { Icon(AppIcons.Cart, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_cart_cartcount_items_7db0045, cartCount)) }
                     }
                 }
             },
@@ -105,7 +105,7 @@ private fun SearchModeTopBar(
                             )
                             field()
                         }
-                        AppBarIcon(AppIcons.Close, "Clear and close search", onClose)
+                        AppBarIcon(AppIcons.Close, androidx.compose.ui.res.stringResource(R.string.ui_close_search_description), onClose)
                     }
                 },
             )

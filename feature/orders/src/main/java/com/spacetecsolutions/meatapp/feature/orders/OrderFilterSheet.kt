@@ -30,7 +30,7 @@ internal fun OrderFilterSheet(
                 .navigationBarsPadding().padding(bottom = AppSpacing.medium),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
         ) {
-            Text("Filter Orders", style = MaterialTheme.typography.titleLarge)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_filter_orders_4b61250), style = MaterialTheme.typography.titleLarge)
             FilterGroup("Payment method", CheckoutPaymentMethod.entries, method, { it.name }) { method = it }
             FilterGroup("Payment status", PaymentStatus.entries, status, { it.name.pretty() }) { status = it }
             if (categories.isNotEmpty()) FilterGroup(
@@ -39,8 +39,8 @@ internal fun OrderFilterSheet(
                 categoryId = it?.id
             }
             Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
-                OutlinedButton({ method = null; status = null; categoryId = null }, Modifier.weight(1f)) { Text("Clear") }
-                Button({ onApply(method, status, categoryId) }, Modifier.weight(1f)) { Text("Apply") }
+                OutlinedButton({ method = null; status = null; categoryId = null }, Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_clear_719ea39)) }
+                Button({ onApply(method, status, categoryId) }, Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_apply_cfea419)) }
             }
         }
     }
@@ -58,7 +58,7 @@ private fun <T> FilterGroup(
         Text(title, style = MaterialTheme.typography.titleSmall)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
             item {
-                FilterChip(selected == null, { onSelect(null) }, label = { Text("Any") })
+                FilterChip(selected == null, { onSelect(null) }, label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_any_322444d)) })
             }
             items(choices) { choice ->
                 FilterChip(selected == choice, { onSelect(choice) }, label = { Text(label(choice)) })

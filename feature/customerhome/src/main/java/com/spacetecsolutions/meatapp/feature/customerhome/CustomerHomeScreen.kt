@@ -123,29 +123,29 @@ private fun CustomerHomeScreen(
     }
     if (showLocationRationale) AlertDialog(
         onDismissRequest = { showLocationRationale = false },
-        title = { Text("Use your current location?") },
-        text = { Text("Allow location access to quickly detect your delivery area.") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_use_your_current_location_c46c559)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_allow_location_access_to_quickly_6b283e5)) },
         confirmButton = { TextButton(onClick = {
             promptPreferences.edit().putBoolean("asked", true).apply()
             showLocationRationale = false
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) onUseCurrentLocation()
             else permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }) { Text("Allow") } },
+        }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_allow_3ad0e36)) } },
         dismissButton = { TextButton(onClick = {
             promptPreferences.edit().putBoolean("asked", true).apply(); showLocationRationale = false
-        }) { Text("Not now") } },
+        }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_not_now_e457149)) } },
     )
     if (showLocationSettings) AlertDialog(
         onDismissRequest = { showLocationSettings = false },
-        title = { Text("Location permission is off") },
-        text = { Text("You can continue shopping and enter an address manually, or enable location in Settings.") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_location_permission_is_off_3f1770f)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_you_can_continue_shopping_and_986da27)) },
         confirmButton = { TextButton(onClick = {
             showLocationSettings = false
             context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:${context.packageName}")))
-        }) { Text("Open Settings") } },
-        dismissButton = { TextButton(onClick = { showLocationSettings = false }) { Text("Continue") } },
+        }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_open_settings_134635e)) } },
+        dismissButton = { TextButton(onClick = { showLocationSettings = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_continue_2e02623)) } },
     )
     Box(Modifier.fillMaxSize().background(CustomerHomeTokens.canvas).statusBarsPadding()) {
       Column(Modifier.fillMaxSize()) {
@@ -166,14 +166,14 @@ private fun CustomerHomeScreen(
             when {
             state.loading && data == null -> CustomerHomeSkeleton()
             state.error != null && data == null -> ContentStateView(
-                ContentState.Error(title = "Unable to load Home", description = state.error),
+                ContentState.Error(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_unable_to_load_home_017c9f6), description = state.error),
                 onAction = onRefresh,
             )
             data == null -> ContentStateView(
                 ContentState.Empty(
-                    title = "The shop is getting ready",
-                    description = "Fresh products and categories will appear here soon.",
-                    actionLabel = "Refresh",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_the_shop_is_getting_ready_f03739c),
+                    description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_fresh_products_and_categories_will_907f103),
+                    actionLabel = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_refresh_56e3bad),
                 ),
                 onAction = onRefresh,
             )
@@ -361,7 +361,7 @@ private fun HomeEmptyAnimalScene(onRefresh: () -> Unit) {
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        TextButton(onClick = onRefresh) { Text("Refresh") }
+        TextButton(onClick = onRefresh) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_refresh_56e3bad)) }
     }
 }
 
@@ -456,7 +456,7 @@ private fun HomeSavedDataNotice(error: String?, onRefresh: () -> Unit) {
                 error ?: "Showing saved shop data", Modifier.weight(1f),
                 style = MaterialTheme.typography.bodySmall,
             )
-            TextButton(onClick = onRefresh) { Text("Retry") }
+            TextButton(onClick = onRefresh) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_retry_9f5cd8a)) }
         }
     }
 }

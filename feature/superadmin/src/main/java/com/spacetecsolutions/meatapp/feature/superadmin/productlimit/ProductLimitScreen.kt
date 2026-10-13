@@ -53,7 +53,7 @@ private fun ProductLimitScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Product Limit",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_product_limit_5380b9f),
                 actionIcon = AppIcons.Refresh,
                 actionDescription = "Refresh product count",
                 onAction = onRefresh,
@@ -91,15 +91,15 @@ private fun ProductLimitContent(
                 Modifier.fillMaxWidth().padding(AppSpacing.medium),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
             ) {
-                Text("Set maximum products", style = MaterialTheme.typography.titleMedium)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_set_maximum_products_3b42e6a), style = MaterialTheme.typography.titleMedium)
                 OutlinedTextField(
                     value = state.limitText,
                     onValueChange = onLimitChange,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Maximum Products") },
+                    label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_maximum_products_e0515a6)) },
                     leadingIcon = { Icon(AppIcons.ProductLimit, null) },
                     supportingText = {
-                        Text(state.limitError ?: "The limit cannot be lower than ${status.countedProducts}")
+                        Text(state.limitError ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_the_limit_cannot_be_lower_c36bb5e, status.countedProducts))
                     },
                     isError = state.limitError != null,
                     enabled = !state.saving,
@@ -113,7 +113,7 @@ private fun ProductLimitContent(
                         enabled = !state.saving && state.limitError == null,
                     ) {
                         if (state.saving) CircularProgressIndicator(Modifier.size(AppSpacing.large))
-                        else Text("Update limit")
+                        else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_update_limit_93dc02f))
                     }
                 }
             }
@@ -160,11 +160,11 @@ private fun PolicyCard() {
             Modifier.fillMaxWidth().padding(AppSpacing.medium),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
         ) {
-            Text("Counting policy", style = MaterialTheme.typography.titleMedium)
-            Text("• Active and inactive products count toward the limit.")
-            Text("• Archived products do not count.")
-            Text("• Restoring an archived product requires an available slot.")
-            Text("• Archive products before lowering the limit below the current count.")
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_counting_policy_95506b2), style = MaterialTheme.typography.titleMedium)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_active_and_inactive_products_count_bc15679))
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_archived_products_do_not_count_421a611))
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_restoring_an_archived_product_requires_f6983cb))
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_archive_products_before_lowering_the_810ea17))
         }
     }
 }

@@ -106,9 +106,9 @@ internal fun CustomerOrderTrackingScreen(
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         shape = AppShapes.medium,
                     ) {
-                        Text("Need Help? Contact Us", modifier = Modifier.weight(1f),
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_need_help_contact_us_b2ad921), modifier = Modifier.weight(1f),
                             fontWeight = FontWeight.SemiBold)
-                        Icon(AppIcons.Call, contentDescription = "Contact support")
+                        Icon(AppIcons.Call, contentDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_contact_support_2b658ff))
                     }
                 }
             }
@@ -120,9 +120,9 @@ internal fun CustomerOrderTrackingScreen(
 @Composable
 private fun TrackingTopBar(onBack: () -> Unit) {
     TopAppBar(
-        title = { Text("Order Tracking", style = MaterialTheme.typography.titleMedium,
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_tracking_feed8eb), style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold) },
-        navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, contentDescription = "Back") } },
+        navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, contentDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b)) } },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
         expandedHeight = 56.dp,
     )
@@ -159,7 +159,7 @@ private fun EstimatedDeliverySection(order: CodOrder, nowEpochMillis: Long) {
         Modifier.fillMaxWidth().padding(top = AppSpacing.medium, bottom = AppSpacing.small),
         verticalArrangement = Arrangement.spacedBy(AppSpacing.extraSmall),
     ) {
-        Text("Estimated Delivery", style = MaterialTheme.typography.labelSmall,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_estimated_delivery_1166329), style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(
             CustomerOrderDateFormatter.delivery(order, nowEpochMillis).ifBlank { "Timing unavailable" },

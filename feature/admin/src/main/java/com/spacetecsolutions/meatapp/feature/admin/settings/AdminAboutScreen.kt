@@ -40,20 +40,20 @@ fun AdminAboutRoute(back: () -> Unit, call: (String) -> Unit, email: (String) ->
                         Icon(AppIcons.Shop, null, Modifier.size(48.dp), tint = AdminAccountColors.red)
                         Text(shop.shopName, style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold, color = AdminAccountColors.ink)
-                        Text("Fresh  ·  Quality  ·  Trusted", color = AdminAccountColors.muted)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_fresh_quality_trusted_8848457), color = AdminAccountColors.muted)
                         Text(shop.address, color = AdminAccountColors.muted)
                     } }
-                    Text("ABOUT US", style = MaterialTheme.typography.labelLarge,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_about_us_b414b76), style = MaterialTheme.typography.labelLarge,
                         color = AdminAccountColors.muted, fontWeight = FontWeight.Bold)
-                    AboutCard { Text("${shop.shopName} offers fresh meat with convenient ordering and scheduled doorstep delivery.",
+                    AboutCard { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_shop_shopname_offers_fresh_meat_5d64b0d, shop.shopName),
                         color = AdminAccountColors.ink) }
-                    Text("SHOP INFORMATION", style = MaterialTheme.typography.labelLarge,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_shop_information_8fbe272), style = MaterialTheme.typography.labelLarge,
                         color = AdminAccountColors.muted, fontWeight = FontWeight.Bold)
                     AboutCard {
-                        Text("Shop Address", fontWeight = FontWeight.SemiBold)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_shop_address_e41bed5), fontWeight = FontWeight.SemiBold)
                         Text(shop.address, color = AdminAccountColors.muted)
-                        TextButton({ call(shop.contactPhone) }) { Text("Call ${shop.contactPhone}") }
-                        shop.contactEmail?.let { address -> TextButton({ email(address) }) { Text("Email $address") } }
+                        TextButton({ call(shop.contactPhone) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_call_shop_contactphone_d1d9be8, shop.contactPhone)) }
+                        shop.contactEmail?.let { address -> TextButton({ email(address) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_email_address_b516f3b, address)) } }
                     }
                 }
             }

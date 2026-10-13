@@ -45,7 +45,7 @@ fun ReportRevenueChart(series: List<ReportSeriesPoint>, modifier: Modifier = Mod
     val gridColor = MaterialTheme.colorScheme.outlineVariant
     Column(modifier) {
         if (series.isEmpty()) {
-            Text("No finalized revenue in this period", modifier = Modifier.padding(vertical = 72.dp),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_no_finalized_revenue_in_this_5715c0a), modifier = Modifier.padding(vertical = 72.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         } else {
             val maximum = series.maxOf { it.revenueMinor }.coerceAtLeast(1L)
@@ -92,17 +92,17 @@ fun BestSellingProductsCard(products: List<BestSellingProduct>, currencyCode: St
         Column(Modifier.padding(AppSpacing.medium)) {
             Row(Modifier.fillMaxWidth()) {
                 Icon(AppIcons.Products, null, tint = MaterialTheme.colorScheme.primary)
-                Text("Best selling products", Modifier.padding(start = AppSpacing.small),
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_best_selling_products_21745ad), Modifier.padding(start = AppSpacing.small),
                     style = MaterialTheme.typography.titleMedium)
             }
-            if (products.isEmpty()) Text("No delivered product sales in this period",
+            if (products.isEmpty()) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_no_delivered_product_sales_in_7449616),
                 Modifier.padding(vertical = AppSpacing.large), color = MaterialTheme.colorScheme.onSurfaceVariant)
             else products.take(5).forEachIndexed { index, product ->
                 Row(Modifier.fillMaxWidth().padding(top = AppSpacing.medium)) {
                     Text("${index + 1}", style = MaterialTheme.typography.labelLarge)
                     Column(Modifier.padding(start = AppSpacing.medium).weight(1f)) {
                         Text(product.name)
-                        Text("${product.quantitySold} sold", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_product_quantitysold_sold_096486e, product.quantitySold), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text(formatMoney(product.revenueMinor, currencyCode))
                 }

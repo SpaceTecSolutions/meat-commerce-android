@@ -25,7 +25,7 @@ fun SwipeDeleteContainer(enabled: Boolean, onDelete: () -> Unit, content: @Compo
         }) }, backgroundContent = {
             Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.error, MaterialTheme.shapes.medium)
                 .padding(end = 20.dp), contentAlignment = Alignment.CenterEnd) {
-                Icon(AppIcons.Delete, "Delete", tint = MaterialTheme.colorScheme.onError)
+                Icon(AppIcons.Delete, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_delete_f6fdbe4), tint = MaterialTheme.colorScheme.onError)
             }
         }) { content() }
 }

@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
@@ -33,6 +34,7 @@ internal data class CustomerAuthState(
 
 @HiltViewModel
 internal class CustomerAuthViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val auth: AuthenticationRepository,
     private val cart: CustomerCartRepository,
     private val users: UserRepository,
@@ -55,7 +57,7 @@ internal class CustomerAuthViewModel @Inject constructor(
     fun requestOtp() {
         if (state.value.phase !in setOf(CustomerAuthPhase.PHONE, CustomerAuthPhase.OTP, CustomerAuthPhase.INVALID)) return
         if (state.value.phone.length != 10) {
-            mutable.update { it.copy(error = "Enter a valid 10-digit mobile number") }; return
+            mutable.update { it.copy(error = context.getString(R.string.auth_valid_mobile)) }; return
         }
         if (state.value.challengeId != null && state.value.secondsUntilResend > 0) return
         mutable.update { it.copy(phase = CustomerAuthPhase.REQUESTING, error = null) }
@@ -73,7 +75,7 @@ internal class CustomerAuthViewModel @Inject constructor(
                     if (result.value.automaticallyVerified) verify("")
                 }
                 is AppResult.Failure -> mutable.update { it.copy(phase = CustomerAuthPhase.PHONE,
-                    error = result.error.otpRequestMessage()) }
+                    error = result.error.otpRequestMessage(context)) }
             }
         }
     }
@@ -104,7 +106,7 @@ internal class CustomerAuthViewModel @Inject constructor(
                 is AppResult.Failure -> {
                     awaitMinimumValidationAnimation()
                     mutable.update { it.copy(phase = CustomerAuthPhase.INVALID,
-                        error = result.error.otpMessage()) }
+                        error = result.error.otpMessage(context)) }
                 }
                 is AppResult.Success -> completeRoleAwareSignIn(result.value)
             }
@@ -114,14 +116,14 @@ internal class CustomerAuthViewModel @Inject constructor(
     private suspend fun completeRoleAwareSignIn(userId: String) {
         when (val user = users.getUser(userId)) {
             is AppResult.Failure -> failAuthenticatedSession(
-                "Unable to load your account. Please request a new OTP and try again.",
+                context.getString(R.string.auth_account_load_failed),
             )
             is AppResult.Success -> when {
-                !user.value.active -> failAuthenticatedSession("This account is unavailable. Contact support.")
+                !user.value.active -> failAuthenticatedSession(context.getString(R.string.auth_account_unavailable))
                 user.value.role != UserRole.CUSTOMER -> completeSuccess()
                 else -> when (cart.mergeGuestCart()) {
                     is AppResult.Failure -> failAuthenticatedSession(
-                        "Cart sync failed. Your guest items are saved; request a new OTP to retry.",
+                        context.getString(R.string.auth_cart_sync_failed),
                     )
                     is AppResult.Success -> completeSuccess()
                 }
@@ -149,20 +151,20 @@ internal class CustomerAuthViewModel @Inject constructor(
 
 private const val OTP_CONVERGENCE_DURATION_MS = 820L
 
-private fun AppError.otpMessage(): String = when (this) {
-    AppError.InvalidVerificationCode -> "Incorrect or expired OTP. Request a new code and try again."
+private fun AppError.otpMessage(context: Context): String = when (this) {
+    AppError.InvalidVerificationCode -> context.getString(R.string.auth_otp_invalid)
     AppError.Network, AppError.Offline, AppError.Timeout ->
-        "Couldn't connect to verify your code. Check your connection and try again."
-    AppError.TooManyRequests -> "Too many attempts. Please wait before requesting another code."
-    AppError.DisabledUser, AppError.Forbidden -> "This account is unavailable. Contact support."
+        context.getString(R.string.auth_verify_connection_failed)
+    AppError.TooManyRequests -> context.getString(R.string.auth_too_many_attempts)
+    AppError.DisabledUser, AppError.Forbidden -> context.getString(R.string.auth_account_unavailable)
     is AppError.Validation -> message
-    else -> "Phone sign-in is temporarily unavailable. Please try again later."
+    else -> context.getString(R.string.auth_signin_unavailable)
 }
 
-private fun AppError.otpRequestMessage(): String = when (this) {
+private fun AppError.otpRequestMessage(context: Context): String = when (this) {
     AppError.Network, AppError.Offline, AppError.Timeout ->
-        "Couldn't connect to send the OTP. Check your connection and try again."
-    AppError.TooManyRequests -> "SMS limit reached. Please wait before requesting another OTP."
+        context.getString(R.string.auth_send_connection_failed)
+    AppError.TooManyRequests -> context.getString(R.string.auth_sms_limit_reached)
     is AppError.Validation -> message
-    else -> "Couldn't send an OTP right now. Please try again later."
+    else -> context.getString(R.string.auth_send_otp_failed)
 }

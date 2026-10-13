@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cart_offline">You\'re offline. Your saved cart is safe.</string>
+    <string name="cart_product_unavailable">A product is no longer available. Refresh your cart.</string>
+    <string name="cart_update_failed">We couldn\'t update your cart. Please try again.</string>
+    <string name="ui_add_more_items_f861d80">Add more items</string>
+    <string name="ui_bill_summary_6619db6">Bill Summary</string>
+    <string name="ui_cancel_77dfd21">Cancel</string>
+    <string name="ui_currently_unavailable_7721e8c">Currently unavailable</string>
+    <string name="ui_delivering_to_e587e41">DELIVERING TO</string>
+    <string name="ui_delivery_charge_e1d29b6">Delivery Charge</string>
+    <string name="ui_delivery_estimate_2509a3c">Delivery Estimate</string>
+    <string name="ui_free_4a9768f">FREE</string>
+    <string name="ui_my_cart_779756a">My Cart</string>
+    <string name="ui_remove_e963907">Remove</string>
+    <string name="ui_remove_item_32d3a5e">Remove item?</string>
+    <string name="ui_swipe_to_checkout_63e4c74">Swipe to Checkout</string>
+    <string name="ui_swipe_to_remove_7ab8442">Swipe to remove</string>
+    <string name="ui_money_line_linetotalminor_line_unit_aa7adfc">%1$s / %2$s</string>
+    <string name="ui_remove_line_name_from_your_ef8498a">Remove %1$s from your cart?</string>
+    <string name="ui_total_items_state_cart_distinctitemcount_7e03dc6">Total Items: %1$s</string>
+    <string name="ui_back_b52b36b">Back</string>
+    <string name="ui_swipe_right_to_checkout_a30b88a">Swipe right to checkout</string>
+    <string name="ui_browse_products_9a6a223">Browse Products</string>
+    <string name="ui_looks_like_you_haven_t_a6e8121">Looks like you haven\'t added anything yet.</string>
+    <string name="ui_your_cart_is_empty_2303a3a">Your cart is empty</string>
+    <string name="ui_add_61cc55a">Add</string>
+    <string name="ui_change_64fbd99">Change</string>
+    <string name="ui_check_your_items_and_minimum_1ad35d5">Check your items and minimum order to continue</string>
+    <string name="ui_no_delivery_address_selected_3f4bec2">No delivery address selected</string>
+    <string name="ui_slide_right_to_select_address_b7db5cf">Slide right to select address and delivery time</string>
+</resources>

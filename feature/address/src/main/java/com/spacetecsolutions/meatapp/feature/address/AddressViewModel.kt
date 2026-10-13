@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.address
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.*
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Job
 
 @HiltViewModel
 class AddressViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val repository: CustomerAddressRepository,
     private val validator: AddressValidator,
     private val mapResolver: AddressMapResolver,
@@ -31,7 +33,7 @@ class AddressViewModel @Inject constructor(
                     ?: result.value.firstOrNull { it.isDefault }?.id ?: result.value.firstOrNull()?.id,
             ) }
             is AppResult.Failure -> mutableState.update {
-                it.copy(loading = false, error = result.error.displayMessage())
+                it.copy(loading = false, error = result.error.displayMessage(context))
             }
         }
     }
@@ -81,12 +83,12 @@ class AddressViewModel @Inject constructor(
             state = value.state, postalCode = value.postalCode,
             latitude = value.latitude, longitude = value.longitude, verifiedLocation = true,
             errors = emptyMap(),
-        ), message = AddressMessage("Location detected. Review the details before saving.", true))
+        ), message = AddressMessage(context.getString(R.string.address_location_detected), true))
     }
     fun locationUnavailable() {
         clearMapPreview()
-        mutableState.update { it.copy(mapError = "Unable to detect location. Search or move the map.",
-            message = AddressMessage("Unable to detect location. Search or select a point on the map.", false)) }
+        mutableState.update { it.copy(mapError = context.getString(R.string.address_location_unavailable),
+            message = AddressMessage(context.getString(R.string.address_location_select_point), false)) }
     }
     fun previewMapLocation(latitude: Double, longitude: Double) {
         mapResolveJob?.cancel()
@@ -95,14 +97,14 @@ class AddressViewModel @Inject constructor(
         val value = mapResolver.resolve(latitude, longitude)
         mutableState.update { it.copy(mapLoading = false,
             mapPreview = value.takeIf { found -> found.address.isNotBlank() },
-            mapError = if (value.address.isBlank()) "Unable to resolve this pin. Try moving the map." else null) }
+            mapError = if (value.address.isBlank()) context.getString(R.string.address_pin_unresolved) else null) }
         }
     }
     fun previewCurrentLocation(value: DetectedAddress) {
         mapResolveJob?.cancel()
         mutableState.update { it.copy(mapLoading = false,
             mapPreview = value.takeIf { found -> found.address.isNotBlank() },
-            mapError = if (value.address.isBlank()) "Unable to resolve your location yet." else null)
+            mapError = if (value.address.isBlank()) context.getString(R.string.address_location_unresolved) else null)
         }
     }
     fun clearMapPreview() {
@@ -139,33 +141,33 @@ class AddressViewModel @Inject constructor(
                     mutableState.update { it.copy(submitting = false,
                         verification = AddressVerification.NOT_FOUND,
                         form = form.copy(errors = mapOf("address" to
-                            "We couldn't find this address on Google Maps. Check it or choose on the map."))) }
+                            context.getString(R.string.address_google_not_found)))) }
                     return@launch
                 }
                 AddressMapResolver.Lookup.Unavailable -> {
                     mutableState.update { it.copy(submitting = false,
                         verification = AddressVerification.TEMPORARY_ERROR,
                         form = form.copy(errors = mapOf("address" to
-                            "Unable to verify this address right now. Check your connection and retry."))) }
+                            context.getString(R.string.address_verify_failed)))) }
                     return@launch
                 }
             }
         }
         val input = verified.toInput(validator.normalizedMobile(verified.mobile))
         val result = if (form.editing) repository.update(input) else repository.create(input)
-        handleMutation(result, if (form.editing) "Address updated" else "Address added")
+        handleMutation(result, context.getString(if (form.editing) R.string.address_updated else R.string.address_added))
     }
 
     fun delete() = viewModelScope.launch {
         val address = state.value.deleteConfirmation ?: return@launch
         mutableState.update { it.copy(submitting = true) }
-        handleMutation(repository.delete(address.id, address.revision), "Address deleted")
+        handleMutation(repository.delete(address.id, address.revision), context.getString(R.string.address_deleted))
     }
 
     fun setDefault(address: CustomerAddress) = viewModelScope.launch {
         if (address.isDefault) return@launch
         mutableState.update { it.copy(submitting = true) }
-        handleMutation(repository.setDefault(address.id, address.revision), "Default address updated")
+        handleMutation(repository.setDefault(address.id, address.revision), context.getString(R.string.address_default_updated))
     }
 
     private fun handleMutation(result: AppResult<List<CustomerAddress>>, success: String) {
@@ -196,9 +198,9 @@ private fun AddressFormState.geographicKey() = listOf(
 private fun AddressFormState.hasValidCoordinates() = latitude?.isFinite() == true &&
     longitude?.isFinite() == true && latitude in -90.0..90.0 && longitude in -180.0..180.0
 
-private fun AppError.displayMessage() = when (this) {
-    AppError.Network, AppError.Offline -> "You're offline. Check your connection and try again."
-    AppError.NotFound -> "This address no longer exists"
+private fun AppError.displayMessage(context: Context) = when (this) {
+    AppError.Network, AppError.Offline -> context.getString(R.string.address_offline)
+    AppError.NotFound -> context.getString(R.string.address_not_found)
     is AppError.Validation -> message
-    else -> "We couldn't update the address. Please try again."
+    else -> context.getString(R.string.address_update_failed)
 }

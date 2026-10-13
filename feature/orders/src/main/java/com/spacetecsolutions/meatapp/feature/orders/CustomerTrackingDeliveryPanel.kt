@@ -87,8 +87,7 @@ private fun RiderContactCard(order: CodOrder, rider: DeliveryLocation?, stale: B
                 Text(deliveryName(order), style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold, color = T.ink,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(if (order.assignedDeliveryRole == UserRole.ADMIN) "Shop administrator"
-                    else "Delivery partner", style = MaterialTheme.typography.labelSmall,
+                Text(if (order.assignedDeliveryRole == UserRole.ADMIN) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_shop_administrator_bab8374) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_partner_47814ab), style = MaterialTheme.typography.labelSmall,
                     color = T.muted)
                 Text(when {
                     rider == null -> "Waiting for location"
@@ -101,7 +100,7 @@ private fun RiderContactCard(order: CodOrder, rider: DeliveryLocation?, stale: B
                 FilledTonalIconButton(onContact,
                     colors = IconButtonDefaults.filledTonalIconButtonColors(
                         containerColor = T.greenSurface, contentColor = T.green)) {
-                    Icon(AppIcons.Call, "Call delivery partner")
+                    Icon(AppIcons.Call, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_call_delivery_partner_4b7e125))
                 }
         }
     }
@@ -123,12 +122,12 @@ private fun TrackingOrderStatus(order: CodOrder, nowEpochMillis: Long) {
     val model = order.toCustomerOrderUi(nowEpochMillis)
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("LIVE ORDER STATUS", Modifier.weight(1f),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_live_order_status_405ca42), Modifier.weight(1f),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold, color = T.ink)
             CustomerOrderStatusChip(model)
         }
-        if (model.isDelayed) Text("Delivery is running late",
+        if (model.isDelayed) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_is_running_late_fb20402),
             style = MaterialTheme.typography.labelSmall, color = T.amber)
         order.timelineItems().filter { it.state != TimelineVisualState.UPCOMING }
             .forEach { stage -> Row(horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -21,7 +21,7 @@ internal fun DeliveryOrderDetailsDialog(
 ) {
     AlertDialog(
         onDismissRequest = dismiss,
-        title = { Text("Order ${order.displayNumber}") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_order_displaynumber_5a620eb, order.displayNumber)) },
         text = { LazyColumn(verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
             item {
                 Text(order.customerName, style = MaterialTheme.typography.titleMedium)
@@ -33,32 +33,32 @@ internal fun DeliveryOrderDetailsDialog(
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(Modifier.weight(1f)) {
                         Text(item.name, style = MaterialTheme.typography.titleSmall)
-                        Text("Quantity ${item.quantityLabel}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_quantity_item_quantitylabel_781ea8e, item.quantityLabel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text(item.lineTotalMinor.money(order.currencyCode))
                 }
             }
             if (order.instructions.isNotBlank()) item {
-                Text("Instructions", style = MaterialTheme.typography.titleSmall)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_instructions_ed58f29), style = MaterialTheme.typography.titleSmall)
                 Text(order.instructions)
             }
             item {
-                Text("Payment: ${order.paymentMethod.name} · ${order.paymentStatus.name}")
-                Text("Amount due: ${order.amountDueMinor.money(order.currencyCode)}",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_payment_order_paymentmethod_name_order_8e99c10, order.paymentMethod.name, order.paymentStatus.name))
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_amount_due_order_amountdueminor_money_5f3936e, order.amountDueMinor.money(order.currencyCode)),
                     style = MaterialTheme.typography.titleMedium)
             }
             if (trackingAllowed && order.canStartDelivery) item {
-                Text("Live tracking will be prepared when delivery starts.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_live_tracking_will_be_prepared_945417d),
                     color = MaterialTheme.colorScheme.primary)
             }
         } },
         confirmButton = {
-            if (order.canStartDelivery) Button(onClick = startDelivery) { Text("Start Delivery") }
-            else if (canResumeTracking) Button(onClick = resumeTracking) { Text("Resume Live Tracking") }
-            else Button(onClick = dismiss) { Text("Close") }
+            if (order.canStartDelivery) Button(onClick = startDelivery) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_start_delivery_a40db5d)) }
+            else if (canResumeTracking) Button(onClick = resumeTracking) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_resume_live_tracking_50df755)) }
+            else Button(onClick = dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_bbfa773)) }
         },
         dismissButton = {
-            if (order.canStartDelivery) OutlinedButton(onClick = navigate) { Text("Navigate") }
+            if (order.canStartDelivery) OutlinedButton(onClick = navigate) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_navigate_1eee3af)) }
         },
     )
 }

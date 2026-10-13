@@ -33,13 +33,13 @@ internal fun CustomerProfileHeader(onBack: () -> Unit, onHelp: () -> Unit) {
         Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
-                Icon(AppIcons.Back, "Back", Modifier.size(24.dp), tint = CustomerProfileColors.ink)
+                Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_back_b52b36b), Modifier.size(24.dp), tint = CustomerProfileColors.ink)
             }
-            Text("Profile & Account", Modifier.weight(1f).padding(start = 10.dp),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_profile_account_0b1b0a6), Modifier.weight(1f).padding(start = 10.dp),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold, color = CustomerProfileColors.ink)
             IconButton(onClick = onHelp, modifier = Modifier.size(40.dp)) {
-                Icon(AppIcons.Help, "Customer support", Modifier.size(22.dp),
+                Icon(AppIcons.Help, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_customer_support_81f83be), Modifier.size(22.dp),
                     tint = CustomerProfileColors.muted)
             }
         }
@@ -66,20 +66,20 @@ internal fun CustomerIdentityCard(user: User, onEdit: () -> Unit) {
                         color = CustomerProfileColors.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Surface(Modifier.padding(start = 7.dp), shape = CircleShape,
                         color = Color(0xFFF3F4F6), border = BorderStroke(1.dp, CustomerProfileColors.border)) {
-                        Text("Customer", Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_customer_0e85749), Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall, color = CustomerProfileColors.muted)
                     }
                 }
                 Text(user.mobileNumber, style = MaterialTheme.typography.bodySmall,
                     color = CustomerProfileColors.muted, maxLines = 1)
-                if (user.active) Text("●  Active account", style = MaterialTheme.typography.labelSmall,
+                if (user.active) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_active_account_9d3c24d), style = MaterialTheme.typography.labelSmall,
                     color = Color(0xFF059669), fontWeight = FontWeight.SemiBold)
             }
             /*Surface(onClick = onEdit, modifier = Modifier.size(38.dp),
                 shape = RoundedCornerShape(12.dp), color = Color.White,
                 border = BorderStroke(1.dp, CustomerProfileColors.border)) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(AppIcons.Edit, "Edit profile", Modifier.size(19.dp), tint = CustomerProfileColors.muted)
+                    Icon(AppIcons.Edit, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_edit_profile_15141ea), Modifier.size(19.dp), tint = CustomerProfileColors.muted)
                 }
             }*/
         }
@@ -98,9 +98,9 @@ internal fun CustomerOrdersEntry(onClick: () -> Unit) {
                 Icon(AppIcons.Orders, null, Modifier.size(22.dp), tint = CustomerProfileColors.red)
             }
             Column(Modifier.weight(1f).padding(start = 13.dp)) {
-                Text("My Orders", style = MaterialTheme.typography.titleMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_my_orders_db2821a), style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold, color = ProfileMoreTokens.ink)
-                Text("Track live delivery & past reorders", style = MaterialTheme.typography.bodySmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_track_live_delivery_past_reorders_8fd4f40), style = MaterialTheme.typography.bodySmall,
                     color = CustomerProfileColors.muted)
             }
             Icon(AppIcons.ArrowRight, null, Modifier.size(20.dp), tint = CustomerProfileColors.muted)
@@ -157,9 +157,9 @@ internal fun CustomerProfileLogout(userPhone: String, onClick: () -> Unit) {
                 Icon(AppIcons.Logout, null, Modifier.size(20.dp), tint = ProfileMoreTokens.red)
             }
             Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                Text("Log Out", style = MaterialTheme.typography.bodyMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_log_out_4e8131c), style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold, color = ProfileMoreTokens.red)
-                Text("Signed in as ${userPhone}", style = MaterialTheme.typography.bodySmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_signed_in_as_userphone_a137a9c, userPhone), style = MaterialTheme.typography.bodySmall,
                     color = ProfileMoreTokens.muted)
             }
             Icon(AppIcons.ArrowRight, null, Modifier.size(18.dp), tint = ProfileMoreTokens.red)

@@ -49,8 +49,8 @@ internal fun CustomerNotificationHistory(
             state.items.any { !it.isRead }, clearAll, markAllRead)
         if (!permissionGranted) Surface(color = Color(0xFFFFF7ED), modifier = Modifier.fillMaxWidth()) {
             Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text("Enable alerts for important updates", Modifier.weight(1f), fontSize = 12.sp)
-                TextButton(onClick = requestPermission) { Text("Enable") }
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_enable_alerts_for_important_updates_df20866), Modifier.weight(1f), fontSize = 12.sp)
+                TextButton(onClick = requestPermission) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_enable_20063ad)) }
             }
         }
         when {
@@ -60,7 +60,7 @@ internal fun CustomerNotificationHistory(
             state.error != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(state.error, color = NoticeColors.muted)
-                    TextButton(onClick = retry) { Text("Retry") }
+                    TextButton(onClick = retry) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_retry_9f5cd8a)) }
                 }
             }
             state.items.isEmpty() -> CustomerNotificationsEmpty(continueShopping, emptyActionLabel)
@@ -85,20 +85,20 @@ private fun CustomerNotificationTopBar(back: () -> Unit, hasItems: Boolean,
         Row(Modifier.fillMaxWidth().heightIn(min = 60.dp).padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = back, modifier = Modifier.size(40.dp)) {
-                Icon(AppIcons.Back, "Back", tint = NoticeColors.ink)
+                Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b), tint = NoticeColors.ink)
             }
-            Text("Notifications", modifier = Modifier.weight(1f).padding(start = 7.dp),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_notifications_753a22b), modifier = Modifier.weight(1f).padding(start = 7.dp),
                 fontSize = 19.sp, fontWeight = FontWeight.SemiBold, color = NoticeColors.ink,
                 maxLines = 1)
             if (hasItems) {
                 TextButton(onClick = clearAll, contentPadding = PaddingValues(horizontal = 3.dp)) {
-                    Text("Clear all", fontSize = 11.sp, color = NoticeColors.muted)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_clear_all_c043160), fontSize = 11.sp, color = NoticeColors.muted)
                 }
-                Text(" · ", color = Color(0xFFD1D5DB))
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_text_d3dacf8), color = Color(0xFFD1D5DB))
             }
             TextButton(onClick = markAllRead, enabled = hasUnread,
                 contentPadding = PaddingValues(horizontal = 2.dp)) {
-                Text("Mark all as read", fontSize = 11.sp,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_mark_all_as_read_1b83163), fontSize = 11.sp,
                     color = if (hasUnread) NoticeColors.red else Color(0xFFC7C9CC),
                     maxLines = 1)
             }
@@ -119,10 +119,10 @@ private fun CustomerNotificationsEmpty(continueShopping: () -> Unit, actionLabel
                 }
             }
             Spacer(Modifier.height(18.dp))
-            Text("No notifications yet", fontSize = 18.sp, fontWeight = FontWeight.SemiBold,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_notifications_yet_d2609b6), fontSize = 18.sp, fontWeight = FontWeight.SemiBold,
                 color = NoticeColors.ink, textAlign = TextAlign.Center)
             Spacer(Modifier.height(12.dp))
-            Text("Order updates, delivery tracking alerts, and account notices will appear here once you place an order.",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_updates_delivery_tracking_alerts_a87cbda),
                 fontSize = 14.sp, lineHeight = 22.sp, color = NoticeColors.muted,
                 textAlign = TextAlign.Center)
             Spacer(Modifier.height(28.dp))

@@ -46,7 +46,7 @@ fun CustomerDeleteAccountRoute(user: User, back: () -> Unit,
                     DeleteConfirmation(user, openPrivacy)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(checked = acknowledged, onCheckedChange = { acknowledged = it })
-                        Text("I understand this deletion is permanent and cannot be undone.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_i_understand_this_deletion_is_d711640),
                             fontSize = 12.sp, lineHeight = 18.sp, color = AccountStyle.ink)
                     }
                     state.error?.let { Text(it, fontSize = 12.sp, color = AccountStyle.red) }
@@ -56,13 +56,13 @@ fun CustomerDeleteAccountRoute(user: User, back: () -> Unit,
                         shape = RoundedCornerShape(10.dp)) {
                         if (state.deleting) CircularProgressIndicator(Modifier.size(20.dp),
                             strokeWidth = 2.dp, color = Color.White)
-                        else { Icon(AppIcons.Delete, null); Spacer(Modifier.width(8.dp)); Text("Delete My Account") }
+                        else { Icon(AppIcons.Delete, null); Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_delete_my_account_26cc101)) }
                     }
                     TextButton(onClick = back, modifier = Modifier.fillMaxWidth()) {
-                        Text("Keep Account & Return", color = AccountStyle.muted)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_keep_account_return_3158651), color = AccountStyle.muted)
                     }
                     if (!state.checked) TextButton(onClick = viewModel::retryCheck,
-                        modifier = Modifier.fillMaxWidth()) { Text("Retry order check") }
+                        modifier = Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_retry_order_check_59491fa)) }
                 }
             }
             Spacer(Modifier.height(12.dp))
@@ -78,9 +78,9 @@ private fun DeleteConfirmation(user: User, openPrivacy: () -> Unit) {
                 contentAlignment = Alignment.Center) {
                 Icon(AppIcons.Delete, null, Modifier.size(28.dp), tint = AccountStyle.red)
             }
-            Text("Delete your account?", Modifier.padding(top = 12.dp),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_delete_your_account_35293dc), Modifier.padding(top = 12.dp),
                 fontSize = 21.sp, fontWeight = FontWeight.Bold, color = AccountStyle.ink)
-            Text("This will permanently remove your account and personal records.",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_this_will_permanently_remove_your_d708e86),
                 Modifier.padding(top = 8.dp), fontSize = 13.sp,
                 lineHeight = 19.sp, color = AccountStyle.muted)
             Text(user.mobileNumber, Modifier.padding(top = 10.dp), fontSize = 12.sp,
@@ -96,16 +96,16 @@ private fun DeleteConfirmation(user: User, openPrivacy: () -> Unit) {
     }
     AccountSectionLabel("Records we may retain")
     AccountCard(Modifier.fillMaxWidth()) {
-        Text("Anonymized accounting & audit data", fontWeight = FontWeight.Bold,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_anonymized_accounting_audit_data_5df97e0), fontWeight = FontWeight.Bold,
             color = AccountStyle.ink)
-        Text("Historical order and payment facts may remain for accounting, legal, security, and fraud-prevention purposes. Your name, phone number, address, and account identifier are removed from those records.",
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_historical_order_and_payment_facts_1b399c6),
             Modifier.padding(top = 6.dp), fontSize = 12.sp, lineHeight = 18.sp,
             color = AccountStyle.muted)
-        TextButton(onClick = openPrivacy) { Text("Read Privacy Policy") }
+        TextButton(onClick = openPrivacy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_read_privacy_policy_7fb9f3b)) }
     }
     Surface(shape = RoundedCornerShape(12.dp), color = Color(0xFFFFF8F1),
         border = BorderStroke(1.dp, Color(0xFFFDE3B0))) {
-        Text("Deletion is final. You will be signed out when it completes.",
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_deletion_is_final_you_will_30a888e),
             Modifier.padding(14.dp), fontSize = 12.sp, color = AccountStyle.ink)
     }
 }
@@ -122,11 +122,11 @@ private fun DeleteBlocked(order: CodOrder, back: () -> Unit,
     viewOrder: (String) -> Unit, openSupport: () -> Unit) {
     Surface(shape = RoundedCornerShape(14.dp), color = Color(0xFFF7ECEC)) {
         Column(Modifier.padding(16.dp)) {
-            Text("TEMPORARY HOLD", fontSize = 11.sp, fontWeight = FontWeight.Bold,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_temporary_hold_74315d9), fontSize = 11.sp, fontWeight = FontWeight.Bold,
                 color = AccountStyle.red)
-            Text("Account deletion unavailable", fontSize = 17.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_account_deletion_unavailable_10642fb), fontSize = 17.sp,
                 fontWeight = FontWeight.Bold, color = AccountStyle.ink)
-            Text("Your account is needed to complete an active order. Once it is delivered or cancelled, you can return here to delete your account.",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_your_account_is_needed_to_7b56853),
                 fontSize = 12.sp, lineHeight = 18.sp, color = AccountStyle.muted)
         }
     }
@@ -139,29 +139,29 @@ private fun DeleteBlocked(order: CodOrder, back: () -> Unit,
         order.deliveryDateIso?.let { iso ->
             val date = runCatching { LocalDate.parse(iso)
                 .format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.getDefault())) }.getOrDefault(iso)
-            Text("Scheduled Delivery: $date", fontSize = 12.sp, color = AccountStyle.muted)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_scheduled_delivery_date_dd43ce9, date), fontSize = 12.sp, color = AccountStyle.muted)
         }
         order.deliverySlotTimeLabel?.let { Text(it, fontSize = 12.sp, color = AccountStyle.muted) }
-        order.items.take(2).forEach { Text("• ${it.name}  ·  ${it.quantity}",
+        order.items.take(2).forEach { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_it_name_it_quantity_c8666bf, it.name, it.quantity),
             fontSize = 12.sp, color = AccountStyle.ink) }
         Text(order.addressSummary, Modifier.padding(top = 8.dp), fontSize = 12.sp,
             color = AccountStyle.muted)
     }
     AccountCard(Modifier.fillMaxWidth()) {
-        Text("Next Steps & Options", fontWeight = FontWeight.Bold, color = AccountStyle.ink)
-        Text("1. Wait for delivery or use Order Details if cancellation is still available.",
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_next_steps_options_c47097c), fontWeight = FontWeight.Bold, color = AccountStyle.ink)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_1_wait_for_delivery_or_5c5e410),
             fontSize = 12.sp, lineHeight = 18.sp, color = AccountStyle.muted)
-        Text("2. Contact support if you need help with the order.",
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_2_contact_support_if_you_54a206c),
             fontSize = 12.sp, color = AccountStyle.muted)
     }
     Button(onClick = { viewOrder(order.id) }, modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(containerColor = AccountStyle.red)) {
-        Text("View Active Order Details")
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_view_active_order_details_0110957))
     }
     OutlinedButton(onClick = openSupport, modifier = Modifier.fillMaxWidth()) {
-        Text("Contact Customer Support")
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_contact_customer_support_ef8fc8d))
     }
     TextButton(onClick = back, modifier = Modifier.fillMaxWidth()) {
-        Text("Back to Profile & Account", color = AccountStyle.muted)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_back_to_profile_account_0641626), color = AccountStyle.muted)
     }
 }

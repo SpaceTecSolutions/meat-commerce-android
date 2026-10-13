@@ -44,9 +44,9 @@ fun SuperAdminMoreScreen(
     }
     if (confirmLogout) AlertDialog(
         onDismissRequest = { confirmLogout = false },
-        title = { Text("Logout?") },
-        text = { Text("You will need to sign in again to access Super Admin.") },
-        confirmButton = { Button({ confirmLogout = false; logout() }) { Text("Logout") } },
-        dismissButton = { TextButton({ confirmLogout = false }) { Text("Cancel") } },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_logout_d9be757)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_you_will_need_to_sign_d8bbacb)) },
+        confirmButton = { Button({ confirmLogout = false; logout() }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_logout_e43d612)) } },
+        dismissButton = { TextButton({ confirmLogout = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_cancel_77dfd21)) } },
     )
 }

@@ -108,7 +108,7 @@ private fun ProductListQuantityControl(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(28.dp),
             )
-            else Icon(AppIcons.Add, "Add $productName", Modifier.size(20.dp))
+            else Icon(AppIcons.Add, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_productname_4452e74, productName), Modifier.size(20.dp))
         }
         return
     }

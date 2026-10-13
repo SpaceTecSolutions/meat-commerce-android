@@ -36,54 +36,54 @@ internal fun CollectionDialog(
             color = MaterialTheme.colorScheme.surface, shadowElevation = 16.dp) {
             Column(Modifier.fillMaxWidth().padding(AppSpacing.large),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
-                Text("Reached customer", style = MaterialTheme.typography.headlineSmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reached_customer_96f0200), style = MaterialTheme.typography.headlineSmall,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                Text("Confirm payment and complete the delivery",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_confirm_payment_and_complete_the_21ddd1d),
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 if (isCod) {
                     Surface(shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)) {
                         Row(Modifier.fillMaxWidth().padding(AppSpacing.medium),
                             horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("COD expected")
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cod_expected_bc0b6b1))
                             Text(order.amountDueMinor.money(order.currencyCode),
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                         }
                     }
-                    OutlinedTextField(amount, change, Modifier.fillMaxWidth(), label = { Text("Amount collected") },
-                        prefix = { Text("₹") }, singleLine = true,
+                    OutlinedTextField(amount, change, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_amount_collected_368837e)) },
+                        prefix = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_text_ba8d95b)) }, singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         isError = actual != null && !sufficient,
                         supportingText = {
                             when {
-                                actual != null && !sufficient -> Text("Collected amount cannot be less than the final bill.")
-                                sufficient && changeDue > 0 -> Text("Return ${changeDue.money(order.currencyCode)} to the customer.")
-                                sufficient -> Text("Exact amount received.")
+                                actual != null && !sufficient -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_collected_amount_cannot_be_less_af8468a))
+                                sufficient && changeDue > 0 -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_return_changedue_money_order_currencycode_c2c1f5a, changeDue.money(order.currencyCode)))
+                                sufficient -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_exact_amount_received_16c6888))
                             }
                         })
-                    Text("Confirm the cash received before completing delivery.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_confirm_the_cash_received_before_cb1977d),
                         style = MaterialTheme.typography.bodySmall)
                 } else {
-                    Text("${order.paymentMethod.name} payment", style = MaterialTheme.typography.titleSmall)
-                    Text("Payment status: ${order.paymentStatus.name}")
-                    Text("Online payment status is read-only. Delivery staff cannot change it.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_paymentmethod_name_payment_558efaa, order.paymentMethod.name), style = MaterialTheme.typography.titleSmall)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_payment_status_order_paymentstatus_name_834462d, order.paymentStatus.name))
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_online_payment_status_is_read_e376a49),
                         style = MaterialTheme.typography.bodySmall)
                     if (order.paymentStatus != com.spacetecsolutions.meatapp.core.model.PaymentStatus.PAID) {
-                        Text("Delivery cannot be completed until the backend confirms PAID.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_cannot_be_completed_until_6f3b740),
                             color = MaterialTheme.colorScheme.error)
                     }
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppSpacing.small),
                     verticalAlignment = Alignment.CenterVertically) {
-                    OutlinedButton(onClick = dismiss, modifier = Modifier.weight(1f)) { Text("Back") }
+                    OutlinedButton(onClick = dismiss, modifier = Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b)) }
                     if (isCod && actual != null && !sufficient) {
                         Button(onClick = reportMismatch, modifier = Modifier.weight(1f)) {
-                            Text("Report mismatch")
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_report_mismatch_2cbbf09))
                         }
                     } else {
                         Button(onClick = complete, modifier = Modifier.weight(1f),
                             enabled = if (isCod) sufficient else order.paymentStatus == com.spacetecsolutions.meatapp.core.model.PaymentStatus.PAID) {
-                            Text("Complete delivery", maxLines = 1)
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_complete_delivery_fb1dae9), maxLines = 1)
                         }
                     }
                 }
@@ -99,7 +99,7 @@ internal fun CancelDialog(reason: String, change: (String) -> Unit, confirm: () 
     var selected by remember { mutableStateOf(reason.takeIf { it in reasons }.orEmpty()) }
     AlertDialog(
         onDismissRequest = dismiss,
-        title = { Text("Reject or cancel order?") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reject_or_cancel_order_f256105)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.extraSmall)) {
                 reasons.forEach { option ->
@@ -112,13 +112,13 @@ internal fun CancelDialog(reason: String, change: (String) -> Unit, confirm: () 
                     }
                 }
                 if (selected == "Other") OutlinedTextField(
-                    reason, change, Modifier.fillMaxWidth(), label = { Text("Reason") },
-                    supportingText = { Text("${reason.length}/200") }, maxLines = 3,
+                    reason, change, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reason_f219cc0)) },
+                    supportingText = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reason_length_200_18e3c58, reason.length)) }, maxLines = 3,
                 )
             }
         },
-        confirmButton = { Button(confirm, enabled = reason.isNotBlank()) { Text("Confirm cancellation") } },
-        dismissButton = { TextButton(dismiss) { Text("Keep order") } },
+        confirmButton = { Button(confirm, enabled = reason.isNotBlank()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_confirm_cancellation_90977a5)) } },
+        dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_keep_order_3017312)) } },
     )
 }
 

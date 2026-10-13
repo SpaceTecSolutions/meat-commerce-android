@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.cart
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.*
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val repository: CustomerCartRepository,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(CartUiState())
@@ -55,17 +57,17 @@ class CartViewModel @Inject constructor(
                 it.copy(
                     loading = false,
                     busyProductIds = productId?.let(it.busyProductIds::minus) ?: emptySet(),
-                    error = if (productId == null) result.error.displayMessage() else it.error,
-                    message = if (productId != null) CartMessage(result.error.displayMessage(), false) else it.message,
+                    error = if (productId == null) result.error.displayMessage(context) else it.error,
+                    message = if (productId != null) CartMessage(result.error.displayMessage(context), false) else it.message,
                 )
             }
         }
     }
 }
 
-private fun AppError.displayMessage() = when (this) {
-    AppError.Network, AppError.Offline -> "You're offline. Your saved cart is safe."
-    AppError.NotFound -> "A product is no longer available. Refresh your cart."
+private fun AppError.displayMessage(context: Context) = when (this) {
+    AppError.Network, AppError.Offline -> context.getString(R.string.cart_offline)
+    AppError.NotFound -> context.getString(R.string.cart_product_unavailable)
     is AppError.Validation -> message
-    else -> "We couldn't update your cart. Please try again."
+    else -> context.getString(R.string.cart_update_failed)
 }

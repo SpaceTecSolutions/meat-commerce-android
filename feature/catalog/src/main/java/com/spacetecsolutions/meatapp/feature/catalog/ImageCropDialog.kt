@@ -59,7 +59,7 @@ internal fun ImageCropDialog(
             bottomBar = { Surface(shadowElevation = 6.dp) {
                 Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(AppSpacing.small),
                     horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
-                    TextButton(onDismiss, Modifier.weight(1f), enabled = !saving) { Text("Cancel") }
+                    TextButton(onDismiss, Modifier.weight(1f), enabled = !saving) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_cancel_77dfd21)) }
                     TextButton(
                         onClick = {
                             val image = bitmap ?: return@TextButton
@@ -73,7 +73,7 @@ internal fun ImageCropDialog(
                         modifier = Modifier.weight(1f), enabled = bitmap != null && viewport.width > 0 && !saving,
                     ) {
                         if (saving) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                        else Text("Use Photo")
+                        else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_use_photo_47e9d5b))
                     }
                 }
             } },
@@ -83,7 +83,7 @@ internal fun ImageCropDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Text("Drag to reposition · Pinch to zoom", style = MaterialTheme.typography.bodyMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_drag_to_reposition_pinch_to_80644f5), style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(AppSpacing.medium))
                 val shape = if (circular) CircleShape else RoundedCornerShape(20.dp)

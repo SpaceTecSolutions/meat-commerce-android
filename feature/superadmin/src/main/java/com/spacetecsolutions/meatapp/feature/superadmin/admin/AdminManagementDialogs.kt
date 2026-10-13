@@ -54,7 +54,7 @@ fun AdminFormDialog(
 private fun AdminFormHeader(title: String, onBack: () -> Unit) {
     Box(Modifier.fillMaxWidth().height(56.dp)) {
         IconButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterStart)) {
-            Icon(AppIcons.Back, "Back", Modifier.size(20.dp))
+            Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_back_b52b36b), Modifier.size(20.dp))
         }
         Text(
             title,
@@ -85,7 +85,7 @@ private fun AdminFormContent(
         LabeledReadOnlyField("Client", appName, AppIcons.ArrowDown)
         LabeledAdminField(
             label = "Admin Name",
-            placeholder = "Enter admin name",
+            placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_enter_admin_name_1a09df2),
             value = form.name,
             onValueChange = onNameChange,
             error = form.nameError,
@@ -93,7 +93,7 @@ private fun AdminFormContent(
         )
         LabeledAdminField(
             label = "Mobile Number",
-            placeholder = "Enter mobile number",
+            placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_enter_mobile_number_ad0aef6),
             value = form.mobile,
             onValueChange = onMobileChange,
             error = form.mobileError,
@@ -103,7 +103,7 @@ private fun AdminFormContent(
         if (!form.editing) {
             LabeledAdminField(
                 label = "Password",
-                placeholder = "Enter password",
+                placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_enter_password_570591c),
                 value = form.password,
                 onValueChange = onPasswordChange,
                 error = form.passwordError,
@@ -112,7 +112,7 @@ private fun AdminFormContent(
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(if (passwordVisible) AppIcons.PasswordVisible else AppIcons.PasswordHidden, "Show password", Modifier.size(18.dp))
+                        Icon(if (passwordVisible) AppIcons.PasswordVisible else AppIcons.PasswordHidden, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_show_password_044b852), Modifier.size(18.dp))
                     }
                 },
             )
@@ -180,11 +180,11 @@ private fun AdminFormActions(
             Modifier.fillMaxWidth().navigationBarsPadding().padding(AppSpacing.medium),
             horizontalArrangement = Arrangement.End,
         ) {
-            OutlinedButton(onClick = onDismiss, enabled = !submitting, modifier = Modifier.width(104.dp)) { Text("Cancel") }
+            OutlinedButton(onClick = onDismiss, enabled = !submitting, modifier = Modifier.width(104.dp)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_cancel_77dfd21)) }
             Spacer(Modifier.width(AppSpacing.small))
             Button(onClick = onSave, enabled = !submitting, modifier = Modifier.width(124.dp)) {
                 if (submitting) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                else Text(if (editing) "Save Admin" else "Save Admin")
+                else Text(if (editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_save_admin_ae2b349) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_save_admin_ae2b349))
             }
         }
     }
@@ -200,9 +200,12 @@ fun AdminStatusDialog(
     val action = if (confirmation.activate) "Activate" else "Deactivate"
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("$action Admin?") },
-        text = { Text("${confirmation.admin.displayName} will ${if (confirmation.activate) "regain" else "lose"} Admin access.") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_action_admin_89631df, action)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_admin_status_confirmation,
+            confirmation.admin.displayName, androidx.compose.ui.res.stringResource(
+                if (confirmation.activate) com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_regain_access
+                else com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_lose_access))) },
         confirmButton = { Button(onClick = onConfirm, enabled = !submitting) { Text(action) } },
-        dismissButton = { TextButton(onClick = onDismiss, enabled = !submitting) { Text("Cancel") } },
+        dismissButton = { TextButton(onClick = onDismiss, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_cancel_77dfd21)) } },
     )
 }

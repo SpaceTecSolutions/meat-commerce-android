@@ -36,16 +36,16 @@ internal object StaffDesign {
 internal fun StaffTopBar(title: String, onProfile: (() -> Unit)? = null, onBack: (() -> Unit)? = null) {
     TopAppBar(
         title = { Column {
-            Text("MEAT STATION STAFF", style = MaterialTheme.typography.labelSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_meat_station_staff_48feb6f), style = MaterialTheme.typography.labelSmall,
                 color = StaffDesign.red, fontWeight = FontWeight.Bold)
             Text(title, style = MaterialTheme.typography.titleLarge,
                 color = StaffDesign.ink, fontWeight = FontWeight.SemiBold)
         } },
-        navigationIcon = { if (onBack != null) IconButton(onBack) { Icon(AppIcons.Back, "Back") } },
+        navigationIcon = { if (onBack != null) IconButton(onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_back_b52b36b)) } },
         actions = { onProfile?.let { action ->
             Surface(onClick = action, modifier = Modifier.padding(end = 16.dp),
                 shape = CircleShape, color = StaffDesign.red) {
-                Icon(AppIcons.Profile, "Employee profile", Modifier.padding(11.dp).size(22.dp), tint = Color.White)
+                Icon(AppIcons.Profile, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_employee_profile_feb6a12), Modifier.padding(11.dp).size(22.dp), tint = Color.White)
             }
         } },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = StaffDesign.canvas),
@@ -66,7 +66,7 @@ internal fun StaffIdentityCard(user: User, compact: Boolean = false) {
             Column(Modifier.weight(1f).padding(start = 14.dp)) {
                 Text(user.displayName, style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("Active Staff", style = MaterialTheme.typography.labelSmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_active_staff_3734abf), style = MaterialTheme.typography.labelSmall,
                     color = StaffDesign.success, fontWeight = FontWeight.SemiBold)
                 if (!compact) Text(user.mobileNumber, style = MaterialTheme.typography.bodySmall,
                     color = StaffDesign.muted)
@@ -74,7 +74,7 @@ internal fun StaffIdentityCard(user: User, compact: Boolean = false) {
             Surface(shape = RoundedCornerShape(50), color = StaffDesign.inset) {
                 Row(Modifier.padding(horizontal = 10.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(AppIcons.Security, null, Modifier.size(15.dp), tint = StaffDesign.muted)
-                    Text(" Staff", style = MaterialTheme.typography.labelSmall, color = StaffDesign.muted)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_staff_e5be667), style = MaterialTheme.typography.labelSmall, color = StaffDesign.muted)
                 }
             }
         }

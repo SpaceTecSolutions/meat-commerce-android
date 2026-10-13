@@ -36,15 +36,15 @@ private fun PaymentSettingsScreen(
     onBack: () -> Unit,
     actions: PaymentSettingsViewModel,
 ) {
-    Scaffold(topBar = { AppBackTopBar("Payment Settings", onBack) }) { padding ->
+    Scaffold(topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_payment_settings_1c76298), onBack) }) { padding ->
         when {
             state.loading -> ContentStateView(ContentState.Loading, contentPadding = padding)
             state.config == null -> ContentStateView(
                 ContentState.Error(description = state.error), contentPadding = padding, onAction = actions::refresh)
             !state.permissions.any -> ContentStateView(
                 ContentState.Empty(
-                    title = "No payment methods available",
-                    description = "Super Admin has not permitted any payment methods.",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_payment_methods_available_ef43bad),
+                    description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_super_admin_has_not_permitted_92cb361),
                 ),
                 contentPadding = padding,
             )
@@ -55,7 +55,7 @@ private fun PaymentSettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
             ) {
                 item {
-                    Text("Only methods permitted by Super Admin are shown.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_only_methods_permitted_by_super_75e96a1),
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 if (state.permissions.cod) item {
@@ -76,7 +76,7 @@ private fun PaymentSettingsScreen(
                         onClick = actions::verifyRazorpay,
                         modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.small),
                         enabled = !state.saving,
-                    ) { Text("Verify Razorpay setup") }
+                    ) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_verify_razorpay_setup_e58c6f1)) }
                 }
                 if (state.permissions.upi) item {
                     PaymentMethodCard(AppIcons.Upi, "UPI", "Accept supported UPI payments",
@@ -85,7 +85,7 @@ private fun PaymentSettingsScreen(
                 item {
                     Button(actions::save, Modifier.fillMaxWidth(), enabled = !state.saving) {
                         if (state.saving) CircularProgressIndicator(Modifier.size(AppSpacing.large))
-                        else { Icon(AppIcons.Save, null); Spacer(Modifier.width(AppSpacing.small)); Text("Save settings") }
+                        else { Icon(AppIcons.Save, null); Spacer(Modifier.width(AppSpacing.small)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_settings_913aba9)) }
                     }
                 }
             }
@@ -110,7 +110,7 @@ private fun PaymentMethodCard(
                 Text(title, style = MaterialTheme.typography.titleMedium)
                 Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 AnimatedVisibility(configured != null) {
-                    Text(if (configured == true) "Configured" else "Not configured",
+                    Text(if (configured == true) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_configured_668c5ff) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_not_configured_811931b),
                         color = if (configured == true) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.labelMedium)

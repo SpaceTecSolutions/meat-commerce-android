@@ -73,7 +73,7 @@ fun AdminShopSettingsRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.message) { state.message?.let { onMessage(it); viewModel.consumeMessage() } }
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Shop Settings", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_shop_settings_f704736), back)
         when {
             state.loading -> ContentStateView(ContentState.Loading)
             state.settings == null -> ContentStateView(ContentState.Error(description = state.error), onAction = viewModel::refresh)
@@ -97,7 +97,7 @@ private fun ShopSettingsForm(state: AdminShopSettingsState, actions: AdminShopSe
         state.error?.let { item { Text(it, color = MaterialTheme.colorScheme.error) } }
         item {
             Button(actions::save, Modifier.fillMaxWidth(), enabled = !state.saving) {
-                if (state.saving) CircularProgressIndicator(Modifier.size(AppDimensions.iconSmall)) else Text("Save Shop Settings")
+                if (state.saving) CircularProgressIndicator(Modifier.size(AppDimensions.iconSmall)) else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_shop_settings_138a321))
             }
         }
     }

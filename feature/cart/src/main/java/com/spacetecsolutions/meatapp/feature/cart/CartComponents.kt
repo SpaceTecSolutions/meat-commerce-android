@@ -33,9 +33,9 @@ import java.util.Locale
 @Composable
 internal fun CartTopBar(hasItems: Boolean, editing: Boolean, back: () -> Unit, edit: () -> Unit) {
     TopAppBar(
-        title = { Text("My Cart", style = MaterialTheme.typography.titleMedium,
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_my_cart_779756a), style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold) },
-        navigationIcon = { IconButton(onClick = back) { Icon(AppIcons.Back, "Back") } },
+        navigationIcon = { IconButton(onClick = back) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_back_b52b36b)) } },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
         expandedHeight = 64.dp,
     )
@@ -53,16 +53,16 @@ internal fun DeliveryAddressSection(address: CustomerAddress?, change: () -> Uni
             }
             Column(Modifier.weight(1f).padding(horizontal = AppSpacing.small),
                 verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("DELIVERING TO", style = MaterialTheme.typography.labelSmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_delivering_to_e587e41), style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(address?.type?.name?.lowercase()?.replaceFirstChar(Char::titlecase)
                     ?: "Choose an address", fontWeight = FontWeight.Bold)
-                Text(address?.compactAddress() ?: "No delivery address selected",
+                Text(address?.compactAddress() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_no_delivery_address_selected_3f4bec2),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
-            TextButton(onClick = change) { Text(if (address == null) "Add" else "Change") }
+            TextButton(onClick = change) { Text(if (address == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_add_61cc55a) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_change_64fbd99)) }
         }
     }
 }
@@ -103,7 +103,7 @@ internal fun CartItemRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant)*/
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("${money(line.lineTotalMinor)} / ${line.unit.homeUnit()}", style = MaterialTheme.typography.bodyMedium,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_money_line_linetotalminor_line_unit_aa7adfc, money(line.lineTotalMinor), line.unit.homeUnit()), style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                     if (line.regularPriceMinor > line.unitPriceMinor) Text(
                         money(line.regularPriceMinor * line.quantity),
@@ -113,7 +113,7 @@ internal fun CartItemRow(
                 }
 //                CartQuantitySelector(line, busy, onQuantity)
             }
-            if (!line.available) Text("Currently unavailable", style = MaterialTheme.typography.labelSmall,
+            if (!line.available) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_currently_unavailable_7721e8c), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error)
         }
           CartQuantitySelector(line, busy, onQuantity)
@@ -166,7 +166,7 @@ internal fun AddMoreItems(click: () -> Unit) {
     TextButton(onClick = click, modifier = Modifier.fillMaxWidth().padding(vertical = AppSpacing.small)) {
         Icon(AppIcons.Add, null, Modifier.size(AppDimensions.iconSmall))
         Spacer(Modifier.width(AppSpacing.extraSmall))
-        Text("Add more items")
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_add_more_items_f861d80))
     }
 }
 
@@ -174,7 +174,7 @@ internal fun AddMoreItems(click: () -> Unit) {
 internal fun CartBillSummary(cart: CustomerCart) {
     Column(Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(AppSpacing.compact)) {
-        Text("Bill Summary", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_bill_summary_6619db6), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         SummaryRow("Item Total", money(cart.subtotalMinor))
         if (cart.discountMinor > 0) SummaryRow("Discount", "−${money(cart.discountMinor)}")
         if (cart.deliveryFeeMinor == 0L) FreeDeliveryRow()
@@ -204,9 +204,9 @@ internal fun CartAdjustmentNotice(adjustments: List<CartAdjustment>) {
 @Composable
 internal fun EmptyCartContent(browse: () -> Unit) = ContentStateView(
     ContentState.Empty(
-        title = "Your cart is empty",
-        description = "Looks like you haven't added anything yet.",
-        actionLabel = "Browse Products",
+        title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_your_cart_is_empty_2303a3a),
+        description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_looks_like_you_haven_t_a6e8121),
+        actionLabel = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_browse_products_9a6a223),
     ),
     onAction = browse,
 )
@@ -226,10 +226,10 @@ private fun SummaryRow(label: String, value: String, emphasize: Boolean = false)
 @Composable
 private fun FreeDeliveryRow() {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("Delivery Charge", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_delivery_charge_e1d29b6), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
             color = T.muted,
             textDecoration = TextDecoration.LineThrough)
-        Text("FREE", style = MaterialTheme.typography.bodyMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_free_4a9768f), style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold, color = T.green)
     }
 }

@@ -21,7 +21,7 @@ internal fun AdminOrderDetailsDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Order ${order.displayNumber}") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_order_displaynumber_5a620eb, order.displayNumber)) },
         text = {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().heightIn(max = AppDimensions.contentMaxWidth),
@@ -32,19 +32,19 @@ internal fun AdminOrderDetailsDialog(
                     Text(order.customerMobile)
                     Text(order.addressSummary, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } }
-                item { Text("Items", style = MaterialTheme.typography.titleMedium) }
+                item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_items_44d25b5), style = MaterialTheme.typography.titleMedium) }
                 items(order.items, key = { it.productId }) { item ->
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Column(Modifier.weight(1f)) {
                             Text(item.name, style = MaterialTheme.typography.titleSmall)
-                            Text("${item.quantityLabel} × ${item.unitPriceMinor.money(order.currencyCode)}",
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_item_quantitylabel_item_unitpriceminor_money_4e27373, item.quantityLabel, item.unitPriceMinor.money(order.currencyCode)),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Text(item.lineTotalMinor.money(order.currencyCode))
                     }
                 }
                 item { DetailSection("Payment") {
-                    Text("${order.paymentMethod.name} · ${order.paymentStatus.name}")
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_paymentmethod_name_order_paymentstatus_8160e87, order.paymentMethod.name, order.paymentStatus.name))
                 } }
                 item { DetailSection("Totals") {
                     TotalRow("Subtotal", order.subtotalMinor.money(order.currencyCode))
@@ -57,7 +57,7 @@ internal fun AdminOrderDetailsDialog(
                     DetailSection("Instructions") { Text(order.instructions) }
                 }
                 if (order.readyForDeliveryAssignment) item {
-                    Text("Ready for delivery assignment", color = MaterialTheme.colorScheme.primary,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_ready_for_delivery_assignment_afc413b), color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.titleSmall)
                 }
                 if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
@@ -65,15 +65,15 @@ internal fun AdminOrderDetailsDialog(
         },
         confirmButton = {
             when {
-                order.canConfirm -> Button(onConfirm, enabled = !busy) { Text("Confirm") }
-                order.canStartPreparing -> Button(onStartPreparing, enabled = !busy) { Text("Start Preparing") }
-                order.canMarkReadyForDelivery -> Button(onMarkReady, enabled = !busy) { Text("Mark Ready") }
+                order.canConfirm -> Button(onConfirm, enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_confirm_04a2122)) }
+                order.canStartPreparing -> Button(onStartPreparing, enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_start_preparing_b18be6d)) }
+                order.canMarkReadyForDelivery -> Button(onMarkReady, enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_mark_ready_c4329a4)) }
             }
         },
         dismissButton = {
             if (order.canReject) TextButton(onReject, enabled = !busy) {
-                Text("Reject", color = MaterialTheme.colorScheme.error)
-            } else TextButton(onDismiss) { Text("Close") }
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reject_2b03b59), color = MaterialTheme.colorScheme.error)
+            } else TextButton(onDismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_bbfa773)) }
         },
     )
 }

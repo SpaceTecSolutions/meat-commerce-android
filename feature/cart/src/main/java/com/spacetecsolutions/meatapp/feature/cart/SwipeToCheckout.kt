@@ -61,17 +61,18 @@ internal fun SwipeToCheckout(cart: CustomerCart, checkout: () -> Unit) {
                 Row(Modifier.fillMaxSize().padding(start = 44.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center) {
-                    Text("Swipe to Checkout", color = if (enabled) T.red else T.muted,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_swipe_to_checkout_63e4c74), color = if (enabled) T.red else T.muted,
                         style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     /*Icon(AppIcons.ArrowRight, null, Modifier.padding(start = 8.dp),
                         tint = if (enabled) T.red else T.muted)*/
                 }
+                val checkoutDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_swipe_right_to_checkout_a30b88a)
                 Surface(
                     modifier = Modifier
                         .scale(if (enabled && dragOffset == 0f) arrowScale else 1f)
                         .offset { IntOffset(dragOffset.roundToInt(), 0) }
                         .size(56.dp).padding(4.dp)
-                        .semantics { contentDescription = "Swipe right to checkout" }
+                        .semantics { contentDescription = checkoutDescription }
                         .draggable(orientation = Orientation.Horizontal, state = state,
                             enabled = enabled, onDragStopped = {
                                 val end = dragOffset >= travel * .8f
@@ -91,8 +92,7 @@ internal fun SwipeToCheckout(cart: CustomerCart, checkout: () -> Unit) {
                         tint = Color.White)
                 } }
             }
-            Text(if (canEnterCheckout) "Slide right to select address and delivery time"
-                else "Check your items and minimum order to continue",
+            Text(if (canEnterCheckout) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_slide_right_to_select_address_b7db5cf) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_check_your_items_and_minimum_1ad35d5),
                 modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.labelSmall,
                 color = T.muted, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
     }

@@ -42,42 +42,42 @@ internal fun BannerFormScreen(form: BannerForm, busy: Boolean, actions: BannerMa
                 .padding(AppSpacing.medium),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
         ) {
-            Text("Customer preview", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_customer_preview_afd0ea0), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Box(Modifier.fillMaxWidth().height(180.dp)) {
                 AppImage(form.selectedImage ?: form.existingImage, null, Modifier.fillMaxSize(), cornerRadius = 14.dp)
                 PositionedBannerContent(form.preview(), onMoveText = { position -> actions.update { it.copy(textPlacement = position) } },
                     onMoveSubtitle = { position -> actions.update { it.copy(subtitlePlacement = position) } },
                     onMoveButton = { position -> actions.update { it.copy(buttonPlacement = position) } })
             }
-            Text("Drag title, message and button independently in the preview.", style = MaterialTheme.typography.bodySmall)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_drag_title_message_and_button_dc0da25), style = MaterialTheme.typography.bodySmall)
             OutlinedButton(onClick = { picker.launch("image/*") }, enabled = !busy, modifier = Modifier.fillMaxWidth()) {
                 Icon(AppIcons.Camera, null); Spacer(Modifier.width(AppSpacing.small))
-                Text(if (form.existingImage == null && form.selectedImage == null) "Choose banner image" else "Change image")
+                Text(if (form.existingImage == null && form.selectedImage == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_choose_banner_image_069e607) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_change_image_62a7b48))
             }
-            Text("Use a landscape image. The photo fills the entire banner; check that text remains readable.",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_use_a_landscape_image_the_d5770cb),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             OutlinedTextField(form.title, { value -> actions.update { it.copy(title = value.take(80)) } },
-                Modifier.fillMaxWidth(), label = { Text("Title") }, singleLine = true, enabled = !busy)
+                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_title_768e0c1)) }, singleLine = true, enabled = !busy)
             OutlinedTextField(form.subtitle, { value -> actions.update { it.copy(subtitle = value.take(180)) } },
-                Modifier.fillMaxWidth(), label = { Text("Message") }, minLines = 2, maxLines = 3, enabled = !busy)
+                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_message_68f4145)) }, minLines = 2, maxLines = 3, enabled = !busy)
             BannerPlacementControls(form, actions)
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) { Text("Show action button", fontWeight = FontWeight.SemiBold)
-                    Text("Opens the selected product", style = MaterialTheme.typography.bodySmall,
+                Column(Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_show_action_button_745ef4f), fontWeight = FontWeight.SemiBold)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_opens_the_selected_product_c03cf6f), style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 Switch(form.buttonEnabled, { value -> actions.update { it.copy(buttonEnabled = value) } },
                     enabled = !busy, colors = appSwitchColors())
             }
             if (form.buttonEnabled) {
                 OutlinedTextField(form.buttonText, { value -> actions.update { it.copy(buttonText = value.take(24)) } },
-                    Modifier.fillMaxWidth(), label = { Text("Button text") }, singleLine = true, enabled = !busy)
+                    Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_button_text_2c1bff4)) }, singleLine = true, enabled = !busy)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(form.buttonColor == "RED", { actions.update { it.copy(buttonColor = "RED") } },
-                        label = { Text("Red button") })
+                        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_red_button_498f910)) })
                     FilterChip(form.buttonColor == "WHITE", { actions.update { it.copy(buttonColor = "WHITE") } },
-                        label = { Text("White button") })
+                        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_white_button_07f5a4f)) })
                 }
-                Text("Button text color", style = MaterialTheme.typography.labelLarge)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_button_text_color_e0174b5), style = MaterialTheme.typography.labelLarge)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("WHITE", "RED", "BLACK").forEach { color ->
                         FilterChip(form.buttonTextColor == color,
@@ -87,23 +87,23 @@ internal fun BannerFormScreen(form: BannerForm, busy: Boolean, actions: BannerMa
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(form.buttonShape == "ROUNDED", { actions.update { it.copy(buttonShape = "ROUNDED") } },
-                        label = { Text("Rounded") })
+                        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_rounded_c5aa340)) })
                     FilterChip(form.buttonShape == "CAPSULE", { actions.update { it.copy(buttonShape = "CAPSULE") } },
-                        label = { Text("Capsule") })
+                        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_capsule_c81cf89)) })
                 }
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Show arrow in button", Modifier.weight(1f))
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_show_arrow_in_button_335bc5c), Modifier.weight(1f))
                     Switch(form.buttonArrow, { value -> actions.update { it.copy(buttonArrow = value) } },
                         colors = appSwitchColors())
                 }
                 BannerDestinationPicker(form, actions)
             }
             OutlinedTextField(form.sortOrder, { value -> actions.update { it.copy(sortOrder = value.filter(Char::isDigit)) } },
-                Modifier.fillMaxWidth(), label = { Text("Display order (0 first)") }, singleLine = true,
+                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_display_order_0_first_0c9ddb2)) }, singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), enabled = !busy)
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) { Text("Display in customer app", fontWeight = FontWeight.SemiBold)
-                    Text(if (form.active) "Visible" else "Hidden", style = MaterialTheme.typography.bodySmall,
+                Column(Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_display_in_customer_app_7b4ddbe), fontWeight = FontWeight.SemiBold)
+                    Text(if (form.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_visible_1fe5939) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_hidden_d4c2792), style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 Switch(form.active, { value -> actions.update { it.copy(active = value) } },
                     enabled = !busy, colors = appSwitchColors())
@@ -119,7 +119,7 @@ private fun AlignmentSelector(value: BannerContentAlignment, busy: Boolean, sele
     var open by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(expanded = open, onExpandedChange = { if (!busy) open = it }) {
         OutlinedTextField(value.label(), {}, Modifier.fillMaxWidth().menuAnchor(), readOnly = true,
-            label = { Text("Text and button alignment") }, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(open) })
+            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_text_and_button_alignment_dc242af)) }, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(open) })
         ExposedDropdownMenu(open, { open = false }) { BannerContentAlignment.entries.forEach { alignment ->
             DropdownMenuItem(text = { Text(alignment.label()) }, onClick = { select(alignment); open = false })
         } }

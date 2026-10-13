@@ -33,19 +33,19 @@ internal fun AdminRevenueChart(points: List<ReportSeriesPoint>, currency: String
     }) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("Sales Overview", style = MaterialTheme.typography.titleMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_sales_overview_595dac4), style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold, color = ReportsStyle.ink)
-                Text("Revenue ($symbol)", style = MaterialTheme.typography.bodySmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_revenue_symbol_fc8d1ff, symbol), style = MaterialTheme.typography.bodySmall,
                     color = ReportsStyle.muted)
             }
-            Text("Peak: ${maximum.money(currency)}", style = MaterialTheme.typography.labelSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_peak_maximum_money_currency_e311c0a, maximum.money(currency)), style = MaterialTheme.typography.labelSmall,
                 color = ReportsStyle.red, modifier = Modifier.background(ReportsStyle.rose, ReportsStyle.pillShape)
                     .padding(horizontal = 10.dp, vertical = 5.dp))
         }
         Spacer(Modifier.height(20.dp))
         if (points.isEmpty() || points.all { it.revenueMinor == 0L }) {
             Box(Modifier.fillMaxWidth().height(175.dp), contentAlignment = Alignment.Center) {
-                Text("No revenue recorded in this period", color = ReportsStyle.muted,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_revenue_recorded_in_this_f3cf45f), color = ReportsStyle.muted,
                     style = MaterialTheme.typography.bodySmall)
             }
         } else {

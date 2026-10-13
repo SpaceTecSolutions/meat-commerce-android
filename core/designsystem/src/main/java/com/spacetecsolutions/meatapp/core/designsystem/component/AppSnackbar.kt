@@ -148,7 +148,7 @@ private fun AppSnackbar(
                 IconButton(onClick = data::dismiss) {
                     Icon(
                         imageVector = Icons.Rounded.Close,
-                        contentDescription = "Dismiss",
+                        contentDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_dismiss_70afe9e),
                         tint = visuals.content
                     )
                 }
@@ -182,7 +182,7 @@ private fun snackbarVisuals(
             ),
             baseColor = Color(0xE62F8333),
             content = Color.White,
-            description = "Success",
+            description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_success_42a8f65),
         )
 
         AppSnackbarType.ERROR -> SnackbarVisuals(
@@ -195,7 +195,7 @@ private fun snackbarVisuals(
             ),
             baseColor = Color(0xFFEA384D),
             content = Color.White,
-            description = "Error",
+            description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_error_7f2f6a1),
         )
 
         AppSnackbarType.WARNING -> SnackbarVisuals(
@@ -208,7 +208,7 @@ private fun snackbarVisuals(
             ),
             baseColor = Color(0xFFF7971E),
             content = Color.White,
-            description = "Warning",
+            description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_warning_e9c4556),
         )
 
         AppSnackbarType.INFO -> SnackbarVisuals(
@@ -221,7 +221,7 @@ private fun snackbarVisuals(
             ),
             baseColor = Color(0xFF2948FF),
             content = Color.White,
-            description = "Information",
+            description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_information_0eb5ed5),
         )
     }
 }

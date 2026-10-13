@@ -34,7 +34,7 @@ fun ConfirmationDialog(
                 else MaterialTheme.colorScheme.primary)
             }
         },
-        dismissButton = { TextButton(onDismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(onDismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_cancel_77dfd21)) } },
         shape = MaterialTheme.shapes.large,
     )
 }

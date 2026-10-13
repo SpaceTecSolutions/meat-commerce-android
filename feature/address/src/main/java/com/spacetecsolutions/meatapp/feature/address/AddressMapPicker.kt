@@ -88,11 +88,11 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
     com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar()
     Scaffold(containerColor = T.canvas, topBar = {
         TopAppBar(title = { Column {
-            Text("Choose Location", style = MaterialTheme.typography.titleMedium,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_choose_location_b6f07d5), style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold)
-            Text("Move pin or search address", style = MaterialTheme.typography.labelSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_move_pin_or_search_address_7309477), style = MaterialTheme.typography.labelSmall,
                 color = T.muted)
-        } }, navigationIcon = { IconButton(dismiss) { Icon(AppIcons.Back, "Back") } },
+        } }, navigationIcon = { IconButton(dismiss) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) } },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         Surface(color = T.surface, shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
@@ -100,9 +100,9 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
             Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("SELECTED DELIVERY PIN", Modifier.weight(1f),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_pin_a940f31), Modifier.weight(1f),
                         style = MaterialTheme.typography.labelSmall, color = T.muted)
-                    if (preview != null) Text("Location resolved",
+                    if (preview != null) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_location_resolved_8876579),
                         style = MaterialTheme.typography.labelSmall, color = T.success)
                 }
                 Surface(color = T.canvas, shape = RoundedCornerShape(13.dp),
@@ -115,7 +115,7 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                                 ?: if (loading) "Resolving pin..." else "Move map to choose a pin",
                                 fontWeight = FontWeight.SemiBold, maxLines = 1,
                                 overflow = TextOverflow.Ellipsis)
-                            Text(preview?.address ?: "Search or move the map to your delivery location.",
+                            Text(preview?.address ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_or_move_the_map_b35168c),
                                 style = MaterialTheme.typography.bodySmall, color = T.muted,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
@@ -129,7 +129,7 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                     colors = ButtonDefaults.buttonColors(containerColor = T.red),
                     shape = RoundedCornerShape(10.dp)) {
                     Icon(AppIcons.Check, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp))
-                    Text("Confirm Location & Proceed")
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_confirm_location_proceed_32c8f1d))
                 }
             }
         }
@@ -154,7 +154,7 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                 if (form.latitude != null && form.longitude != null)
                     onIdle(form.latitude, form.longitude)
             } } }, modifier = Modifier.fillMaxSize())
-            Icon(AppIcons.Location, "Selected delivery pin",
+            Icon(AppIcons.Location, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_pin_f82b203),
                 Modifier.align(Alignment.Center).padding(bottom = 30.dp).size(48.dp),
                 tint = T.red)
             Column(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(12.dp),
@@ -163,19 +163,19 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                     colors = ButtonDefaults.buttonColors(containerColor = T.surface, contentColor = T.ink),
                     shape = RoundedCornerShape(14.dp), elevation = ButtonDefaults.buttonElevation(3.dp)) {
                     Icon(AppIcons.Search, null, Modifier.size(19.dp)); Spacer(Modifier.width(8.dp))
-                    Text("Search address or landmark...", Modifier.weight(1f),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_address_or_landmark_dcd28a7), Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium, color = T.muted)
                 }
                 Surface(Modifier.align(Alignment.CenterHorizontally), color = T.ink,
                     shape = RoundedCornerShape(50)) {
-                    Text("Drag map to adjust delivery pin", Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_drag_map_to_adjust_delivery_9db6fee), Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelSmall, color = T.surface)
                 }
             }
             SmallFloatingActionButton(useCurrentLocation,
                 Modifier.align(Alignment.CenterEnd).padding(end = 12.dp),
                 containerColor = T.surface, contentColor = T.red) {
-                Icon(AppIcons.LiveTracking, "Use current location")
+                Icon(AppIcons.LiveTracking, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_use_current_location_622c745))
             }
         }
     }

@@ -57,11 +57,11 @@ internal fun StaffMoreScreen(user: User, navigate: (String) -> Unit, logout: () 
                         Row(Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically) {
                             Icon(AppIcons.Security, null, Modifier.size(14.dp), tint = StaffDesign.muted)
-                            Text(" Secure staff session", style = MaterialTheme.typography.labelSmall,
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_secure_staff_session_ed9e893), style = MaterialTheme.typography.labelSmall,
                                 color = StaffDesign.muted)
                         }
                     }
-                    Text("Access is controlled by your store administrator",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_access_is_controlled_by_your_d463876),
                         Modifier.padding(top = 8.dp), style = MaterialTheme.typography.bodySmall,
                         color = StaffDesign.muted)
                 }
@@ -87,7 +87,7 @@ internal fun StaffProfileScreen(user: User, navigate: (String) -> Unit, logout: 
                         style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Text(user.mobileNumber, color = StaffDesign.muted)
                     Surface(Modifier.padding(top = 10.dp), shape = CircleShape, color = StaffDesign.paleRed) {
-                        Text("●  Active Staff Member", Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_active_staff_member_2709b48), Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             style = MaterialTheme.typography.labelMedium, color = StaffDesign.red)
                     }
                 }
@@ -101,7 +101,7 @@ internal fun StaffProfileScreen(user: User, navigate: (String) -> Unit, logout: 
             } }
             item { StaffSectionLabel("Your Assigned Permissions", "Locked") }
             if (user.permissions.isEmpty()) item { StaffCard(Modifier.fillMaxWidth()) {
-                Text("No operational permissions are currently assigned.", color = StaffDesign.muted)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_no_operational_permissions_are_currently_a90fee6), color = StaffDesign.muted)
             } } else items(user.permissions.sortedBy { it.ordinal }, key = { it.name }) { permission ->
                 Surface(shape = RoundedCornerShape(12.dp), color = StaffDesign.inset) {
                     Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -117,17 +117,17 @@ internal fun StaffProfileScreen(user: User, navigate: (String) -> Unit, logout: 
                 }
             }
             item {
-                Text("To request access changes, contact your store administrator.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_to_request_access_changes_contact_d605625),
                     style = MaterialTheme.typography.bodySmall, color = StaffDesign.muted)
             }
             item {
                 Button({ confirmLogout = true }, Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = StaffDesign.paleRed,
                         contentColor = StaffDesign.red), shape = RoundedCornerShape(10.dp)) {
-                    Icon(AppIcons.Logout, null); Spacer(Modifier.width(8.dp)); Text("Log Out")
+                    Icon(AppIcons.Logout, null); Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_log_out_4e8131c))
                 }
             }
-            item { TextButton({ navigate(StaffRoutes.HELP) }, Modifier.fillMaxWidth()) { Text("Help & Support") } }
+            item { TextButton({ navigate(StaffRoutes.HELP) }, Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_help_support_2746ea5)) } }
         }
     }
     if (confirmLogout) StaffLogoutDialog(user.displayName, { confirmLogout = false }, logout)
@@ -143,17 +143,17 @@ internal fun StaffHelpScreen(back: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(AppIcons.Contact, null, Modifier.size(30.dp), tint = StaffDesign.red)
                     Column(Modifier.padding(start = 14.dp)) {
-                        Text("Need assistance?", style = MaterialTheme.typography.titleLarge,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_need_assistance_52da65d), style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold)
-                        Text("Contact your store administrator for access, account, or operational support.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_contact_your_store_administrator_for_313c2de),
                             color = StaffDesign.muted)
                     }
                 }
             }
             StaffCard(Modifier.fillMaxWidth()) {
-                Text("Access requests", fontWeight = FontWeight.SemiBold)
-                Text("Permissions can only be changed by an authorized administrator.", color = StaffDesign.muted)
-                Text("For urgent order issues, provide the order number and a short description.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_access_requests_2023cc3), fontWeight = FontWeight.SemiBold)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_permissions_can_only_be_changed_13037fa), color = StaffDesign.muted)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_for_urgent_order_issues_provide_3c63006),
                     color = StaffDesign.muted)
             }
         }
@@ -176,10 +176,10 @@ private fun StaffInfoRow(icon: androidx.compose.ui.graphics.vector.ImageVector, 
 @Composable
 private fun StaffLogoutDialog(name: String, dismiss: () -> Unit, logout: () -> Unit) = AlertDialog(
     onDismissRequest = dismiss,
-    title = { Text("Log out from staff account?") },
-    text = { Text("$name will need to verify the account again to access operational tools.") },
+    title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_log_out_from_staff_account_9171056)) },
+    text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_name_will_need_to_verify_1796c1e, name)) },
     confirmButton = { Button(logout, colors = ButtonDefaults.buttonColors(containerColor = StaffDesign.red)) {
-        Text("Log Out")
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_log_out_4e8131c))
     } },
-    dismissButton = { TextButton(dismiss) { Text("Cancel") } },
+    dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_cancel_77dfd21)) } },
 )

@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.catalog
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.*
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CustomerCategoriesViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val categoryRepository: CategoryRepository,
     private val productRepository: ProductRepository,
     private val cartRepository: CustomerCartRepository,
@@ -126,7 +128,7 @@ class CustomerCategoriesViewModel @Inject constructor(
                 it.copy(
                     detailLoading = false,
                     offline = result.error == AppError.Network || result.error == AppError.Offline,
-                    error = result.error.displayMessage(),
+                    error = result.error.displayMessage(context),
                 )
             }
         }
@@ -177,7 +179,7 @@ class CustomerCategoriesViewModel @Inject constructor(
             is AppResult.Failure -> mutableState.update {
                 it.copy(
                     addingProductIds = it.addingProductIds - product.id,
-                    message = CategoryMessage(result.error.addToCartMessage(), false),
+                    message = CategoryMessage(result.error.addToCartMessage(context), false),
                 )
             }
         }
@@ -206,7 +208,7 @@ class CustomerCategoriesViewModel @Inject constructor(
             }
             is AppResult.Failure -> mutableState.update {
                 it.copy(addingProductIds = it.addingProductIds - product.id,
-                    message = CategoryMessage(result.error.addToCartMessage(), false))
+                    message = CategoryMessage(result.error.addToCartMessage(context), false))
             }
         }
     }
@@ -232,7 +234,7 @@ class CustomerCategoriesViewModel @Inject constructor(
                 )
             }
             is AppResult.Failure -> mutableState.update {
-                val message = result.error.displayMessage()
+                val message = result.error.displayMessage(context)
                 val offline = result.error == AppError.Network || result.error == AppError.Offline
                 if (it.categories.isEmpty()) {
                     it.copy(loading = false, refreshing = false, offline = offline, error = message)
@@ -284,7 +286,7 @@ class CustomerCategoriesViewModel @Inject constructor(
                 )
             }
             is AppResult.Failure -> mutableState.update {
-                val message = result.error.displayMessage()
+                val message = result.error.displayMessage(context)
                 val offline = result.error == AppError.Network || result.error == AppError.Offline
                 if (it.products.isEmpty()) {
                     it.copy(
@@ -309,18 +311,18 @@ class CustomerCategoriesViewModel @Inject constructor(
     }
 }
 
-private fun AppError.displayMessage() = when (this) {
-    AppError.Network, AppError.Offline -> "You're offline. Check your connection and try again."
-    AppError.NotFound -> "This product is no longer available"
+private fun AppError.displayMessage(context: Context) = when (this) {
+    AppError.Network, AppError.Offline -> context.getString(R.string.catalog_offline)
+    AppError.NotFound -> context.getString(R.string.catalog_product_unavailable)
     is AppError.Validation -> message
-    else -> "Something went wrong. Please try again."
+    else -> context.getString(R.string.catalog_load_failed)
 }
 
-private fun AppError.addToCartMessage() = when (this) {
+private fun AppError.addToCartMessage(context: Context) = when (this) {
     AppError.Network, AppError.Offline, AppError.Timeout ->
-        "Unable to add item while offline. Check your connection and try again."
-    AppError.Unauthorized -> "Please sign in again to add items to your cart."
-    AppError.NotFound -> "This product is no longer available."
+        context.getString(R.string.catalog_add_offline)
+    AppError.Unauthorized -> context.getString(R.string.catalog_sign_in_to_add)
+    AppError.NotFound -> context.getString(R.string.catalog_product_unavailable)
     is AppError.Validation -> message
-    else -> "Unable to add item to cart. Please try again."
+    else -> context.getString(R.string.catalog_add_failed)
 }

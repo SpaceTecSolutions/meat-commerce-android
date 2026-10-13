@@ -27,15 +27,15 @@ fun AdminChangePasswordRoute(
         if (state.changed) { onChanged("Password updated successfully"); viewModel.consumeChanged(); back() }
     }
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Change Password", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_change_password_49289db), back)
         Column(
             Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = AppDimensions.formMaxWidth).verticalScroll(rememberScrollState())
                 .padding(AppSpacing.medium),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
         ) {
-            Text("Create a strong password", style = MaterialTheme.typography.titleLarge)
-            Text("Use at least 8 characters with uppercase, lowercase and a number.",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_a_strong_password_493ef0c), style = MaterialTheme.typography.titleLarge)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_use_at_least_8_characters_552b16c),
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             SecureField("Current password", state.current, viewModel::current, state.saving)
             SecureField("New password", state.password, viewModel::password, state.saving)
@@ -43,7 +43,7 @@ fun AdminChangePasswordRoute(
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             Button(viewModel::save, Modifier.fillMaxWidth(), enabled = !state.saving) {
                 if (state.saving) CircularProgressIndicator(Modifier.size(AppDimensions.iconSmall))
-                else { Icon(AppIcons.Security, null); Spacer(Modifier.width(AppSpacing.small)); Text("Update Password") }
+                else { Icon(AppIcons.Security, null); Spacer(Modifier.width(AppSpacing.small)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_update_password_61dcf34)) }
             }
         }
     }

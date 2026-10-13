@@ -93,31 +93,31 @@ internal fun CustomerAuthSheet(state: CustomerAuthState, onDismiss: () -> Unit,
 private fun PhoneContent(state: CustomerAuthState, close: () -> Unit,
     phone: (String) -> Unit, request: () -> Unit, terms: () -> Unit, privacy: () -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("Continue with mobile", Modifier.weight(1f), fontSize = 23.sp, color = ink, fontWeight = FontWeight.ExtraBold)
-        TextButton(onClick = close) { Text("✕", color = muted) }
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_continue_with_mobile_ef4f902), Modifier.weight(1f), fontSize = 23.sp, color = ink, fontWeight = FontWeight.ExtraBold)
+        TextButton(onClick = close) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_text_0951b9a), color = muted) }
     }
-    Text("Enter your 10-digit mobile number to access your account, saved cuts, and orders.",
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_enter_your_10_digit_mobile_ca7c8fd),
         fontSize = 13.sp, lineHeight = 18.sp, color = muted)
     Spacer(Modifier.height(8.dp))
-    Text("MOBILE NUMBER", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = muted)
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_mobile_number_910101c), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = muted)
     OutlinedTextField(value = state.phone, onValueChange = phone, modifier = Modifier.fillMaxWidth(),
-        prefix = { Text("IN  +91  │  ", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = ink) },
-        placeholder = { Text("Enter mobile number") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        prefix = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_in_91_2fac948), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = ink) },
+        placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_enter_mobile_number_ad0aef6)) }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         singleLine = true, isError = state.error != null, shape = RoundedCornerShape(16.dp),
         colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = red, unfocusedContainerColor = field,
             focusedContainerColor = field))
-    Text("♙  We'll send a 6-digit verification code via SMS", fontSize = 11.sp, color = muted)
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_we_ll_send_a_6_6f949a0), fontSize = 11.sp, color = muted)
     state.error?.let { Text(it, color = red, fontSize = 12.sp) }
     var accepted by remember { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.Top) {
         Checkbox(checked = accepted, onCheckedChange = { accepted = it }, modifier = Modifier.size(40.dp),
             colors = CheckboxDefaults.colors(checkedColor = red))
         FlowRow(Modifier.padding(top = 9.dp)) {
-            Text("I agree to the", fontSize = 12.sp, color = muted)
-            Row { Text("Terms & Conditions", Modifier.clickable(onClick = terms), fontSize = 12.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_i_agree_to_the_fdd995f), fontSize = 12.sp, color = muted)
+            Row { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_terms_conditions_d35f2b9), Modifier.clickable(onClick = terms), fontSize = 12.sp,
                 color = ink, fontWeight = FontWeight.Bold)
-                Text(" and acknowledge the ", fontSize = 12.sp, color = muted) }
-            Text("Privacy Policy", Modifier.clickable(onClick = privacy), fontSize = 12.sp,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_and_acknowledge_the_0280e71), fontSize = 12.sp, color = muted) }
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_privacy_policy_9db108b), Modifier.clickable(onClick = privacy), fontSize = 12.sp,
                 color = ink, fontWeight = FontWeight.Bold)
         }
     }
@@ -126,7 +126,7 @@ private fun PhoneContent(state: CustomerAuthState, close: () -> Unit,
         shape = RoundedCornerShape(14.dp), colors = ButtonDefaults.buttonColors(containerColor = red)) {
         if (state.phase == CustomerAuthPhase.REQUESTING) CircularProgressIndicator(Modifier.size(18.dp),
             strokeWidth = 2.dp, color = Color.White)
-        else Text("Get OTP  →", fontWeight = FontWeight.Bold)
+        else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_get_otp_6dfdd1a), fontWeight = FontWeight.Bold)
     }
 }
 
@@ -165,55 +165,56 @@ private fun OtpEntryContent(state: CustomerAuthState, otp: (String) -> Unit,
     val verifying = state.phase in setOf(CustomerAuthPhase.CONVERGING, CustomerAuthPhase.VERIFYING)
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (!verifying) TextButton(onClick = changeNumber) { Text("‹", fontSize = 22.sp, color = muted) }
-            Text(if (verifying) "Verifying security code" else "Verify your number",
+            if (!verifying) TextButton(onClick = changeNumber) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_text_0dccf90), fontSize = 22.sp, color = muted) }
+            Text(if (verifying) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_verifying_security_code_f1830b0) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_verify_your_number_e8f4e92),
                 Modifier.weight(1f), fontSize = 23.sp,
                 fontWeight = FontWeight.ExtraBold, color = ink)
-            if (!verifying) Text("Step 2 of 2", fontSize = 11.sp,
+            if (!verifying) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_step_2_of_2_2510514), fontSize = 11.sp,
                 fontWeight = FontWeight.Bold, color = red)
         }
         if (!verifying) {
             Surface(color = field, shape = RoundedCornerShape(12.dp),
                 border = BorderStroke(1.dp, Color(0xFFE9ECF1))) {
                 Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("OTP sent to +91 ••••• ••${state.phone.takeLast(3)}", Modifier.weight(1f),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_otp_sent_to_91_state_9717efd, state.phone.takeLast(3)), Modifier.weight(1f),
                         fontSize = 12.sp, color = muted)
-                    Text("Change", Modifier.clickable(onClick = changeNumber), fontSize = 12.sp,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_change_64fbd99), Modifier.clickable(onClick = changeNumber), fontSize = 12.sp,
                         color = red, fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(Modifier.height(10.dp))
-            Text("ENTER 6-DIGIT CODE", Modifier.fillMaxWidth(), fontSize = 11.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_enter_6_digit_code_b457c44), Modifier.fillMaxWidth(), fontSize = 11.sp,
                 fontWeight = FontWeight.Bold, color = muted, textAlign = TextAlign.Center)
         } else {
-            Text("Please wait while we securely validate your OTP.", Modifier.fillMaxWidth(),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_please_wait_while_we_securely_197f31a), Modifier.fillMaxWidth(),
                 fontSize = 12.sp, color = muted, textAlign = TextAlign.Center)
         }
         Box(Modifier.fillMaxWidth()) {
             OtpTiles(state.otp, converging || state.phase == CustomerAuthPhase.VERIFYING)
             if (!verifying) {
                 val focusRequester = remember { FocusRequester() }
+                val otpFieldDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_six_digit_verification_code_7c0f5e4)
                 LaunchedEffect(state.phase) { focusRequester.requestFocus() }
                 BasicTextField(value = state.otp, onValueChange = otp,
                     modifier = Modifier.matchParentSize().focusRequester(focusRequester)
-                        .semantics { contentDescription = "Six digit verification code" }.alpha(0.01f),
+                        .semantics { contentDescription = otpFieldDescription }.alpha(0.01f),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                     singleLine = true)
             }
         }
         if (verifying) {
-            Text("Verifying...", Modifier.fillMaxWidth(), fontSize = 15.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_verifying_bf6ea54), Modifier.fillMaxWidth(), fontSize = 15.sp,
                 fontWeight = FontWeight.Bold, color = ink, textAlign = TextAlign.Center)
-            Text("Please do not close this window", Modifier.fillMaxWidth(), fontSize = 11.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_please_do_not_close_this_a12523d), Modifier.fillMaxWidth(), fontSize = 11.sp,
                 color = muted, textAlign = TextAlign.Center)
         } else {
-            state.error?.let { Text("❗ $it", fontSize = 12.sp, color = red,
+            state.error?.let { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_it_003874e, it), fontSize = 12.sp, color = red,
                 fontWeight = FontWeight.SemiBold) }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Didn't receive the OTP?", fontSize = 12.sp, color = muted)
-                if (state.secondsUntilResend > 0) Text("Resend in 00:${state.secondsUntilResend.toString().padStart(2, '0')}",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_didn_t_receive_the_otp_abf5b17), fontSize = 12.sp, color = muted)
+                if (state.secondsUntilResend > 0) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_resend_timer, state.secondsUntilResend),
                     fontSize = 12.sp, color = muted)
-                else Text("Resend OTP", Modifier.clickable(onClick = resend), fontSize = 12.sp,
+                else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_resend_otp_b707b69), Modifier.clickable(onClick = resend), fontSize = 12.sp,
                     color = red, fontWeight = FontWeight.Bold)
             }
         }
@@ -298,10 +299,10 @@ private fun OtpValidationResult(success: Boolean, message: String?, onRetry: () 
             animation = if (success) AppAnimation.OrderSuccess else AppAnimation.OrderCancelled,
             modifier = Modifier.size(168.dp),
         )
-        Text(if (success) "OTP verified" else "Verification failed", fontSize = 23.sp,
+        Text(if (success) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_otp_verified_b8694c9) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_verification_failed_e10d7e5), fontSize = 23.sp,
             color = ink, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
-        Text(if (success) "Signing you in securely…" else
-            (message ?: "The code could not be verified. Please try again."),
+        Text(if (success) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_signing_you_in_securely) else
+            (message ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_verification_failed_default_message)),
             modifier = Modifier.fillMaxWidth(), fontSize = 12.sp, lineHeight = 18.sp,
             color = if (success) muted else red, textAlign = TextAlign.Center)
         if (!success) {
@@ -309,7 +310,7 @@ private fun OtpValidationResult(success: Boolean, message: String?, onRetry: () 
             Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = red)) {
-                Text("Try OTP again", fontWeight = FontWeight.Bold)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_try_otp_again_9ea137d), fontWeight = FontWeight.Bold)
             }
         }
     }

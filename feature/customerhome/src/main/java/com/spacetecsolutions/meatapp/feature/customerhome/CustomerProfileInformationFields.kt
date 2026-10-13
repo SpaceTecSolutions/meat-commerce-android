@@ -33,9 +33,9 @@ internal fun ProfileInformationTopBar(back: () -> Unit, editing: Boolean, edit: 
         Row(Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = back, modifier = Modifier.size(40.dp)) {
-                Icon(AppIcons.Back, "Back", Modifier.size(24.dp), tint = CustomerProfileColors.ink)
+                Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_back_b52b36b), Modifier.size(24.dp), tint = CustomerProfileColors.ink)
             }
-            Text("Profile Information", Modifier.weight(1f).padding(start = 12.dp),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_profile_information_53910b4), Modifier.weight(1f).padding(start = 12.dp),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
                 color = CustomerProfileColors.ink)
             if (!editing) OutlinedButton(onClick = edit, shape = CircleShape,
@@ -43,7 +43,7 @@ internal fun ProfileInformationTopBar(back: () -> Unit, editing: Boolean, edit: 
                 contentPadding = PaddingValues(horizontal = 12.dp)) {
                 Icon(AppIcons.Edit, null, Modifier.size(17.dp), tint = CustomerProfileColors.red)
                 Spacer(Modifier.width(5.dp))
-                Text("Edit", color = CustomerProfileColors.red)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_edit_5301648), color = CustomerProfileColors.red)
             }
         }
     }
@@ -65,7 +65,7 @@ internal fun ProfileInformationIdentity(user: User) {
                     Text(user.displayName.ifBlank { "Customer" }, Modifier.weight(1f, false),
                         fontWeight = FontWeight.Bold, color = CustomerProfileColors.ink,
                         maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    if (user.active) Text("✓ Active", Modifier.padding(start = 7.dp)
+                    if (user.active) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_active_defe278), Modifier.padding(start = 7.dp)
                         .background(Color(0xFFECFDF5), RoundedCornerShape(5.dp))
                         .padding(horizontal = 6.dp, vertical = 3.dp),
                         fontSize = 10.sp, color = green)
@@ -99,10 +99,10 @@ private fun ProfileFormCard(title: String, content: @Composable ColumnScope.() -
 internal fun ProfileInformationPersonalCard(first: String, last: String, enabled: Boolean,
     firstError: Boolean, onFirst: (String) -> Unit, onLast: (String) -> Unit) {
     ProfileFormCard("Personal Details") {
-        if (!enabled) Text("Read-Only  ·  Tap Edit to change", fontSize = 11.sp, color = subtle)
+        if (!enabled) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_read_only_tap_edit_to_cfd5a8b), fontSize = 11.sp, color = subtle)
         ProfileEditableField("First Name *", first, onFirst, enabled,
             isError = firstError, imeAction = ImeAction.Next)
-        if (firstError) Text("Enter a valid first name", fontSize = 12.sp,
+        if (firstError) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_enter_a_valid_first_name_e0ffb57), fontSize = 12.sp,
             color = MaterialTheme.colorScheme.error)
         ProfileEditableField("Last Name", last, onLast, enabled, imeAction = ImeAction.Done)
     }
@@ -143,8 +143,8 @@ internal fun ProfileInformationDeleteEntry(onClick: () -> Unit) {
                 Icon(AppIcons.Delete, null, tint = CustomerProfileColors.red)
             }
             Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                Text("Delete Account", fontWeight = FontWeight.Bold, color = CustomerProfileColors.red)
-                Text("Permanently remove your account & data", fontSize = 12.sp,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_delete_account_ee1b9a9), fontWeight = FontWeight.Bold, color = CustomerProfileColors.red)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_permanently_remove_your_account_data_cc99d63), fontSize = 12.sp,
                     color = CustomerProfileColors.red)
             }
             Icon(AppIcons.ArrowRight, null, tint = CustomerProfileColors.red)
@@ -157,7 +157,7 @@ internal fun ProfileInformationSecurityCard(user: User) {
     ProfileFormCard("Security & Identifier") {
         ProfileReadOnlyField("Login Mobile Number", user.mobileNumber,
             AppIcons.Password, trailing = "Linked")
-        Text("Used for OTP verification and delivery updates.", fontSize = 11.sp,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_used_for_otp_verification_and_6939705), fontSize = 11.sp,
             lineHeight = 16.sp, color = subtle)
         ProfileReadOnlyField("Account Role", "Customer", AppIcons.Security)
     }
@@ -199,13 +199,13 @@ internal fun ProfileInformationSaveAction(busy: Boolean, editing: Boolean,
                 if (busy) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp,
                     color = Color.White)
                 else {
-                    Text("Save Profile", fontWeight = FontWeight.Bold)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_save_profile_909bf3e), fontWeight = FontWeight.Bold)
                     Spacer(Modifier.width(8.dp))
                     Icon(AppIcons.Check, null, Modifier.size(18.dp))
                 }
             }
             TextButton(onClick = onCancel, enabled = !busy) {
-                Text("Cancel", color = CustomerProfileColors.muted)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_cancel_77dfd21), color = CustomerProfileColors.muted)
             }
         }
     }

@@ -26,19 +26,19 @@ fun DeliveryStaffRoute(
     state.form?.let { StaffFormDialog(it, state.submitting, viewModel) }
     state.statusChange?.let { user -> AlertDialog(
         onDismissRequest = { viewModel.requestStatus(null) },
-        title = { Text(if (user.active) "Deactivate delivery user?" else "Activate delivery user?") },
+        title = { Text(if (user.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_deactivate_delivery_user_42ab99f) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_activate_delivery_user_8037c06)) },
         text = { Text(user.displayName) },
-        confirmButton = { Button(viewModel::confirmStatus, enabled = !state.submitting) { Text("Confirm") } },
-        dismissButton = { TextButton({ viewModel.requestStatus(null) }) { Text("Cancel") } },
+        confirmButton = { Button(viewModel::confirmStatus, enabled = !state.submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_confirm_04a2122)) } },
+        dismissButton = { TextButton({ viewModel.requestStatus(null) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
     ) }
 }
 
 @Composable
 private fun DeliveryStaffScreen(state: DeliveryStaffUiState, back: () -> Unit, actions: DeliveryStaffViewModel) {
     Scaffold(
-        topBar = { AppBackTopBar("Delivery Staff", back) },
+        topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delivery_staff_ffc704d), back) },
         floatingActionButton = { ExtendedFloatingActionButton(onClick = actions::create,
-            icon = { Icon(AppIcons.Add, null) }, text = { Text("Add Delivery User") },
+            icon = { Icon(AppIcons.Add, null) }, text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_delivery_user_d9cca40)) },
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary) },
     ) { padding -> when {
@@ -52,7 +52,7 @@ private fun DeliveryStaffScreen(state: DeliveryStaffUiState, back: () -> Unit, a
             verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
         ) {
             if (state.refreshing) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
-            if (state.staff.isEmpty()) item { Text("No delivery users yet.", Modifier.padding(AppSpacing.large)) }
+            if (state.staff.isEmpty()) item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_delivery_users_yet_a653ec1), Modifier.padding(AppSpacing.large)) }
             items(state.staff, key = User::id) { user -> StaffCard(user, actions::edit, actions::requestStatus) }
         }
     } }
@@ -67,11 +67,11 @@ private fun StaffCard(user: User, edit: (User) -> Unit, status: (User) -> Unit) 
         Column(Modifier.padding(horizontal = AppSpacing.medium).weight(1f)) {
             Text(user.displayName, style = MaterialTheme.typography.titleMedium)
             Text(user.mobileNumber, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(if (user.active) "Active" else "Inactive",
+            Text(if (user.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_a733b80) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive_09af574),
                 color = if (user.active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
         }
-        IconButton({ edit(user) }) { Icon(AppIcons.Edit, "Edit") }
-        TextButton({ status(user) }) { Text(if (user.active) "Deactivate" else "Activate") }
+        IconButton({ edit(user) }) { Icon(AppIcons.Edit, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_5301648)) }
+        TextButton({ status(user) }) { Text(if (user.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_deactivate_d65ded9) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_activate_92ef083)) }
     } }
 }
 
@@ -79,15 +79,15 @@ private fun StaffCard(user: User, edit: (User) -> Unit, status: (User) -> Unit) 
 private fun StaffFormDialog(form: StaffForm, submitting: Boolean, actions: DeliveryStaffViewModel) {
     AlertDialog(
         onDismissRequest = actions::closeForm,
-        title = { Text(if (form.editing) "Edit Delivery User" else "Add Delivery User") },
+        title = { Text(if (form.editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_delivery_user_edb86d6) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_delivery_user_d9cca40)) },
         text = { Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
-            OutlinedTextField(form.name, actions::name, Modifier.fillMaxWidth(), label = { Text("Name") })
-            OutlinedTextField(form.mobile, actions::mobile, Modifier.fillMaxWidth(), label = { Text("Mobile number") })
+            OutlinedTextField(form.name, actions::name, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_name_709a232)) })
+            OutlinedTextField(form.mobile, actions::mobile, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_mobile_number_8e5c12d)) })
             if (!form.editing) OutlinedTextField(form.password, actions::password, Modifier.fillMaxWidth(),
-                label = { Text("Temporary password") })
+                label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_temporary_password_62d6062)) })
             form.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         } },
-        confirmButton = { Button(actions::save, enabled = !submitting) { Text("Save") } },
-        dismissButton = { TextButton(actions::closeForm) { Text("Cancel") } },
+        confirmButton = { Button(actions::save, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_efc007a)) } },
+        dismissButton = { TextButton(actions::closeForm) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
     )
 }

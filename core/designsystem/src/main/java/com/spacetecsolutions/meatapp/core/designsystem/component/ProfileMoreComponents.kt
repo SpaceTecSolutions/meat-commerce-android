@@ -52,7 +52,7 @@ fun ProfileIdentityCard(name: String, phone: String, onClick: () -> Unit,
             .padding(14.dp).heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(48.dp).background(ProfileMoreTokens.rose, iconShape),
                 contentAlignment = Alignment.Center) {
-                Text(name.trim().firstOrNull()?.uppercase() ?: "U", fontWeight = FontWeight.Bold,
+                Text(name.trim().firstOrNull()?.uppercase() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_u_b2c7c0c), fontWeight = FontWeight.Bold,
                     color = ProfileMoreTokens.red, style = MaterialTheme.typography.titleMedium)
             }
             Column(Modifier.weight(1f).padding(start = 14.dp)) {
@@ -118,7 +118,7 @@ fun ProfileLogoutAction(onClick: () -> Unit) {
                 contentAlignment = Alignment.Center) {
                 Icon(AppIcons.Logout, null, Modifier.size(18.dp), tint = ProfileMoreTokens.red)
             }
-            Text("Logout", Modifier.weight(1f).padding(start = 14.dp),
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_logout_e43d612), Modifier.weight(1f).padding(start = 14.dp),
                 style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold,
                 color = ProfileMoreTokens.red)
             Icon(AppIcons.ArrowRight, null, Modifier.size(18.dp), tint = ProfileMoreTokens.red)

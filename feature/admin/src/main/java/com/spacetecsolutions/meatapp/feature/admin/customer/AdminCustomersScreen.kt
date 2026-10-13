@@ -42,13 +42,13 @@ private fun AdminCustomersScreen(state: AdminCustomersUiState, back: () -> Unit,
         filter == CustomerFilter.ALL || (filter == CustomerFilter.ACTIVE) == it.active
     }
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Customers", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_customers_035eae6), back)
         when {
             state.loading && state.customers.isEmpty() -> ContentStateView(ContentState.Loading)
             state.error != null && state.customers.isEmpty() -> ContentStateView(
                 ContentState.Error(description = state.error), onAction = actions::refresh)
             state.customers.isEmpty() && state.query.isBlank() -> ContentStateView(ContentState.Empty(
-                title = "No customers", description = "Registered customers will appear here.",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_customers_1560099), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_registered_customers_will_appear_here_c203354),
             ))
             else -> Column(Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = AppDimensions.contentMaxWidth)) {
@@ -56,17 +56,17 @@ private fun AdminCustomersScreen(state: AdminCustomersUiState, back: () -> Unit,
                     verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
                         state.query, actions::search, Modifier.weight(1f), singleLine = true,
-                        placeholder = { Text("Search customers…") },
+                        placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_search_customers_1aac222)) },
                         leadingIcon = { Icon(AppIcons.Search, null) },
                         trailingIcon = { if (state.query.isNotEmpty()) IconButton({ actions.search("") }) {
-                            Icon(AppIcons.Close, "Clear search")
+                            Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_clear_search_67300d0))
                         } },
                         shape = AppShapes.medium,
                     )
                     Box {
                         IconButton({ filterOpen = true }) { BadgedBox(
                             badge = { if (filter != CustomerFilter.ALL) Badge() },
-                        ) { Icon(AppIcons.Filter, "Filter customers") } }
+                        ) { Icon(AppIcons.Filter, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_filter_customers_735d3da)) } }
                         DropdownMenu(filterOpen, { filterOpen = false }) {
                             CustomerFilter.entries.forEach { option -> DropdownMenuItem(
                                 text = { Text(option.label) },
@@ -78,8 +78,8 @@ private fun AdminCustomersScreen(state: AdminCustomersUiState, back: () -> Unit,
                 }
                 if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
                 if (visible.isEmpty()) ContentStateView(ContentState.Empty(
-                    title = "No matching customers",
-                    description = "Try another name, mobile number or customer filter.",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_matching_customers_91a9a74),
+                    description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_try_another_name_mobile_number_e1ac3f3),
                 )) else LazyColumn(
                     contentPadding = PaddingValues(horizontal = AppSpacing.medium, vertical = AppSpacing.extraSmall),
                 ) {
@@ -94,15 +94,14 @@ private fun AdminCustomersScreen(state: AdminCustomersUiState, back: () -> Unit,
     }
     if (state.loadingDetails) AlertDialog(onDismissRequest = {}, confirmButton = {},
         text = { Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
-            CircularProgressIndicator(); Text("Loading customer details…")
+            CircularProgressIndicator(); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_loading_customer_details_85ecd43))
         } })
     state.details?.let { CustomerDetailsDialog(it, { actions.openDetails(null) }, actions::requestStatus) }
     state.statusTarget?.let { customer -> AlertDialog(onDismissRequest = { actions.requestStatus(null) },
-        title = { Text(if (customer.active) "Deactivate customer?" else "Activate customer?") },
-        text = { Text(if (customer.active) "The customer will be unable to sign in or place orders. Existing order history is preserved."
-            else "The customer will regain account access.") },
-        confirmButton = { Button(actions::confirmStatusChange) { Text(if (customer.active) "Deactivate" else "Activate") } },
-        dismissButton = { TextButton({ actions.requestStatus(null) }) { Text("Cancel") } }) }
+        title = { Text(if (customer.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_deactivate_customer_b3433e8) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_activate_customer_7ae6288)) },
+        text = { Text(if (customer.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_the_customer_will_be_unable_5bbb196) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_the_customer_will_regain_account_7c633ff)) },
+        confirmButton = { Button(actions::confirmStatusChange) { Text(if (customer.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_deactivate_d65ded9) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_activate_92ef083)) } },
+        dismissButton = { TextButton({ actions.requestStatus(null) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } }) }
 }
 
 @Composable
@@ -112,7 +111,7 @@ private fun CustomerRow(customer: AdminCustomerSummary, busy: Boolean, click: ()
             Surface(Modifier.size(40.dp), shape = CircleShape,
                 color = MaterialTheme.colorScheme.errorContainer) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(customer.displayName.trim().firstOrNull()?.uppercase() ?: "C",
+                    Text(customer.displayName.trim().firstOrNull()?.uppercase() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_c_32096c2),
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                 }
             }
@@ -140,25 +139,26 @@ private fun CustomerDetailsDialog(
     LazyColumn(Modifier.fillMaxWidth().heightIn(max = 640.dp).padding(horizontal = AppSpacing.medium),
         verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
         item { Text(details.customer.displayName, style = MaterialTheme.typography.titleLarge) }
-        item { Text(details.customer.mobileNumber); Text("Status: ${if (details.customer.active) "Active" else "Inactive"}")
-            Text("Joined: ${details.joinedAtEpochMillis.date()}") }
-        item { HorizontalDivider(); Text("${details.customer.totalOrders} total orders",
-            style = MaterialTheme.typography.titleMedium); Text("Total spending: ${details.customer.totalSpendingMinor.money(details.customer.currencyCode)}") }
-        item { Text("Highest order: ${details.highestOrderMinor.money(details.customer.currencyCode)}") }
-        item { Text("Recent orders", style = MaterialTheme.typography.titleMedium) }
-        if (details.orders.isEmpty()) item { Text("No orders") }
+        item { Text(details.customer.mobileNumber); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_customer_status,
+            androidx.compose.ui.res.stringResource(if (details.customer.active) com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active else com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive)))
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_joined_details_joinedatepochmillis_date_ca70131, details.joinedAtEpochMillis.date())) }
+        item { HorizontalDivider(); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_details_customer_totalorders_total_orders_03d5267, details.customer.totalOrders),
+            style = MaterialTheme.typography.titleMedium); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_total_spending_details_customer_totalspending_a490f84, details.customer.totalSpendingMinor.money(details.customer.currencyCode))) }
+        item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_highest_order_details_highestorderminor_money_1604626, details.highestOrderMinor.money(details.customer.currencyCode))) }
+        item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_recent_orders_cfc7dec), style = MaterialTheme.typography.titleMedium) }
+        if (details.orders.isEmpty()) item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_orders_62e70d7)) }
         items(details.orders.take(3), key = AdminCustomerOrder::id) { order ->
             ElevatedCard(Modifier.fillMaxWidth()) { Column(Modifier.padding(AppSpacing.small)) {
-                Text("Order ${order.displayNumber}", style = MaterialTheme.typography.titleSmall)
-                Text("${order.createdAtEpochMillis.date()} · ${order.orderStatus.name}")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_order_order_displaynumber_5a620eb, order.displayNumber), style = MaterialTheme.typography.titleSmall)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_order_createdatepochmillis_date_order_orderst_91c900a, order.createdAtEpochMillis.date(), order.orderStatus.name))
                 Text(order.productSummary, maxLines = 2)
-                Text("${order.totalMinor.money(details.customer.currencyCode)} · ${order.paymentMethod.name} · ${order.paymentStatus.name}")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_order_totalminor_money_details_customer_e0a149e, order.totalMinor.money(details.customer.currencyCode), order.paymentMethod.name, order.paymentStatus.name))
             } }
         }
-        item { TextButton(dismiss) { Text("Close") } }
+        item { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_close_bbfa773)) } }
         item {
         if (details.customer.statusManagementAllowed) TextButton({ dismiss(); status(details.customer) }) {
-            Text(if (details.customer.active) "Deactivate" else "Activate")
+            Text(if (details.customer.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_deactivate_d65ded9) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_activate_92ef083))
         }
         }
         item { Spacer(Modifier.navigationBarsPadding()) }

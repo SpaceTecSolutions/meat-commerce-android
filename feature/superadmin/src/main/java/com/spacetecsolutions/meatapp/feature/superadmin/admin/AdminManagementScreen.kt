@@ -81,7 +81,7 @@ private fun AdminHeader(onCreate: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         /*IconButton(onClick = {}, modifier = Modifier.size(40.dp)) {
-            Icon(AppIcons.Menu, "Open menu", Modifier.size(20.dp))
+            Icon(AppIcons.Menu, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_open_menu_197101e), Modifier.size(20.dp))
         }*/
         Text(
             "Admins",
@@ -90,14 +90,14 @@ private fun AdminHeader(onCreate: () -> Unit) {
             fontWeight = FontWeight.SemiBold,
         )
         /*IconButton(onClick = {}, modifier = Modifier.size(40.dp)) {
-            Icon(AppIcons.Search, "Search Admins", Modifier.size(20.dp))
+            Icon(AppIcons.Search, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_search_admins_4c25eaa), Modifier.size(20.dp))
         }*/
         FilledIconButton(
             onClick = onCreate,
             modifier = Modifier.size(36.dp),
             shape = AppShapes.extraSmall,
             colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
-        ) { Icon(AppIcons.Add, "Create Admin", Modifier.size(20.dp)) }
+        ) { Icon(AppIcons.Add, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_create_admin_318d1da), Modifier.size(20.dp)) }
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
@@ -123,9 +123,9 @@ private fun AdminList(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
                 leadingIcon = { Icon(AppIcons.Search, null, Modifier.size(20.dp)) },
                 trailingIcon = if (state.query.isNotEmpty()) {
-                    { IconButton(onClick = { onQueryChange("") }) { Icon(AppIcons.Close, "Clear") } }
+                    { IconButton(onClick = { onQueryChange("") }) { Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_clear_719ea39)) } }
                 } else null,
-                placeholder = { Text("Search admins...", style = MaterialTheme.typography.bodyMedium) },
+                placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_search_admins_64d9464), style = MaterialTheme.typography.bodyMedium) },
                 singleLine = true,
                 shape = AppShapes.extraSmall,
             )
@@ -146,13 +146,13 @@ private fun EmptyAdmins(firstAdmin: Boolean, onCreate: () -> Unit) {
         Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
             Icon(AppIcons.Admin, null, Modifier.padding(18.dp).size(28.dp), tint = MaterialTheme.colorScheme.primary)
         }
-        Text(if (firstAdmin) "No Admins yet" else "No matching Admins", style = MaterialTheme.typography.titleMedium)
+        Text(if (firstAdmin) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_no_admins_yet_c92154b) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_no_matching_admins_c882434), style = MaterialTheme.typography.titleMedium)
         Text(
             if (firstAdmin) "Create the first Admin account to get started." else "Try a different name or mobile.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        if (firstAdmin) TextButton(onClick = onCreate) { Text("Create Admin") }
+        if (firstAdmin) TextButton(onClick = onCreate) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_create_admin_318d1da)) }
     }
 }
 
@@ -185,16 +185,16 @@ private fun AdminCard(admin: User, onEdit: (User) -> Unit, onStatusChange: (User
             Column(horizontalAlignment = Alignment.End) {
                 Box {
                     IconButton(onClick = { menuExpanded = true }, modifier = Modifier.size(36.dp)) {
-                        Icon(AppIcons.MoreVertical, "Admin actions", Modifier.size(20.dp))
+                        Icon(AppIcons.MoreVertical, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_admin_actions_fa81c61), Modifier.size(20.dp))
                     }
                     DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
                         DropdownMenuItem(
-                            text = { Text("Edit") },
+                            text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_edit_5301648)) },
                             onClick = { menuExpanded = false; onEdit(admin) },
                             leadingIcon = { Icon(AppIcons.Edit, null) },
                         )
                         DropdownMenuItem(
-                            text = { Text(if (admin.active) "Deactivate" else "Activate") },
+                            text = { Text(if (admin.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_deactivate_d65ded9) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_activate_92ef083)) },
                             onClick = { menuExpanded = false; onStatusChange(admin) },
                         )
                     }
@@ -217,8 +217,8 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(AppIcons.PaymentFailed, null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.error)
-        Text("Unable to load Admins", Modifier.padding(top = AppSpacing.compact), style = MaterialTheme.typography.titleMedium)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_unable_to_load_admins_536f035), Modifier.padding(top = AppSpacing.compact), style = MaterialTheme.typography.titleMedium)
         Text(message, Modifier.padding(top = AppSpacing.small), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        TextButton(onClick = onRetry) { Text("Try again") }
+        TextButton(onClick = onRetry) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_try_again_042c862)) }
     }
 }

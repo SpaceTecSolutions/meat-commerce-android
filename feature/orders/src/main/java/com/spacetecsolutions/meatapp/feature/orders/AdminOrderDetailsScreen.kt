@@ -47,7 +47,7 @@ internal fun AdminOrderDetailsScreen(
                     Text(order.displayNumber.withHash(), maxLines = 1, overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold)
                 },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(AppIcons.Back, "Back to orders") } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_to_orders_f02399a)) } },
                 actions = { Box(Modifier.padding(end = AppSpacing.small)) { OrderStatusChip(order.orderStatus) } },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
             )
@@ -70,7 +70,7 @@ internal fun AdminOrderDetailsScreen(
             ) {
                 if (staffPresentation && !canAdjustFinalBill && !canUpdateStatus) item {
                     DetailSurface("Read-Only View", AppIcons.Security) {
-                        Text("View Orders permission only", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_view_orders_permission_only_00674a1), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
                 if (order.orderStatus == OrderStatus.CANCELLED) item { AdminCancelledHero(order) }
@@ -97,10 +97,10 @@ internal fun AdminOrderDetailsScreen(
                             if (canUpdateStatus && order.orderStatus in setOf(
                                     OrderStatus.PENDING, OrderStatus.CONFIRMED, OrderStatus.PREPARING) &&
                                 order.readyForDeliveryAtEpochMillis == null) {
-                                TextButton(onChangeDeliverySlot) { Text("Change delivery slot") }
+                                TextButton(onChangeDeliverySlot) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_change_delivery_slot_0bdad7a)) }
                             }
                             order.deliverySlotChangeReason?.takeIf(String::isNotBlank)?.let { reason ->
-                                Text("Latest change: $reason", style = MaterialTheme.typography.bodySmall,
+                                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_latest_change_reason_a67cbe6, reason), style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
@@ -110,7 +110,7 @@ internal fun AdminOrderDetailsScreen(
                 order.assignedDeliveryUserName?.let { name ->
                     item { DetailSurface("Delivery Assignment", AppIcons.DeliveryPerson) {
                         Text(name, fontWeight = FontWeight.SemiBold)
-                        Text(order.assignedDeliveryRole?.name?.pretty() ?: "Delivery user",
+                        Text(order.assignedDeliveryRole?.name?.pretty() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_user_6da90b1),
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } }
                 }

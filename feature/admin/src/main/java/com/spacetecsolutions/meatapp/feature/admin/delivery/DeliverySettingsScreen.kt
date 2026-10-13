@@ -38,7 +38,7 @@ private fun DeliverySettingsScreen(
 ) {
     var editor by remember { mutableStateOf<SlotEditorTarget?>(null) }
     var deleteTarget by remember { mutableStateOf<DeliverySlot?>(null) }
-    Scaffold(topBar = { AppBackTopBar("Delivery Settings", onBack) }) { padding ->
+    Scaffold(topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delivery_settings_259efcf), onBack) }) { padding ->
         when {
             state.loading -> ContentStateView(ContentState.Loading, contentPadding = padding)
             state.config == null -> ContentStateView(
@@ -68,7 +68,7 @@ private fun DeliverySettingsScreen(
                 ) }
                 item { Button(actions::save, Modifier.fillMaxWidth(), enabled = !state.saving) {
                     if (state.saving) CircularProgressIndicator(Modifier.size(AppDimensions.iconSmall))
-                    else { Icon(AppIcons.Save, null); Spacer(Modifier.width(AppSpacing.small)); Text("Save Settings") }
+                    else { Icon(AppIcons.Save, null); Spacer(Modifier.width(AppSpacing.small)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_settings_0022a3e)) }
                 } }
             }
         }
@@ -79,10 +79,10 @@ private fun DeliverySettingsScreen(
         editor = null
     } }
     deleteTarget?.let { slot -> AlertDialog(
-        onDismissRequest = { deleteTarget = null }, title = { Text("Delete delivery slot?") },
-        text = { Text("Customers will no longer be able to choose ${slot.timeRange()}.") },
-        confirmButton = { Button({ actions.removeSlot(slot.id); deleteTarget = null }) { Text("Delete") } },
-        dismissButton = { TextButton({ deleteTarget = null }) { Text("Cancel") } },
+        onDismissRequest = { deleteTarget = null }, title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delete_delivery_slot_bd5d9f4)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_customers_will_no_longer_be_0a34af8, slot.timeRange())) },
+        confirmButton = { Button({ actions.removeSlot(slot.id); deleteTarget = null }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delete_f6fdbe4)) } },
+        dismissButton = { TextButton({ deleteTarget = null }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
     ) }
 }
 
@@ -91,9 +91,9 @@ private fun DeliveryTimingsCard(
     slots: List<DeliverySlot>, saving: Boolean, add: () -> Unit,
     edit: (DeliverySlot) -> Unit, remove: (DeliverySlot) -> Unit,
 ) = SettingsCard("Delivery Timings", action = {
-    TextButton(add, enabled = !saving) { Text("+ Add Slot", color = MaterialTheme.colorScheme.primary) }
+    TextButton(add, enabled = !saving) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_slot_44ed5cb), color = MaterialTheme.colorScheme.primary) }
 }) {
-    if (slots.isEmpty()) Text("No delivery timings added", color = MaterialTheme.colorScheme.onSurfaceVariant)
+    if (slots.isEmpty()) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_delivery_timings_added_ef1fcaf), color = MaterialTheme.colorScheme.onSurfaceVariant)
     slots.sortedBy(DeliverySlot::startMinutes).forEachIndexed { index, slot ->
         Row(Modifier.fillMaxWidth().padding(vertical = AppSpacing.small), verticalAlignment = Alignment.CenterVertically) {
             Surface(Modifier.size(36.dp), shape = AppShapes.medium,
@@ -104,13 +104,13 @@ private fun DeliveryTimingsCard(
             }
             Column(Modifier.weight(1f).padding(horizontal = AppSpacing.small)) {
                 Text(slot.timeRange(), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-                Text(if (slot.active) "Orders before ${slot.cutoffLabel()}" else "Unavailable to customers",
+                Text(if (slot.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_orders_before_slot_cutofflabel_a2b9e3b, slot.cutoffLabel()) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_unavailable_to_customers_9ee2291),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (slot.active) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error)
             }
-            IconButton({ edit(slot) }, enabled = !saving) { Icon(AppIcons.Edit, "Edit ${slot.timeRange()}") }
+            IconButton({ edit(slot) }, enabled = !saving) { Icon(AppIcons.Edit, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_slot_timerange_720c9f7, slot.timeRange())) }
             IconButton({ remove(slot) }, enabled = !saving) {
-                Icon(AppIcons.Delete, "Delete ${slot.timeRange()}", tint = MaterialTheme.colorScheme.error)
+                Icon(AppIcons.Delete, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delete_slot_timerange_0506357, slot.timeRange()), tint = MaterialTheme.colorScheme.error)
             }
         }
         if (index != slots.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = .6f))
@@ -118,9 +118,9 @@ private fun DeliveryTimingsCard(
     Surface(Modifier.fillMaxWidth().padding(top = AppSpacing.small), shape = AppShapes.medium,
         color = MaterialTheme.colorScheme.errorContainer.copy(alpha = .55f)) {
         Column(Modifier.padding(AppSpacing.medium)) {
-            Text("These are the available delivery time slots", color = MaterialTheme.colorScheme.error,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_these_are_the_available_delivery_c8ea53a), color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelLarge)
-            Text("Customers can choose from active timings.", style = MaterialTheme.typography.bodySmall)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_customers_can_choose_from_active_087a048), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -136,12 +136,12 @@ private fun SlotEditorDialog(target: SlotEditorTarget, dismiss: () -> Unit, save
     var picker by remember { mutableStateOf<TimeTarget?>(null) }
     AlertDialog(
         onDismissRequest = dismiss,
-        title = { Text(if (target.slot == null) "Add Delivery Slot" else "Edit Delivery Slot") },
+        title = { Text(if (target.slot == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_delivery_slot_ddb6bd6) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_delivery_slot_478a121)) },
         text = { Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
             TimeSelectionRow("Start time", start) { picker = TimeTarget.START }
             TimeSelectionRow("End time", end) { picker = TimeTarget.END }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Available to customers", Modifier.weight(1f))
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_available_to_customers_acdee40), Modifier.weight(1f))
                 Switch(active,
                     { active = it },
                     colors = SwitchDefaults.colors(
@@ -157,10 +157,10 @@ private fun SlotEditorDialog(target: SlotEditorTarget, dismiss: () -> Unit, save
                         disabledUncheckedBorderColor = Color.Transparent,
                     ))
             }
-            if (start >= end) Text("End time must be after start time", color = MaterialTheme.colorScheme.error)
+            if (start >= end) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_end_time_must_be_after_4683393), color = MaterialTheme.colorScheme.error)
         } },
-        confirmButton = { Button({ save(start, end, active) }, enabled = start < end) { Text("Save Slot") } },
-        dismissButton = { TextButton(dismiss) { Text("Cancel") } },
+        confirmButton = { Button({ save(start, end, active) }, enabled = start < end) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_slot_0825ef2)) } },
+        dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
     )
     picker?.let { selected -> AppTimePicker(
         initial = if (selected == TimeTarget.START) start else end,
@@ -185,7 +185,7 @@ private fun TimeSelectionRow(label: String, value: Int, click: () -> Unit) {
                 Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(value.clock(), style = MaterialTheme.typography.titleMedium)
             }
-            Text("Select", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_select_8598222), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
         }
     }
 }
@@ -195,9 +195,9 @@ private fun TimeSelectionRow(label: String, value: Int, click: () -> Unit) {
 private fun AppTimePicker(initial: Int, dismiss: () -> Unit, confirm: (Int) -> Unit) {
     val picker = rememberTimePickerState(initialHour = initial / 60, initialMinute = initial % 60, is24Hour = false)
     AlertDialog(
-        onDismissRequest = dismiss, title = { Text("Select time") }, text = { TimePicker(picker) },
-        confirmButton = { TextButton({ confirm(picker.hour * 60 + picker.minute) }) { Text("OK") } },
-        dismissButton = { TextButton(dismiss) { Text("Cancel") } },
+        onDismissRequest = dismiss, title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_select_time_3d7f91e)) }, text = { TimePicker(picker) },
+        confirmButton = { TextButton({ confirm(picker.hour * 60 + picker.minute) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_ok_9ce3bd4)) } },
+        dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
     )
 }
 
@@ -239,7 +239,7 @@ private fun SettingSwitch(label: String, checked: Boolean, enabled: Boolean, cha
 
 @Composable
 private fun MoneyField(label: String, value: String, saving: Boolean, change: (String) -> Unit) = OutlinedTextField(
-    value, change, Modifier.fillMaxWidth(), enabled = !saving, label = { Text(label) }, prefix = { Text("₹") },
+    value, change, Modifier.fillMaxWidth(), enabled = !saving, label = { Text(label) }, prefix = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_text_ba8d95b)) },
     singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
 )
 

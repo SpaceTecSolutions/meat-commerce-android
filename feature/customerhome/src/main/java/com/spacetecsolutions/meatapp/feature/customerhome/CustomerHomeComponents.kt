@@ -64,28 +64,30 @@ internal fun HomeLocationHeader(
             }
             Column(Modifier.padding(start = 10.dp).weight(1f, fill = false)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Delivering to ${profileName.trim().substringBefore(' ').ifBlank { "Guest" }}",
+                    Text(androidx.compose.ui.res.stringResource(R.string.ui_delivering_to_profile,
+                        profileName.trim().substringBefore(' ').ifBlank { androidx.compose.ui.res.stringResource(R.string.ui_guest) }),
                         modifier = Modifier.weight(1f, fill = false),
                         style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                         color = CustomerHomeTokens.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Icon(AppIcons.ArrowDown, null, modifier = Modifier.padding(start = 3.dp).size(19.dp),
                         tint = CustomerHomeTokens.red)
                 }
-                Text(addressLabel.ifBlank { "Select location" }, style = MaterialTheme.typography.bodySmall,
+                Text(addressLabel.ifBlank { androidx.compose.ui.res.stringResource(R.string.ui_select_location) }, style = MaterialTheme.typography.bodySmall,
                     color = CustomerHomeTokens.muted, maxLines = 1)
             }
         }
         if (showNotifications) BadgedBox(
             badge = {
                 if (notifications > 0) Badge(containerColor = CustomerHomeTokens.red) {
-                    Text(if (notifications > 99) "99+" else "$notifications")
+                    Text(if (notifications > 99) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_badge_overflow_99_plus) else notifications.toString())
                 }
             },
         ) {
             IconButton(onClick = onNotifications, modifier = Modifier.size(44.dp)) {
                 Icon(
                     AppIcons.NotificationsOutline,
-                    "Notifications${if (notifications > 0) ", $notifications unread" else ""}",
+                    if (notifications > 0) androidx.compose.ui.res.stringResource(R.string.ui_notification_count_unread, notifications)
+                    else androidx.compose.ui.res.stringResource(R.string.ui_notifications),
                     modifier = Modifier.size(22.dp),
                     tint = CustomerHomeTokens.ink,
                 )
@@ -95,7 +97,7 @@ internal fun HomeLocationHeader(
         Surface(onClick = onProfile, modifier = Modifier.size(38.dp), shape = CircleShape,
             color = CustomerHomeTokens.ink) {
             Box(contentAlignment = Alignment.Center) {
-                Text(profileName.trim().firstOrNull()?.uppercase() ?: "U",
+                Text(profileName.trim().firstOrNull()?.uppercase() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_u_b2c7c0c),
                     color = Color.White, fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.labelLarge)
             }
@@ -112,7 +114,7 @@ internal fun CustomerHomeSearch(onSearch: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
         leadingIcon = { Icon(AppIcons.Search, null, modifier = Modifier.size(19.dp), tint = CustomerHomeTokens.muted) },
         placeholder = {
-            Text("Search for meat, chicken, fish...", style = MaterialTheme.typography.bodySmall, maxLines = 1)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_search_for_meat_chicken_fish_d54d7a8), style = MaterialTheme.typography.bodySmall, maxLines = 1)
         },
         singleLine = true,
         shape = RoundedCornerShape(14.dp),
@@ -168,7 +170,7 @@ internal fun HomePromoBanner(
                             Surface(shape = RoundedCornerShape(50), color = CustomerHomeTokens.surface) {
                                 Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically) {
-                                    Text(banner?.buttonText ?: "Shop Now", color = CustomerHomeTokens.ink,
+                                    Text(banner?.buttonText ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_shop_now_9fbe5ea), color = CustomerHomeTokens.ink,
                                         style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold,
                                         maxLines = 1)
                                     Icon(AppIcons.ArrowRight, null, Modifier.size(16.dp),
@@ -274,7 +276,7 @@ internal fun HomeSectionHeader(title: String, onViewAll: () -> Unit) {
             fontWeight = FontWeight.ExtraBold, color = CustomerHomeTokens.ink,
         )
         TextButton(onClick = onViewAll, contentPadding = PaddingValues(horizontal = 4.dp)) {
-            Text("View All", style = MaterialTheme.typography.labelMedium,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_view_all_efd8355), style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold, color = CustomerHomeTokens.red)
             Icon(AppIcons.ArrowRight, null, Modifier.size(16.dp), tint = CustomerHomeTokens.red)
         }
@@ -305,7 +307,7 @@ internal fun HomeProductSpotlight(title: String, products: List<Product>, onProd
                         .format((product.offerPriceMinor ?: product.priceMinor) / 100.0),
                         color = Color.White, fontWeight = FontWeight.Bold)
                     Surface(shape = RoundedCornerShape(50), color = CustomerHomeTokens.red) {
-                        Text("View product", Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_view_product_c144585), Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
                             color = Color.White, style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold)
                     }
@@ -323,8 +325,9 @@ internal fun HomeProductSpotlight(title: String, products: List<Product>, onProd
 
 @Composable
 internal fun HomeCategoryShortcut(category: ProductCategory, onClick: () -> Unit) {
+    val categoryDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_category_name_category_8638baf, category.name)
     Column(
-        Modifier.width(66.dp).semantics { contentDescription = "${category.name} category" }
+        Modifier.width(66.dp).semantics { contentDescription = categoryDescription }
             .clip(AppShapes.small).clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -347,9 +350,9 @@ internal fun HomeMoreShortcut(onClick: () -> Unit) {
     ) {
         Surface(Modifier.size(56.dp), shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
             Box(contentAlignment = Alignment.Center) {
-                Icon(AppIcons.Categories, "View all categories", tint = MaterialTheme.colorScheme.primary)
+                Icon(AppIcons.Categories, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_view_all_categories_613c68f), tint = MaterialTheme.colorScheme.primary)
             }
         }
-        Text("More", Modifier.padding(top = 5.dp), style = MaterialTheme.typography.labelSmall)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_more_4bab2d8), Modifier.padding(top = 5.dp), style = MaterialTheme.typography.labelSmall)
     }
 }

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="ui_badge_overflow_99_plus">99+</string>
+    <plurals name="ui_image_photo_count">
+        <item quantity="one">%1$s, %2$d photo</item>
+        <item quantity="other">%1$s, %2$d photos</item>
+    </plurals>
     <!-- Shared UI copy; feature-specific text belongs in feature modules. -->
     <string name="loading">Loading</string>
     <string name="retry">Retry</string>
@@ -10,4 +15,16 @@
     <string name="generic_error_description">Please try again.</string>
     <string name="offline">You’re offline</string>
     <string name="offline_description">Check your connection and try again.</string>
+    <string name="ui_cancel_77dfd21">Cancel</string>
+    <string name="ui_logout_e43d612">Logout</string>
+    <string name="ui_back_b52b36b">Back</string>
+    <string name="ui_contentdescription_photo_page_1_of_ae64ad6">%1$s, photo %2$s of %3$s</string>
+    <string name="ui_delete_f6fdbe4">Delete</string>
+    <string name="ui_dismiss_70afe9e">Dismiss</string>
+    <string name="ui_remove_current_photo_d3bdbc5">Remove current photo</string>
+    <string name="ui_error_7f2f6a1">Error</string>
+    <string name="ui_information_0eb5ed5">Information</string>
+    <string name="ui_success_42a8f65">Success</string>
+    <string name="ui_warning_e9c4556">Warning</string>
+    <string name="ui_u_b2c7c0c">U</string>
 </resources>

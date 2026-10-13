@@ -10,7 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 internal fun BannerPlacementControls(form: BannerForm, actions: BannerManagementViewModel) {
     listOf("Text", "Message", "Button").forEach { target ->
-        Text("$target alignment", style = MaterialTheme.typography.labelLarge)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_target_alignment_58e08c1, target), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf("LEFT", "CENTER", "RIGHT").forEachIndexed { index, alignment ->
                 val current = when (target) {
@@ -47,7 +47,7 @@ internal fun BannerDestinationPicker(form: BannerForm, actions: BannerManagement
 private fun Choice(label: String, selected: String, options: List<Pair<String, String>>, select: (String) -> Unit) {
     var open by remember { mutableStateOf(false) }
     Box {
-        OutlinedButton({ open = true }, Modifier.fillMaxWidth()) { Text("$label: $selected") }
+        OutlinedButton({ open = true }, Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_label_selected_6438bb1, label, selected)) }
         DropdownMenu(open, { open = false }, modifier = Modifier.heightIn(max = 320.dp)) {
             options.forEach { (id, name) -> DropdownMenuItem(text = { Text(name) }, onClick = { select(id); open = false }) }
         }

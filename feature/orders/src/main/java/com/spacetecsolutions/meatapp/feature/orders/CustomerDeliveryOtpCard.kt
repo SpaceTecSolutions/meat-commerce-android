@@ -22,23 +22,23 @@ internal fun CustomerDeliveryOtpCard(otp: DeliveryOtp?, failed: Boolean,
             verticalAlignment = Alignment.CenterVertically) {
             Icon(AppIcons.Pending, null, Modifier.size(20.dp), tint = T.amber)
             Column(Modifier.weight(1f)) {
-                Text("Delivery verification code", style = MaterialTheme.typography.labelMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_verification_code_03d3aa6), style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold, color = T.ink)
                 when {
                     otp != null -> {
                         Text(otp.code.toCharArray().joinToString("  "),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold, color = T.red)
-                        Text("Share only when the delivery partner reaches you.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_share_only_when_the_delivery_08fa692),
                             style = MaterialTheme.typography.labelSmall, color = T.muted)
                     }
-                    failed -> Text("Code temporarily unavailable. Try again.",
+                    failed -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_code_temporarily_unavailable_try_again_cef31ba),
                         style = MaterialTheme.typography.labelSmall, color = T.muted)
-                    else -> Text("Preparing your secure code…",
+                    else -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_preparing_your_secure_code_59b3da4),
                         style = MaterialTheme.typography.labelSmall, color = T.muted)
                 }
             }
-            if (failed) TextButton(onRetry) { Text("Retry", color = T.red) }
+            if (failed) TextButton(onRetry) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_retry_9f5cd8a), color = T.red) }
         }
     }
 }

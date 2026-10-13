@@ -22,14 +22,14 @@ internal fun DeliveryAssignmentDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Assign Order ${order.displayNumber}") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_assign_order_order_displaynumber_157b8bc, order.displayNumber)) },
         text = {
             when {
                 loading -> Box(
                     Modifier.fillMaxWidth().height(AppDimensions.feedbackIcon),
                     contentAlignment = Alignment.Center,
                 ) { CircularProgressIndicator() }
-                staff.isEmpty() -> Text("No active delivery users are available.")
+                staff.isEmpty() -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_active_delivery_users_are_b838682))
                 else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
                     items(staff, key = User::id) { user ->
                         ElevatedCard(
@@ -52,6 +52,6 @@ internal fun DeliveryAssignmentDialog(
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_77dfd21)) } },
     )
 }

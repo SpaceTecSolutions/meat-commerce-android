@@ -55,7 +55,7 @@ internal fun ProductPriceBlock(product: Product) {
             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 32.sp),
             color = T.ink, fontWeight = FontWeight.Black,
         )
-        Text("/ ${product.unit.shortLabel()}", style = MaterialTheme.typography.bodyMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_product_unit_shortlabel_e6406af, product.unit.shortLabel()), style = MaterialTheme.typography.bodyMedium,
             color = T.muted, fontWeight = FontWeight.SemiBold)
         if (product.validOfferPriceMinor != null) {
             Text(
@@ -104,10 +104,10 @@ internal fun ProductQuantitySelector(
         Column(Modifier.fillMaxWidth().padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("SELECT QUANTITY", Modifier.weight(1f),
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_select_quantity_45d0342), Modifier.weight(1f),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold, color = T.ink)
-                Text("Unit: 1 ${product.unit.shortLabel()}",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_unit_1_product_unit_shortlabel_acd28e1, product.unit.shortLabel()),
                     style = MaterialTheme.typography.labelSmall, color = T.muted)
             }
             Surface(shape = AppShapes.medium, color = T.surface,
@@ -119,7 +119,7 @@ internal fun ProductQuantitySelector(
                         modifier = Modifier.size(40.dp), shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(1.dp, T.border),
                         colors = IconButtonDefaults.outlinedIconButtonColors(contentColor = T.red)) {
-                        Icon(AppIcons.Remove, "Decrease quantity", Modifier.size(18.dp))
+                        Icon(AppIcons.Remove, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_decrease_quantity_6c02abf), Modifier.size(18.dp))
                     }
                     Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                         AnimatedContent(targetState = quantity,
@@ -138,7 +138,7 @@ internal fun ProductQuantitySelector(
                         modifier = Modifier.size(40.dp), shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(1.dp, T.border),
                         colors = IconButtonDefaults.outlinedIconButtonColors(contentColor = T.red)) {
-                        Icon(AppIcons.Add, "Increase quantity", Modifier.size(18.dp))
+                        Icon(AppIcons.Add, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_increase_quantity_062e79b), Modifier.size(18.dp))
                     }
                 }
             }
@@ -169,7 +169,11 @@ internal fun AddToCartBar(product: Product, quantity: Int, adding: Boolean, onAd
                     Icon(AppIcons.Cart, null, Modifier.padding(7.dp).size(22.dp), tint = T.surface)
                 }
                 Spacer(Modifier.width(AppSpacing.small))
-                Text(if (inCart) "View Cart" else if (available) "Add to Cart" else "Out of Stock", fontWeight = FontWeight.SemiBold)
+                Text(androidx.compose.ui.res.stringResource(when {
+                    inCart -> R.string.ui_view_cart
+                    available -> R.string.ui_add_to_cart
+                    else -> R.string.ui_out_of_stock
+                }), fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
                 if (!inCart) Text(formatProductMoney(product.effectivePriceMinor * quantity), fontWeight = FontWeight.Bold)
                 Icon(AppIcons.ArrowRight, null, Modifier.padding(start = 5.dp).size(18.dp))

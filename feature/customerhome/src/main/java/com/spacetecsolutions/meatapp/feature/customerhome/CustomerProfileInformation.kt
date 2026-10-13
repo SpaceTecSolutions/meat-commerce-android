@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.customerhome
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -24,6 +26,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CustomerProfileInformationViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val repository: CustomerHomeRepository,
 ) : ViewModel() {
     private val result = MutableStateFlow<String?>(null)
@@ -33,11 +36,11 @@ class CustomerProfileInformationViewModel @Inject constructor(
     fun clearMessage() { result.value = null }
     fun save(first: String, last: String) = viewModelScope.launch {
         if (busy.value) return@launch
-        if (first.trim().length < 2) { result.value = "Enter a valid first name"; return@launch }
+        if (first.trim().length < 2) { result.value = context.getString(R.string.profile_invalid_first_name); return@launch }
         busy.value = true
         result.value = when (repository.updateProfile(first.trim(), last.trim())) {
-            is AppResult.Success -> "Profile updated"
-            is AppResult.Failure -> "Unable to save profile. Check your connection and try again."
+            is AppResult.Success -> context.getString(R.string.profile_updated)
+            is AppResult.Failure -> context.getString(R.string.profile_save_failed)
         }
         busy.value = false
     }
@@ -52,7 +55,9 @@ fun CustomerProfileInformationRoute(user: User, back: () -> Unit,
     var editing by remember(user.id) { mutableStateOf(false) }
     val busy by viewModel.saving.collectAsStateWithLifecycle()
     val message by viewModel.message.collectAsStateWithLifecycle()
-    LaunchedEffect(message) { if (message == "Profile updated") editing = false }
+    val updatedMessage = stringResource(R.string.profile_updated)
+    val invalidNameMessage = stringResource(R.string.profile_invalid_first_name)
+    LaunchedEffect(message, updatedMessage) { if (message == updatedMessage) editing = false }
     val cancel = {
         if (editing) {
             first = user.firstName; last = user.lastName
@@ -80,20 +85,20 @@ fun CustomerProfileInformationRoute(user: User, back: () -> Unit,
             ProfileInformationIdentity(user)
             ProfileInformationPersonalCard(
                 first = first, last = last, enabled = editing && !busy,
-                firstError = message == "Enter a valid first name",
+                firstError = message == invalidNameMessage,
                 onFirst = { first = it.take(50); viewModel.clearMessage() },
                 onLast = { last = it.take(50); viewModel.clearMessage() },
             )
             ProfileInformationSecurityCard(user)
             Surface(color = Color(0xFFFFFBF1), shape = androidx.compose.foundation.shape.RoundedCornerShape(13.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFDE68A))) {
-                Text("Your order history and saved addresses are linked to this account.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_your_order_history_and_saved_c9d29ba),
                     Modifier.fillMaxWidth().padding(14.dp),
                     style = MaterialTheme.typography.bodySmall, color = Color(0xFF9A4D07))
             }
             ProfileInformationDeleteEntry(openDeleteAccount)
-            message?.takeUnless { it == "Enter a valid first name" }?.let {
-                Text(it, color = if (it == "Profile updated") Color(0xFF059669)
+            message?.takeUnless { it == invalidNameMessage }?.let {
+                Text(it, color = if (it == updatedMessage) Color(0xFF059669)
                     else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
             }

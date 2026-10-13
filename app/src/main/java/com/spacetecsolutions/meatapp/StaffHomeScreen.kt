@@ -42,9 +42,9 @@ private fun StaffHomeScreen(user: User, orders: List<CodOrder>, loading: Boolean
             item { StaffIdentityCard(user) }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Operational Hub", style = MaterialTheme.typography.titleLarge,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_operational_hub_fc75d90), style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold)
-                    Text("Permission based", style = MaterialTheme.typography.labelMedium,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_permission_based_f6cc2dd), style = MaterialTheme.typography.labelMedium,
                         color = StaffDesign.muted)
                 }
             }
@@ -68,12 +68,12 @@ private fun StaffHomeScreen(user: User, orders: List<CodOrder>, loading: Boolean
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(AppIcons.Help, null, Modifier.size(26.dp), tint = StaffDesign.red)
                         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                            Text("FAQ Management", style = MaterialTheme.typography.titleMedium,
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_faq_management_839ae84), style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold)
-                            Text("Manage customer questions and answers",
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_manage_customer_questions_and_answers_be92846),
                                 style = MaterialTheme.typography.bodySmall, color = StaffDesign.muted)
                         }
-                        TextButton({ navigate(StaffRoutes.FAQ) }) { Text("Manage") }
+                        TextButton({ navigate(StaffRoutes.FAQ) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_manage_bf58d17)) }
                     }
                 }
             }
@@ -88,7 +88,7 @@ private fun StaffHomeScreen(user: User, orders: List<CodOrder>, loading: Boolean
                 Surface(shape = RoundedCornerShape(14.dp), color = StaffDesign.inset) {
                     Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(AppIcons.Security, null, tint = StaffDesign.muted)
-                        Text("Your workspace shows only administrator-approved tools.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_your_workspace_shows_only_administrator_23c6cbc),
                             Modifier.padding(start = 10.dp), style = MaterialTheme.typography.bodySmall,
                             color = StaffDesign.muted)
                     }
@@ -132,5 +132,5 @@ private fun RecentOrderCard(order: CodOrder, click: () -> Unit) = StaffCard(Modi
 
 @Composable
 internal fun StaffAccessDenied() = Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    Text("You do not have permission to access this section.", modifier = Modifier.padding(24.dp))
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_you_do_not_have_permission_e1adcd9), modifier = Modifier.padding(24.dp))
 }

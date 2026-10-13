@@ -73,15 +73,16 @@ fun RevenueChart(points: List<Float>, labels: List<String>, modifier: Modifier =
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column(Modifier.padding(AppSpacing.medium)) {
-            Text("Revenue trend", style = MaterialTheme.typography.titleMedium)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_revenue_trend_8126da0), style = MaterialTheme.typography.titleMedium)
             Text(
                 "Last 7 days",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            val chartDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_seven_day_revenue_trend_chart_4286783)
             Canvas(
                 Modifier.fillMaxWidth().height(132.dp).padding(top = AppSpacing.medium)
-                    .semantics { contentDescription = "Seven day revenue trend chart" },
+                    .semantics { contentDescription = chartDescription },
             ) {
                 repeat(4) { index ->
                     val y = size.height * index / 3
@@ -113,7 +114,7 @@ fun PaymentDistribution(methods: List<PaymentMethodShare>, modifier: Modifier = 
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column(Modifier.padding(AppSpacing.medium)) {
-            Text("Payment methods", style = MaterialTheme.typography.titleMedium)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_payment_methods_dc80127), style = MaterialTheme.typography.titleMedium)
             if (methods.isEmpty()) {
                 Text(
                     "No payment data yet",
@@ -134,7 +135,7 @@ private fun PaymentRow(method: PaymentMethodShare, color: Color, modifier: Modif
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Surface(Modifier.size(10.dp), shape = CircleShape, color = color) {}
         Text(method.label, Modifier.padding(start = AppSpacing.small).weight(1f))
-        Text("${method.percentage}%", style = MaterialTheme.typography.labelLarge)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_method_percentage_f368d60, method.percentage), style = MaterialTheme.typography.labelLarge)
     }
 }
 

@@ -34,7 +34,7 @@ fun CustomerAboutRoute(back: () -> Unit, call: (String) -> Unit, email: (String)
             .widthIn(max = 440.dp).verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 18.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)) {
-            if (state.error != null) TextButton(onClick = viewModel::refresh) { Text("Retry shop details") }
+            if (state.error != null) TextButton(onClick = viewModel::refresh) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_retry_shop_details_288aa39)) }
             AccountCard(Modifier.fillMaxWidth()) {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(Modifier.size(70.dp).background(Color(0xFFFFE4E1), RoundedCornerShape(16.dp)),
@@ -43,7 +43,7 @@ fun CustomerAboutRoute(back: () -> Unit, call: (String) -> Unit, email: (String)
                     }
                     Spacer(Modifier.height(13.dp))
                     Text(shopName, fontSize = 21.sp, fontWeight = FontWeight.Bold, color = AccountStyle.ink)
-                    Text("Fresh  ·  Quality  ·  Trusted", fontSize = 13.sp,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_fresh_quality_trusted_8848457), fontSize = 13.sp,
                         letterSpacing = 1.sp, color = AccountStyle.muted)
                     shop?.address?.let {
                         Text(it, Modifier.padding(top = 11.dp), fontSize = 12.sp,
@@ -56,17 +56,17 @@ fun CustomerAboutRoute(back: () -> Unit, call: (String) -> Unit, email: (String)
                 color = Color(0xFFFCEBE9), border = BorderStroke(1.dp, Color(0xFFFFDAD6))) {
                 Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(AppIcons.Shop, null, Modifier.size(32.dp), tint = AccountStyle.red)
-                    Text("Fresh cuts, prepared for your order", Modifier.padding(start = 13.dp),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_fresh_cuts_prepared_for_your_dfa4fc2), Modifier.padding(start = 13.dp),
                         fontWeight = FontWeight.SemiBold, color = AccountStyle.ink)
                 }
             }
             AccountSectionLabel("About Us")
             AccountCard(Modifier.fillMaxWidth()) {
-                Text("$shopName offers fresh meat with convenient ordering and scheduled doorstep delivery.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_shopname_offers_fresh_meat_with_112ba50, shopName),
                     fontSize = 15.sp, lineHeight = 24.sp, color = AccountStyle.ink)
                 Spacer(Modifier.height(12.dp))
                 Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFF4F6F8)) {
-                    Text("Our goal is to make everyday ordering dependable and easy.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_our_goal_is_to_make_791e1de),
                         Modifier.padding(13.dp), fontSize = 14.sp, color = AccountStyle.muted)
                 }
             }
@@ -78,7 +78,7 @@ fun CustomerAboutRoute(back: () -> Unit, call: (String) -> Unit, email: (String)
                 shop?.callNumber?.let { AboutContact(AppIcons.Call, "Contact Number", it, { call(it) }) }
                 shop?.email?.let { AboutContact(AppIcons.Contact, "Contact Email", it, { email(it) }) }
                 if (shop?.address == null && shop?.callNumber == null && shop?.email == null)
-                    Text("Shop details are not configured yet.", color = AccountStyle.muted)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_shop_details_are_not_configured_64e5739), color = AccountStyle.muted)
             }
             Text(shopName, Modifier.fillMaxWidth(), fontSize = 12.sp,
                 color = AccountStyle.muted, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
