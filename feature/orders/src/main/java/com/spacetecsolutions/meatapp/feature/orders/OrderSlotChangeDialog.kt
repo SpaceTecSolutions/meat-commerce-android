@@ -32,18 +32,18 @@ internal fun OrderSlotChangeDialog(
     val valid = selectedSlotId in slots.map { it.id } && reason.trim().length >= 10
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
-        title = { Text("Change delivery slot") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_change_delivery_slot_0bdad7a)) },
         text = {
             Column(Modifier.heightIn(max = 460.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Current: ${order.deliverySlotDateLabel.orEmpty()} · ${order.deliverySlotTimeLabel.orEmpty()}",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_current_order_deliveryslotdatelabel_orempty_o_b964d05, order.deliverySlotDateLabel.orEmpty(), order.deliverySlotTimeLabel.orEmpty()),
                     style = MaterialTheme.typography.bodySmall)
                 if (loading) LinearProgressIndicator(Modifier.fillMaxWidth())
                 else if (options == null || options.deliveryDates.isEmpty()) {
-                    Text("No available delivery slots. Check delivery settings.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_available_delivery_slots_check_3aef6ff),
                         color = MaterialTheme.colorScheme.error)
                 } else {
-                    Text("New date", style = MaterialTheme.typography.titleSmall)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_new_date_1a67a4d), style = MaterialTheme.typography.titleSmall)
                     Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         options.deliveryDates.forEach { choice ->
@@ -51,7 +51,7 @@ internal fun OrderSlotChangeDialog(
                         }
                     }
                     if (date != null) {
-                        Text("New time", style = MaterialTheme.typography.titleSmall)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_new_time_a8efdf1), style = MaterialTheme.typography.titleSmall)
                         slots.forEach { slot ->
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(selectedSlotId == slot.id, { onSlot(slot.id) })
@@ -61,14 +61,14 @@ internal fun OrderSlotChangeDialog(
                     }
                     OutlinedTextField(
                         value = reason, onValueChange = onReason, modifier = Modifier.fillMaxWidth(),
-                        label = { Text("Reason for customer *") },
-                        supportingText = { Text("10–200 characters. This reason is sent in the notification.") },
+                        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reason_for_customer_8da50c1)) },
+                        supportingText = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_10_200_characters_this_reason_69a908d)) },
                         minLines = 2, maxLines = 4, isError = reason.isNotEmpty() && reason.trim().length < 10,
                     )
                 }
             }
         },
-        confirmButton = { Button(onConfirm, enabled = valid && !loading && !busy) { Text("Update & notify") } },
-        dismissButton = { TextButton(onDismiss, enabled = !busy) { Text("Cancel") } },
+        confirmButton = { Button(onConfirm, enabled = valid && !loading && !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_update_notify_2adefe6)) } },
+        dismissButton = { TextButton(onDismiss, enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_77dfd21)) } },
     )
 }

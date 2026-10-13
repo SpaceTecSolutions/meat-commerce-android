@@ -33,28 +33,29 @@ internal fun DeliveryOtpVerificationSheet(order: CodOrder, value: String, error:
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(AppIcons.LiveTracking, null, Modifier.size(18.dp), tint = T.red)
                 Spacer(Modifier.width(7.dp))
-                Text("SECURE DELIVERY HANDOVER", style = MaterialTheme.typography.labelSmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_secure_delivery_handover_f128b78), style = MaterialTheme.typography.labelSmall,
                     color = T.red, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.weight(1f))
                 IconButton(onClick = dismiss, enabled = !busy) {
-                    Icon(AppIcons.Close, "Close verification")
+                    Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_verification_aafe26d))
                 }
             }
-            Text("Reached Customer", style = MaterialTheme.typography.headlineSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reached_customer_cb3b1c4), style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, color = T.ink)
             Surface(color = T.canvas, shape = RoundedCornerShape(14.dp),
                 border = BorderStroke(1.dp, T.border)) {
-                Text("Live tracking is active. Ask the customer for the four-digit delivery " +
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_live_tracking_is_active_ask_d51f1d9) +
                     "code displayed on their order screen.", Modifier.padding(13.dp),
                     style = MaterialTheme.typography.bodySmall, color = T.muted)
             }
-            Text("Enter 4-digit delivery OTP", style = MaterialTheme.typography.labelMedium,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_enter_4_digit_delivery_otp_c6d8b45), style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold, color = T.ink)
+            val otpDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_four_digit_delivery_verification_code_06fa57e)
             BasicTextField(value = value, onValueChange = change, enabled = !busy,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().semantics {
-                    contentDescription = "Four-digit delivery verification code"
+                    contentDescription = otpDescription
                 }, decorationBox = { inner ->
                     Box {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -82,7 +83,7 @@ internal fun DeliveryOtpVerificationSheet(order: CodOrder, value: String, error:
                 Surface(color = T.canvas, shape = RoundedCornerShape(14.dp)) {
                     Row(Modifier.fillMaxWidth().padding(13.dp),
                         horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("COD expected", color = T.muted,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cod_expected_bc0b6b1), color = T.muted,
                             style = MaterialTheme.typography.bodyMedium)
                         Text(order.amountDueMinor.money(order.currencyCode),
                             fontWeight = FontWeight.Bold, color = T.ink)
@@ -94,10 +95,10 @@ internal fun DeliveryOtpVerificationSheet(order: CodOrder, value: String, error:
                 colors = ButtonDefaults.buttonColors(containerColor = T.red)) {
                 if (busy) CircularProgressIndicator(Modifier.size(18.dp),
                     color = T.surface, strokeWidth = 2.dp)
-                else Text("Verify OTP")
+                else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_verify_otp_603a2ee))
             }
             TextButton(onClick = dismiss, enabled = !busy,
-                modifier = Modifier.fillMaxWidth()) { Text("Back", color = T.muted) }
+                modifier = Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b), color = T.muted) }
         }
     }
 }

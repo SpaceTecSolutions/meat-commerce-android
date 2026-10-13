@@ -94,10 +94,10 @@ fun NotificationHistoryRoute(
     val context = LocalContext.current
     var confirmClear by remember { mutableStateOf(false) }
     if (confirmClear) AlertDialog(onDismissRequest = { confirmClear = false },
-        title = { Text("Clear all notifications?") },
-        text = { Text("This removes your notification history. Your orders will not be affected.") },
-        confirmButton = { TextButton({ confirmClear = false; viewModel.clearAll() }) { Text("Clear all") } },
-        dismissButton = { TextButton({ confirmClear = false }) { Text("Cancel") } })
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_clear_all_notifications_dd4bbed)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_this_removes_your_notification_history_2770bd1)) },
+        confirmButton = { TextButton({ confirmClear = false; viewModel.clearAll() }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_clear_all_c043160)) } },
+        dismissButton = { TextButton({ confirmClear = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_77dfd21)) } })
     var permissionGranted by remember { mutableStateOf(Build.VERSION.SDK_INT < 33 ||
         context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) }
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -119,18 +119,18 @@ fun NotificationHistoryRoute(
         return
     }
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Notifications", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_notifications_753a22b), back)
         if (state.items.isNotEmpty()) Row(
             Modifier.fillMaxWidth().padding(horizontal = AppSpacing.medium),
             horizontalArrangement = Arrangement.End,
         ) {
-            TextButton({ confirmClear = true }) { Text("Clear all") }
-            TextButton(viewModel::markAllRead, enabled = state.items.any { !it.isRead }) { Text("Mark all as read") }
+            TextButton({ confirmClear = true }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_clear_all_c043160)) }
+            TextButton(viewModel::markAllRead, enabled = state.items.any { !it.isRead }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_mark_all_as_read_1b83163)) }
         }
         if (!permissionGranted) ElevatedCard(Modifier.fillMaxWidth().padding(horizontal = AppSpacing.medium)) {
             Row(Modifier.fillMaxWidth().padding(AppSpacing.medium), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Enable alerts for important updates", Modifier.weight(1f))
-                TextButton({ permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }) { Text("Enable") }
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_enable_alerts_for_important_updates_df20866), Modifier.weight(1f))
+                TextButton({ permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_enable_20063ad)) }
             }
         }
         when {

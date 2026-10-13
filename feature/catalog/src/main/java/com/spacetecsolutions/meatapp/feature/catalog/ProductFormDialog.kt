@@ -71,7 +71,7 @@ internal fun ProductFormScreen(
                     shape = AppShapes.small,
                 ) {
                     if (submitting) CircularProgressIndicator(Modifier.size(AppSpacing.large), strokeWidth = 2.dp)
-                    else Text(if (form.editing) "Update Product" else "Save Product")
+                    else Text(if (form.editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_update_product_ab1b8e0) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_save_product_1076e8e))
                 }
 //            }
         },
@@ -102,13 +102,13 @@ internal fun ProductFormScreen(
                     submitting, keyboardType = KeyboardType.Decimal)
                 OutlinedTextField(
                     value = form.description, onValueChange = actions.onDescription,
-                    modifier = Modifier.fillMaxWidth(), label = { Text("Description") },
+                    modifier = Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_description_55f8ebc)) },
                     enabled = !submitting, minLines = 3, maxLines = 5, shape = AppShapes.extraSmall,
                 )
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Status", style = MaterialTheme.typography.labelMedium)
-                        Text(if (form.active) "Active" else "Inactive", style = MaterialTheme.typography.bodySmall,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_status_bae7d5b), style = MaterialTheme.typography.labelMedium)
+                        Text(if (form.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_active_a733b80) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_inactive_09af574), style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Switch(
@@ -131,7 +131,7 @@ internal fun ProductFormScreen(
                 }
                 AdditionalProductFields(form, submitting, actions)
                 OutlinedButton({ previewOpen = true }, Modifier.fillMaxWidth(), enabled = !submitting) {
-                    Icon(AppIcons.PasswordVisible, null); Spacer(Modifier.width(AppSpacing.small)); Text("Preview customer view")
+                    Icon(AppIcons.PasswordVisible, null); Spacer(Modifier.width(AppSpacing.small)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_preview_customer_view_e57ff4e))
                 }
                 Spacer(Modifier.height(AppSpacing.medium))
             }
@@ -148,16 +148,16 @@ private fun ProductImageField(
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         AppImageCarousel(
             images = images,
-            contentDescription = "Product photos",
+            contentDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_product_photos_510d899),
             modifier = Modifier.fillMaxWidth().height(176.dp),
             autoSlide = images.size > 1,
             onRemove = if (submitting) null else remove,
         )
-        Text("${images.size} of $MAX_PRODUCT_IMAGES photos", style = MaterialTheme.typography.labelMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_images_size_of_max_product_de6f91c, images.size, MAX_PRODUCT_IMAGES), style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         if (images.size < MAX_PRODUCT_IMAGES) TextButton(onClick = select, enabled = !submitting) {
             Icon(AppIcons.Camera, null, Modifier.size(18.dp)); Spacer(Modifier.width(AppSpacing.extraSmall))
-            Text(if (images.isEmpty()) "Add Photos" else "Add More Photos")
+            Text(androidx.compose.ui.res.stringResource(if (images.isEmpty()) R.string.ui_add_photos else R.string.ui_add_more_photos))
         }
         error?.let { Text(it, color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall) }
@@ -194,14 +194,14 @@ private fun CategorySelector(
     var expanded by remember { mutableStateOf(false) }
     val available = categories.filter { it.active || it.id == form.categoryId }
     if (available.isEmpty()) Column {
-        OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, label = { Text("Category") },
-            placeholder = { Text("No categories available") })
-        TextButton(onClick = manage) { Text("Manage Categories") }
+        OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_a3c686e)) },
+            placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_available_38ae64e)) })
+        TextButton(onClick = manage) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_manage_categories_9a34917)) }
     } else ExposedDropdownMenuBox(expanded, { expanded = it && !submitting }) {
         OutlinedTextField(
             available.firstOrNull { it.id == form.categoryId }?.name.orEmpty(), {},
             Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryNotEditable), readOnly = true,
-            label = { Text("Category") }, isError = form.categoryError != null,
+            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_a3c686e)) }, isError = form.categoryError != null,
             supportingText = form.categoryError?.let { { Text(it) } },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) }, shape = AppShapes.extraSmall,
         )
@@ -219,7 +219,7 @@ private fun UnitSelector(unit: ProductUnit, submitting: Boolean, select: (Produc
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(expanded, { expanded = it && !submitting }) {
         OutlinedTextField(unit.shortLabel(), {}, Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryNotEditable),
-            readOnly = true, label = { Text("Unit") }, trailingIcon = {
+            readOnly = true, label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_unit_f6b935a)) }, trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded)
             }, shape = AppShapes.extraSmall)
         ExposedDropdownMenu(expanded, { expanded = false }) {
@@ -233,7 +233,7 @@ private fun UnitSelector(unit: ProductUnit, submitting: Boolean, select: (Produc
 @Composable
 private fun AdditionalProductFields(form: ProductFormState, submitting: Boolean, actions: ProductFormActions) {
     var expanded by remember { mutableStateOf(form.attributes.isNotEmpty() || form.lowStockThreshold.isNotBlank()) }
-    TextButton(onClick = { expanded = !expanded }) { Text(if (expanded) "Hide additional details" else "Additional details") }
+    TextButton(onClick = { expanded = !expanded }) { Text(if (expanded) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_hide_additional_details_0f29f5a) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_additional_details_ab6ed1e)) }
     if (expanded) {
         ProductField("Low stock alert", form.lowStockThreshold, actions.onLowStock, null, submitting, KeyboardType.Decimal)
         form.attributes.forEachIndexed { index, attribute -> Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
@@ -241,10 +241,10 @@ private fun AdditionalProductFields(form: ProductFormState, submitting: Boolean,
                 { actions.onAttributeKey(index, it) }, null, submitting) }
             Box(Modifier.weight(1f)) { ProductField("Value", attribute.value,
                 { actions.onAttributeValue(index, it) }, null, submitting) }
-            IconButton({ actions.onRemoveAttribute(index) }) { Icon(AppIcons.Remove, "Remove attribute") }
+            IconButton({ actions.onRemoveAttribute(index) }) { Icon(AppIcons.Remove, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_remove_attribute_9792b5c)) }
         } }
         form.attributesError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-        TextButton(onClick = actions.onAddAttribute, enabled = !submitting) { Text("Add attribute") }
+        TextButton(onClick = actions.onAddAttribute, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_attribute_c0c1819)) }
     }
 }
 
@@ -267,10 +267,10 @@ private fun SubcategorySelector(selected: String?, values: List<ProductSubcatego
     ExposedDropdownMenuBox(expanded, { expanded = it && !submitting }) {
         OutlinedTextField(values.firstOrNull { it.id == selected }?.name ?: "No subcategory", {},
             Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryNotEditable), readOnly = true,
-            label = { Text("Subcategory (optional)") },
+            label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_subcategory_optional_99288e5)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) })
         ExposedDropdownMenu(expanded, { expanded = false }) {
-            DropdownMenuItem({ Text("No subcategory") }, { select(null); expanded = false })
+            DropdownMenuItem({ Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_subcategory_19494fb)) }, { select(null); expanded = false })
             values.sortedBy(ProductSubcategory::sortOrder).forEach { value ->
                 DropdownMenuItem({ Text(value.name) }, { select(value.id); expanded = false })
             }

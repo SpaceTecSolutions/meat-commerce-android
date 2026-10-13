@@ -37,7 +37,7 @@ internal fun ProductSearchField(
         modifier = modifier.fillMaxWidth(),
         leadingIcon = { Icon(AppIcons.Search, null) },
         trailingIcon = if (value.isNotBlank()) {
-            { IconButton({ onValueChange("") }) { Icon(AppIcons.Close, "Clear search") } }
+            { IconButton({ onValueChange("") }) { Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_clear_search_67300d0)) } }
         } else null,
         placeholder = { Text(placeholder) },
         singleLine = true,
@@ -104,7 +104,7 @@ internal fun AdminProductRow(
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     val selling = product.offerPriceMinor ?: product.priceMinor
-                    Text("${money(selling)} / ${product.unit.shortLabel()}", style = MaterialTheme.typography.bodySmall,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_money_selling_product_unit_shortlabel_aad82dd, money(selling), product.unit.shortLabel()), style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium)
                     if (product.offerPriceMinor != null) Text(
                         money(product.priceMinor), Modifier.padding(start = AppSpacing.small),

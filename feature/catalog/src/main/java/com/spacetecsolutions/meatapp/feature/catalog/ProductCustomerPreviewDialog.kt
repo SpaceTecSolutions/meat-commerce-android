@@ -24,7 +24,7 @@ internal fun ProductCustomerPreviewDialog(form: ProductFormState, dismiss: () ->
                 AppImageCarousel(images, form.name.ifBlank { "Product preview" },
                     Modifier.fillMaxWidth().aspectRatio(1.2f), autoSlide = images.size > 1)
                 Column(Modifier.padding(AppSpacing.large), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("CUSTOMER PREVIEW", style = MaterialTheme.typography.labelSmall,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_customer_preview_29007f4), style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                     Text(form.name.ifBlank { "Product name" }, style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold)
@@ -38,7 +38,7 @@ internal fun ProductCustomerPreviewDialog(form: ProductFormState, dismiss: () ->
                             Text(it.value, fontWeight = FontWeight.SemiBold)
                         }
                     }
-                    Button(dismiss, Modifier.fillMaxWidth()) { Text("Close preview") }
+                    Button(dismiss, Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_close_preview_baa5503)) }
                 }
             }
         }

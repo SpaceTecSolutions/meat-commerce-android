@@ -53,7 +53,7 @@ fun AppTopBar(
                 IconButton(onClick = onAction) {
                     BadgedBox(badge = {
                         if (actionBadgeCount > 0) Badge {
-                            Text(if (actionBadgeCount > 99) "99+" else actionBadgeCount.toString())
+                            Text(if (actionBadgeCount > 99) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_badge_overflow_99_plus) else actionBadgeCount.toString())
                         }
                     }) { Icon(actionIcon, contentDescription = actionDescription) }
                 }
@@ -72,7 +72,7 @@ fun AppBackTopBar(title: String, onBack: () -> Unit, modifier: Modifier = Modifi
         expandedHeight = 56.dp,
         navigationIcon = {
             IconButton(onClick = onBack) {
-                Icon(AppIcons.Back, contentDescription = "Back")
+                Icon(AppIcons.Back, contentDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_back_b52b36b))
             }
         },
     )

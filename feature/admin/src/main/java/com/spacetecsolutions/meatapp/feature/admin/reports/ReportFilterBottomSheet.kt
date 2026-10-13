@@ -47,10 +47,10 @@ internal fun ReportFilterBottomSheet(
                 .align(Alignment.CenterHorizontally).padding(horizontal = 24.dp)
                 .navigationBarsPadding(),
         ) {
-            Text("Report Filters", style = MaterialTheme.typography.headlineSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_report_filters_a47cb78), style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, color = ReportsStyle.ink)
             Spacer(Modifier.height(AppSpacing.medium))
-            Text("PERIOD", style = MaterialTheme.typography.labelMedium,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_period_28a371c), style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold, color = ReportsStyle.muted)
             adminPeriods.forEach { option ->
                 val selected = period == option
@@ -72,7 +72,7 @@ internal fun ReportFilterBottomSheet(
             }
             if (period == ReportPeriodType.CUSTOM) {
                 OutlinedButton({ datePickerOpen = true }, Modifier.fillMaxWidth()) {
-                    Text(if (start != null && end != null) "Custom Date" else "Select start and end date")
+                    Text(if (start != null && end != null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_custom_date_d993d77) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_select_start_and_end_date_2075d1a))
                 }
             }
             Spacer(Modifier.height(AppSpacing.medium))
@@ -83,11 +83,11 @@ internal fun ReportFilterBottomSheet(
             Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
                 OutlinedButton({
                     period = ReportPeriodType.MONTHLY; start = null; end = null
-                }, Modifier.weight(1f).heightIn(min = 48.dp), shape = ReportsStyle.pillShape) { Text("Reset") }
+                }, Modifier.weight(1f).heightIn(min = 48.dp), shape = ReportsStyle.pillShape) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_reset_44c57ab)) }
                 Button({ apply(period, null, start, end) }, Modifier.weight(1f).heightIn(min = 48.dp),
                     shape = ReportsStyle.pillShape,
                     colors = ButtonDefaults.buttonColors(containerColor = ReportsStyle.red)) {
-                    Text("Apply Filters")
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_apply_filters_6b2a78a))
                 }
             }
             Spacer(Modifier.height(AppSpacing.medium))
@@ -118,15 +118,15 @@ private fun ReportDateRangePicker(
                 val to = picker.selectedEndDateMillis?.toIsoDate()
                 if (from != null && to != null) select(from, to)
             }, enabled = picker.selectedStartDateMillis != null && picker.selectedEndDateMillis != null) {
-                Text("Apply")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_apply_cfea419))
             }
         },
-        dismissButton = { TextButton(dismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
     ) {
         DateRangePicker(
             state = picker,
             modifier = Modifier.heightIn(max = AppDimensions.dashboardMaxWidth),
-            title = { Text("Select report dates", Modifier.padding(horizontal = AppSpacing.large)) },
+            title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_select_report_dates_ec45fbe), Modifier.padding(horizontal = AppSpacing.large)) },
             headline = null,
             showModeToggle = false,
         )

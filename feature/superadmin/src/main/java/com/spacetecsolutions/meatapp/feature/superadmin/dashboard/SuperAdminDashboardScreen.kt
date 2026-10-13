@@ -21,7 +21,7 @@ fun SuperAdminDashboardScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize()) {
-        AppTopBar(title = "Dashboard")
+        AppTopBar(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_dashboard_d87f47b))
         when (state) {
             DashboardUiState.Loading -> ContentStateView(ContentState.Loading)
             DashboardUiState.Offline -> ContentStateView(

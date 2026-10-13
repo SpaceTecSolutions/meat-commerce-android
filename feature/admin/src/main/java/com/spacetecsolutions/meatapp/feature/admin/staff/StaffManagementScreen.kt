@@ -70,20 +70,20 @@ fun StaffManagementRoute(back: () -> Unit, onMessage: (StaffMessage) -> Unit,
     val filtered = remember(state.staff, state.query, state.activeOnly) { state.staff.filter { user ->
         (!state.activeOnly || user.active) && (state.query.isBlank() || user.displayName.contains(state.query, true) ||
             user.mobileNumber.contains(state.query)) } }
-    Scaffold(topBar = { AppBackTopBar("Staff Management", back) }, floatingActionButton = {
+    Scaffold(topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_staff_management_43da759), back) }, floatingActionButton = {
         ExtendedFloatingActionButton(
-            onClick = viewModel::create, icon = { Icon(AppIcons.Add, null) }, text = { Text("Add Staff") },
+            onClick = viewModel::create, icon = { Icon(AppIcons.Add, null) }, text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_staff_9950bf4)) },
             containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary,
         )
     }) { padding -> Column(Modifier.fillMaxSize().padding(padding).widthIn(max = 560.dp)) {
         OutlinedTextField(state.query, viewModel::search, Modifier.fillMaxWidth().padding(16.dp), singleLine = true,
-            leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text("Search staff") })
-        FilterChip(state.activeOnly, { viewModel.activeOnly(!state.activeOnly) }, { Text("Active only") },
+            leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_search_staff_f5562ce)) })
+        FilterChip(state.activeOnly, { viewModel.activeOnly(!state.activeOnly) }, { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_only_e5a176a)) },
             modifier = Modifier.padding(horizontal = 16.dp))
         when {
             state.loading -> ContentStateView(ContentState.Loading)
             state.error != null -> ContentStateView(ContentState.Error(description = state.error), onAction = viewModel::load)
-            filtered.isEmpty() -> ContentStateView(ContentState.Empty(title = "No staff found", description = "Create an employee account."))
+            filtered.isEmpty() -> ContentStateView(ContentState.Empty(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_staff_found_320d7ee), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_an_employee_account_49b9a04)))
             else -> LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(filtered, key = User::id) { user -> ElevatedCard(onClick = { viewModel.edit(user) }) {
                     Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -91,7 +91,8 @@ fun StaffManagementRoute(back: () -> Unit, onMessage: (StaffMessage) -> Unit,
                             Icon(AppIcons.Admin, null, Modifier.padding(12.dp), tint = MaterialTheme.colorScheme.primary) }
                         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                             Text(user.displayName, fontWeight = FontWeight.Bold); Text(user.mobileNumber)
-                            Text("${if (user.active) "Active" else "Inactive"} · ${user.permissions.size} permissions",
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_user_status_permission_count,
+                                androidx.compose.ui.res.stringResource(if (user.active) com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active else com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive), user.permissions.size),
                                 style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                         }; Icon(AppIcons.ArrowRight, null)
                     }
@@ -106,16 +107,16 @@ private fun EmployeeFormScreen(form: EmployeeForm, saving: Boolean, update: (Emp
     save: () -> Unit, back: () -> Unit) = Scaffold(
     topBar = { AppBackTopBar(if (form.id == null) "Add Staff" else "Staff Details", back) },
     bottomBar = { Button(save, Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp), enabled = !saving) {
-        Text(if (form.id == null) "Create Staff" else "Save Changes") } },
+        Text(if (form.id == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_staff_a716c36) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_changes_fa2984b)) } },
 ) { padding -> LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
     verticalArrangement = Arrangement.spacedBy(14.dp)) {
-    item { OutlinedTextField(form.name, { update(form.copy(name = it.take(80))) }, Modifier.fillMaxWidth(), label = { Text("Full Name *") }) }
-    item { OutlinedTextField(form.mobile, { update(form.copy(mobile = it.take(14))) }, Modifier.fillMaxWidth(), label = { Text("Mobile Number *") }) }
-    item { OutlinedTextField(form.email, { update(form.copy(email = it.take(120))) }, Modifier.fillMaxWidth(), label = { Text("Email (optional)") }) }
+    item { OutlinedTextField(form.name, { update(form.copy(name = it.take(80))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_full_name_0756876)) }) }
+    item { OutlinedTextField(form.mobile, { update(form.copy(mobile = it.take(14))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_mobile_number_5c5448f)) }) }
+    item { OutlinedTextField(form.email, { update(form.copy(email = it.take(120))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_email_optional_5c10b58)) }) }
     item { Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) {
-        Text("Active status", fontWeight = FontWeight.SemiBold); Text("Inactive staff cannot sign in")
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_status_bde34d0), fontWeight = FontWeight.SemiBold); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive_staff_cannot_sign_in_799e5fd))
     }; Switch(form.active, { update(form.copy(active = it)) }, colors = appSwitchColors()) } }
-    item { Text("Configure Permissions", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
+    item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_configure_permissions_3986f8b), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
     items(StaffPermission.entries.filterNot { it == StaffPermission.GENERATE_INVOICE }) { permission -> val selected = permission in form.permissions
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) { Text(permission.label(), fontWeight = FontWeight.Medium); Text(permission.description(),

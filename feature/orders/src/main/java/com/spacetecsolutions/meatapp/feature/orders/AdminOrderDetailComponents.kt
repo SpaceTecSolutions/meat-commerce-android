@@ -28,7 +28,7 @@ internal fun CustomerInfoSection(order: CodOrder, call: (String) -> Unit, modifi
                 Text(order.customerMobile, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             if (order.customerMobile.isNotBlank()) IconButton({ call(order.customerMobile) }) {
-                Icon(AppIcons.Call, "Call ${order.customerName}", tint = MaterialTheme.colorScheme.primary)
+                Icon(AppIcons.Call, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_call_order_customername_4ea3c91, order.customerName), tint = MaterialTheme.colorScheme.primary)
             }
         }
     }
@@ -43,7 +43,7 @@ internal fun DeliveryAddressSection(order: CodOrder, navigate: (String) -> Unit,
                 Text(order.addressSummary, style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            IconButton({ navigate(order.addressSummary) }) { Icon(AppIcons.Location, "Open address in maps",
+            IconButton({ navigate(order.addressSummary) }) { Icon(AppIcons.Location, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_open_address_in_maps_45d30ac),
                 tint = MaterialTheme.colorScheme.primary) }
         }
     }
@@ -58,7 +58,7 @@ internal fun OrderItemRow(item: OrderItemSnapshot, currencyCode: String) {
             Text(listOf(item.unit.name.pretty(), attributes).filter(String::isNotBlank).joinToString(" · "),
                 style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("×${item.quantityLabel}", Modifier.padding(horizontal = AppSpacing.small),
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_item_quantitylabel_e224815, item.quantityLabel), Modifier.padding(horizontal = AppSpacing.small),
             style = MaterialTheme.typography.labelLarge)
         Text(item.lineTotalMinor.money(currencyCode), fontWeight = FontWeight.SemiBold)
     }
@@ -89,7 +89,7 @@ internal fun DeliverySlotSection(order: CodOrder) = DetailSurface("Delivery Time
 
 @Composable
 internal fun CustomerNoteSection(note: String) = DetailSurface("Customer Note", AppIcons.Message) {
-    Text("“$note”", color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_note_5b98729, note), color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
 @Composable

@@ -29,8 +29,8 @@ internal fun SwipeDeleteContainer(enabled: Boolean, label: String, onDelete: () 
                 contentAlignment = Alignment.CenterEnd,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(AppIcons.Delete, "Delete $label", tint = MaterialTheme.colorScheme.onError)
-                    Text("Delete", color = MaterialTheme.colorScheme.onError,
+                    Icon(AppIcons.Delete, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_label_ccb0e69, label), tint = MaterialTheme.colorScheme.onError)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_f6fdbe4), color = MaterialTheme.colorScheme.onError,
                         style = MaterialTheme.typography.labelSmall)
                 }
             }

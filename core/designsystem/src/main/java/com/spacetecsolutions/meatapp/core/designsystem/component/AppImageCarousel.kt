@@ -38,13 +38,15 @@ fun AppImageCarousel(
             if (!pager.isScrollInProgress) pager.animateScrollToPage((pager.currentPage + 1) % pages.size)
         }
     }
-    Box(modifier.semantics {
-        this.contentDescription = "$contentDescription, ${pages.size} photo${if (pages.size == 1) "" else "s"}"
-    }) {
+    val carouselDescription = androidx.compose.ui.res.pluralStringResource(
+        com.spacetecsolutions.meatapp.core.designsystem.R.plurals.ui_image_photo_count,
+        pages.size, contentDescription, pages.size,
+    )
+    Box(modifier.semantics { this.contentDescription = carouselDescription }) {
         HorizontalPager(pager, Modifier.fillMaxSize()) { page ->
             AppImage(
                 model = pages[page],
-                contentDescription = "$contentDescription, photo ${page + 1} of ${pages.size}",
+                contentDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_contentdescription_photo_page_1_of_ae64ad6, contentDescription, page + 1, pages.size),
                 modifier = Modifier.fillMaxSize(),
                 cornerRadius = cornerRadius,
                 contentScale = ContentScale.Crop,
@@ -56,7 +58,7 @@ fun AppImageCarousel(
                 modifier = Modifier.align(Alignment.TopEnd)
                     .padding(AppSpacing.extraSmall)
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = .9f), AppShapes.large),
-            ) { Icon(AppIcons.Delete, "Remove current photo", tint = MaterialTheme.colorScheme.error) }
+            ) { Icon(AppIcons.Delete, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_remove_current_photo_d3bdbc5), tint = MaterialTheme.colorScheme.error) }
         }
         if (pages.size > 1) Row(
             Modifier.align(Alignment.BottomCenter)

@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.customerhome
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.AppError
@@ -26,6 +27,7 @@ data class DeleteAccountState(
 
 @HiltViewModel
 class CustomerDeleteAccountViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val orders: CodOrderRepository,
     private val profile: CustomerHomeRepository,
 ) : ViewModel() {
@@ -44,7 +46,7 @@ class CustomerDeleteAccountViewModel @Inject constructor(
                         error = null)
                 }
                 is AppResult.Failure -> mutableState.update {
-                    it.copy(loading = false, error = "Unable to check current orders. Retry before deleting.")
+                    it.copy(loading = false, error = context.getString(R.string.delete_orders_check_failed))
                 }
             }
         }
@@ -58,10 +60,10 @@ class CustomerDeleteAccountViewModel @Inject constructor(
             is AppResult.Success -> mutableState.update { it.copy(deleting = false, completed = true) }
             is AppResult.Failure -> mutableState.update { it.copy(deleting = false,
                 error = when (result.error) {
-                    is AppError.Validation -> "An active order is still in progress. Finish or cancel it first."
+                    is AppError.Validation -> context.getString(R.string.delete_order_in_progress)
                     AppError.Network, AppError.Offline, AppError.Timeout ->
-                        "Connection lost. Your account may still be processing deletion; retry safely."
-                    else -> "Account deletion could not finish. Please retry or contact support."
+                        context.getString(R.string.delete_connection_lost)
+                    else -> context.getString(R.string.delete_account_failed)
                 }) }
         }
     }
@@ -72,7 +74,7 @@ class CustomerDeleteAccountViewModel @Inject constructor(
             is AppResult.Success -> mutableState.update { it.copy(loading = false, checked = true,
                 activeOrder = result.value.firstOrNull(CodOrder::isActive)) }
             is AppResult.Failure -> mutableState.update { it.copy(loading = false,
-                error = "Unable to check current orders. Retry before deleting.") }
+                error = context.getString(R.string.delete_orders_check_failed)) }
         }
     }
 }

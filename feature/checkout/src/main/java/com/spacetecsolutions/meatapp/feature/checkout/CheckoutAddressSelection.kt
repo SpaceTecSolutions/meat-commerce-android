@@ -43,7 +43,7 @@ internal fun CheckoutAddressSelection(state: CheckoutUiState, padding: PaddingVa
                     Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(AppIcons.Delivery, null, Modifier.size(22.dp), tint = T.red)
                         Column(Modifier.padding(start = 12.dp)) {
-                            Text("Express delivery", fontWeight = FontWeight.Bold, color = T.ink)
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_express_delivery_55d8c46), fontWeight = FontWeight.Bold, color = T.ink)
                             Text(estimate, style = MaterialTheme.typography.bodySmall, color = T.muted)
                         }
                     }
@@ -52,13 +52,13 @@ internal fun CheckoutAddressSelection(state: CheckoutUiState, padding: PaddingVa
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Saved Locations", style = MaterialTheme.typography.titleMedium,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_saved_locations_158aec6), style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold, color = T.ink)
-                        Text("Choose where we should deliver", style = MaterialTheme.typography.bodySmall,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_choose_where_we_should_deliver_9012d3f), style = MaterialTheme.typography.bodySmall,
                             color = T.muted)
                     }
                     Surface(shape = CircleShape, color = T.soft) {
-                        Text("${quote.addresses.size} saved", Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_quote_addresses_size_saved_5751f51, quote.addresses.size), Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             style = MaterialTheme.typography.labelSmall, color = T.muted)
                     }
                 }
@@ -66,13 +66,13 @@ internal fun CheckoutAddressSelection(state: CheckoutUiState, padding: PaddingVa
             if (quote.addresses.isEmpty()) item {
                 Column(Modifier.fillParentMaxHeight()) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Add a delivery address to continue.", color = T.muted)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_add_a_delivery_address_to_8552c27), color = T.muted)
                         TextButton(onClick = manageAddresses, contentPadding = PaddingValues(horizontal = 4.dp) ){
-                                Text("+ Add", color = T.red,)
+                                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_add_109b936), color = T.red,)
                             }
 
                     }
-                    ContentStateView(ContentState.Empty(title = "No saved addresses", description = "Add an address for delivery."))
+                    ContentStateView(ContentState.Empty(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_no_saved_addresses_ec37dcd), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_add_an_address_for_delivery_947e319)))
                 }
             }
             items(quote.addresses, key = CustomerAddress::id) { address ->
@@ -105,10 +105,10 @@ internal fun CheckoutSelectableAddress(address: CustomerAddress, selected: Boole
                 Column(Modifier.weight(1f).padding(start = 10.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(address.type.display(), fontWeight = FontWeight.Bold, color = T.ink)
-                        if (address.isDefault) Text("DEFAULT", Modifier.padding(start = 8.dp),
+                        if (address.isDefault) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_default_c189207), Modifier.padding(start = 8.dp),
                             style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = T.red)
                     }
-                    if (selected) Text("Active delivery destination",
+                    if (selected) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_active_delivery_destination_cd5cac5),
                         style = MaterialTheme.typography.labelSmall, color = T.red)
                 }
                 if (showActions) RadioButton(selected = selected, onClick = onSelect,
@@ -131,7 +131,7 @@ internal fun CheckoutSelectableAddress(address: CustomerAddress, selected: Boole
             }
             address.landmark.takeIf(String::isNotBlank)?.let { landmark ->
                 Surface(shape = RoundedCornerShape(7.dp), color = T.soft) {
-                    Text("Landmark: $landmark", Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_landmark_landmark_9417bec, landmark), Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
                         style = MaterialTheme.typography.labelSmall, color = T.muted)
                 }
             }
@@ -140,7 +140,7 @@ internal fun CheckoutSelectableAddress(address: CustomerAddress, selected: Boole
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onEdit) {
                         Icon(AppIcons.Edit, null, Modifier.size(16.dp))
-                        Text("Edit", Modifier.padding(start = 5.dp))
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_edit_5301648), Modifier.padding(start = 5.dp))
                     }
                 }
             }

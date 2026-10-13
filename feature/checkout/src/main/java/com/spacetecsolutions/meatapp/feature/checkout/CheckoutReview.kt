@@ -52,12 +52,13 @@ internal fun CheckoutReview(
                     verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(AppIcons.Location, null, Modifier.size(20.dp), tint = T.red)
-                        Text("DELIVERING TO ${address?.type?.display()?.uppercase() ?: "ADDRESS"}",
+                        Text(androidx.compose.ui.res.stringResource(R.string.ui_delivering_to_address_type,
+                            address?.type?.display()?.uppercase() ?: androidx.compose.ui.res.stringResource(R.string.ui_address_f411722)),
                             Modifier.weight(1f).padding(start = 8.dp),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold, color = T.ink)
                         TextButton(onClick = edit, contentPadding = PaddingValues(horizontal = 4.dp)) {
-                            Text("Edit", color = T.red)
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_edit_5301648), color = T.red)
                         }
                     }
                     address?.let { Text(it.formatted(), style = MaterialTheme.typography.bodySmall,
@@ -70,9 +71,9 @@ internal fun CheckoutReview(
             }
             ReviewSurface {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Order Summary", Modifier.weight(1f),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_order_summary_c7df8a9), Modifier.weight(1f),
                         style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text("${quote.cart.quantity} items", style = MaterialTheme.typography.labelMedium,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_quote_cart_quantity_items_5bcd124, quote.cart.quantity), style = MaterialTheme.typography.labelMedium,
                         color = T.muted)
                 }
                 quote.cart.lines.forEachIndexed { index, line ->
@@ -81,12 +82,12 @@ internal fun CheckoutReview(
                 }
             }
             state.instructions.takeIf(String::isNotBlank)?.let { note -> ReviewSurface {
-                Text("Delivery Instructions", fontWeight = FontWeight.Bold)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_delivery_instructions_88eb40f), fontWeight = FontWeight.Bold)
                 Text(note, style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             } }
             ReviewSurface {
-                Text("Bill Details", style = MaterialTheme.typography.titleMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_bill_details_6ab5e98), style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold)
                 BillRow("Item Total", quote.cart.subtotalMinor.money(quote.currencyCode))
                 if (quote.cart.discountMinor > 0)
@@ -103,7 +104,7 @@ internal fun CheckoutReview(
                 }
             }
             ReviewSurface {
-                Text("Payment Method", style = MaterialTheme.typography.titleMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_payment_method_f383f6a), style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold)
                 quote.paymentMethods.forEach { method ->
                     Surface(onClick = { selectPaymentMethod(method) },
@@ -122,7 +123,7 @@ internal fun CheckoutReview(
                                 Text(method.label(), style = MaterialTheme.typography.bodyMedium)
                                 if (method == CheckoutPaymentMethod.RAZORPAY) Surface(
                                     shape = RoundedCornerShape(6.dp), color = T.rose) {
-                                    Text("RECOMMENDED", Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_recommended_e37d21e), Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold, color = T.red)
                                 }
@@ -181,10 +182,10 @@ private fun BillRow(label: String, value: String, emphasized: Boolean = false) {
 @Composable
 private fun FreeDeliveryRow() {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("Delivery Charge", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_delivery_charge_e1d29b6), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
             color = T.muted,
             textDecoration = TextDecoration.LineThrough)
-        Text("FREE", style = MaterialTheme.typography.bodyMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_free_4a9768f), style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold, color = T.green)
     }
 }
@@ -197,7 +198,7 @@ internal fun OrderPlacedContent(
     continueShopping: () -> Unit,
 ) {
     Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-        Text("Order Tracking", Modifier.align(Alignment.TopStart)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_order_tracking_feed8eb), Modifier.align(Alignment.TopStart)
             .padding(horizontal = AppSpacing.medium, vertical = AppSpacing.medium),
             style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Column(
@@ -211,7 +212,7 @@ internal fun OrderPlacedContent(
                 modifier = Modifier.size(112.dp),
             )
             Spacer(Modifier.height(AppSpacing.extraLarge))
-            Text("Order Placed Successfully!", style = MaterialTheme.typography.headlineSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_order_placed_successfully_a6345b2), style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             Spacer(Modifier.height(AppSpacing.small))
             Text(

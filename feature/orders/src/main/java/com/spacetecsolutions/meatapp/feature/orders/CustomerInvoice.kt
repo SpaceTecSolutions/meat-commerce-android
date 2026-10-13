@@ -37,12 +37,12 @@ internal fun CustomerInvoiceDialog(order: CodOrder, onDismiss: () -> Unit) {
     } } }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Invoice details", fontWeight = FontWeight.Bold) },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_invoice_details_2325ca6), fontWeight = FontWeight.Bold) },
         text = {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (downloaded) item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     AppLottieAnimation(AppAnimation.OrderSuccess, Modifier.size(72.dp))
-                }; Text("Invoice downloaded", Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                }; Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_invoice_downloaded_dae3c07), Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) }
                 item { Surface(shape = RoundedCornerShape(14.dp)) {
                     Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
@@ -59,10 +59,10 @@ internal fun CustomerInvoiceDialog(order: CodOrder, onDismiss: () -> Unit) {
                     Text(order.customerMobile, style = MaterialTheme.typography.bodySmall)
                     Text(order.addressSummary, style = MaterialTheme.typography.bodySmall)
                 } }
-                item { Text("Items", fontWeight = FontWeight.Bold) }
+                item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_items_44d25b5), fontWeight = FontWeight.Bold) }
                 items(order.items, key = { it.productId }) { line ->
                     Row(Modifier.fillMaxWidth()) {
-                        Text("${line.name} × ${line.quantity}", Modifier.weight(1f))
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_line_name_line_quantity_c4f99dc, line.name, line.quantity), Modifier.weight(1f))
                         Text(money(line.lineTotalMinor))
                     }
                 }
@@ -75,8 +75,8 @@ internal fun CustomerInvoiceDialog(order: CodOrder, onDismiss: () -> Unit) {
                 } }
             }
         },
-        confirmButton = { Button({ saver.launch("invoice-${order.displayNumber}.pdf") }) { Text("Download PDF") } },
-        dismissButton = { TextButton(onDismiss) { Text("Close") } },
+        confirmButton = { Button({ saver.launch("invoice-${order.displayNumber}.pdf") }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_download_pdf_98e5ef0)) } },
+        dismissButton = { TextButton(onDismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_bbfa773)) } },
     )
 }
 
@@ -111,17 +111,17 @@ private fun createInvoicePdf(context: Context, order: CodOrder): ByteArray {
     } }
     paint.color = Color.WHITE; paint.typeface = Typeface.DEFAULT_BOLD; paint.textSize = 24f
     canvas.drawText(order.shopName.uppercase(), 105f, 48f, paint)
-    paint.textSize = 30f; canvas.drawText("INVOICE", 410f, 57f, paint)
+    paint.textSize = 30f; canvas.drawText(context.getString(R.string.ui_invoice_details_2325ca6), 410f, 57f, paint)
     paint.color = Color.BLACK; paint.textSize = 13f; canvas.drawText(order.displayNumber, 40f, 140f, paint)
     if (order.shopAddress.isNotBlank()) canvas.drawText(order.shopAddress.take(70), 40f, 160f, paint)
     paint.typeface = Typeface.DEFAULT; var y = 112f
-    y = 195f; paint.typeface = Typeface.DEFAULT_BOLD; canvas.drawText("INVOICE TO", 40f, y, paint); y += 20f
+    y = 195f; paint.typeface = Typeface.DEFAULT_BOLD; canvas.drawText(context.getString(R.string.invoice_to), 40f, y, paint); y += 20f
     paint.typeface = Typeface.DEFAULT; canvas.drawText(order.customerName, 40f, y, paint); y += 18f
     canvas.drawText(order.customerMobile, 40f, y, paint); y += 20f
     order.addressSummary.chunked(72).take(3).forEach { canvas.drawText(it, 40f, y, paint); y += 17f }
     y += 18f; paint.color = Color.rgb(215, 25, 32); canvas.drawRect(35f, y - 17f, 560f, y + 7f, paint)
     paint.color = Color.WHITE; paint.typeface = Typeface.DEFAULT_BOLD
-    canvas.drawText("Item", 45f, y, paint); canvas.drawText("Qty", 385f, y, paint); canvas.drawText("Amount", 475f, y, paint); y += 24f
+    canvas.drawText(context.getString(R.string.invoice_item), 45f, y, paint); canvas.drawText(context.getString(R.string.invoice_quantity), 385f, y, paint); canvas.drawText(context.getString(R.string.invoice_amount), 475f, y, paint); y += 24f
     paint.color = Color.BLACK
     paint.typeface = Typeface.DEFAULT
     order.items.take(24).forEach { item ->
@@ -129,11 +129,11 @@ private fun createInvoicePdf(context: Context, order: CodOrder): ByteArray {
         canvas.drawText(money(item.lineTotalMinor), 470f, y, paint); y += 20f
     }
     y += 10f; paint.typeface = Typeface.DEFAULT_BOLD; paint.textSize = 16f
-    canvas.drawText("Subtotal: ${money(order.subtotalMinor)}", 340f, y, paint); y += 22f
+    canvas.drawText(context.getString(R.string.invoice_subtotal, money(order.subtotalMinor)), 340f, y, paint); y += 22f
     paint.color = Color.rgb(215, 25, 32); canvas.drawRect(330f, y - 17f, 560f, y + 8f, paint)
-    paint.color = Color.WHITE; canvas.drawText("TOTAL: ${money(order.totalMinor)}", 345f, y, paint)
+    paint.color = Color.WHITE; canvas.drawText(context.getString(R.string.invoice_total, money(order.totalMinor)), 345f, y, paint)
     paint.color = Color.DKGRAY; paint.textSize = 10f; paint.typeface = Typeface.DEFAULT
-    canvas.drawText("Thank you for shopping with ${order.shopName}.", 40f, 800f, paint)
+    canvas.drawText(context.getString(R.string.invoice_thank_you, order.shopName), 40f, 800f, paint)
     document.finishPage(page)
     return ByteArrayOutputStream().use { output -> document.writeTo(output); document.close(); output.toByteArray() }
 }

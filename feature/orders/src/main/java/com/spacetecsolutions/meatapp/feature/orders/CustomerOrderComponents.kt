@@ -114,11 +114,11 @@ internal fun CustomerOrderCard(model: CustomerOrderUiModel, onClick: (CodOrder) 
                     horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                     Icon(AppIcons.DeliveryPerson, null, Modifier.size(20.dp), tint = T.red)
                     Column {
-                        Text(if (model.isDelayed) "Delivery is running late" else "Rider is on the way",
+                        Text(if (model.isDelayed) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_is_running_late_fb20402) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_rider_is_on_the_way_3dca947),
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Bold, color = T.ink)
                         if (model.formattedDeliveryTime.isNotBlank())
-                            Text("Slot: " + model.formattedDeliveryTime,
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_slot_5de9871) + model.formattedDeliveryTime,
                                 style = MaterialTheme.typography.labelSmall, color = T.muted)
                     }
                 }
@@ -128,11 +128,11 @@ internal fun CustomerOrderCard(model: CustomerOrderUiModel, onClick: (CodOrder) 
                     T.amber.copy(alpha = .25f))) {
                 Column(Modifier.fillMaxWidth().padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text(model.statusDetail ?: "Delivery time has passed",
+                    Text(model.statusDetail ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_time_has_passed_48a2e33),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold, color = T.amber)
                     if (model.formattedDeliveryTime.isNotBlank())
-                        Text("Slot: " + model.formattedDeliveryTime,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_slot_5de9871) + model.formattedDeliveryTime,
                             style = MaterialTheme.typography.bodySmall, color = T.amber)
                 }
             } else if (!outForDelivery && model.formattedDeliveryTime.isNotBlank()) {
@@ -158,12 +158,12 @@ internal fun CustomerOrderCard(model: CustomerOrderUiModel, onClick: (CodOrder) 
                             colors = ButtonDefaults.buttonColors(containerColor = T.red),
                             shape = RoundedCornerShape(50),
                             contentPadding = PaddingValues(horizontal = 12.dp)) {
-                            Text("Track Live", style = MaterialTheme.typography.labelSmall)
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_track_live_0cfb358), style = MaterialTheme.typography.labelSmall)
                             Spacer(Modifier.width(4.dp))
                             Icon(AppIcons.ArrowRight, null, Modifier.size(15.dp))
                         }
-                        onReorder != null -> TextButton(onReorder) { Text("Reorder", color = T.red) }
-                        else -> Text("View Details ›", style = MaterialTheme.typography.labelMedium,
+                        onReorder != null -> TextButton(onReorder) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reorder_33d9978), color = T.red) }
+                        else -> Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_view_details_3347ee8), style = MaterialTheme.typography.labelMedium,
                             color = T.muted)
                     }
                 }

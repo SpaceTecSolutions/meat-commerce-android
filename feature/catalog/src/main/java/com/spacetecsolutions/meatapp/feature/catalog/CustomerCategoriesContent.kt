@@ -35,21 +35,21 @@ internal fun CustomerCategoriesContent(
             state.loading && state.categories.isEmpty() -> CategorySkeletonGrid()
             state.error != null && state.categories.isEmpty() -> ContentStateView(
                 state = if (state.offline) ContentState.Offline(
-                    title = "You're offline",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_you_re_offline_f4d9cea),
                     description = state.error,
                 ) else ContentState.Error(
-                    title = "Unable to load categories",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_unable_to_load_categories_5e27dca),
                     description = state.error,
                 ),
                 onAction = onRefresh,
             )
             state.categories.isEmpty() -> ContentStateView(ContentState.Empty(
-                title = "No categories available",
-                description = "Categories will appear here when products become available.",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_available_38ae64e),
+                description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_categories_will_appear_here_when_6380b44),
             ))
             state.visibleCategories.isEmpty() -> ContentStateView(ContentState.Empty(
-                title = "No categories found",
-                description = "Try a different search.",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_found_31994b1),
+                description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_try_a_different_search_1bdc3a2),
             ))
             else -> CategoryGrid(state.visibleCategories, onCategory)
         }

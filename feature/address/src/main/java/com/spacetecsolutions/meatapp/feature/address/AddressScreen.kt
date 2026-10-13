@@ -79,14 +79,14 @@ fun AddressRoute(onBack: () -> Unit, onMessage: (AddressMessage) -> Unit,
         LaunchedEffect(message) { onMessage(message); viewModel.consumeMessage() }
     }
     if (showLocationSettings) AlertDialog(onDismissRequest = { showLocationSettings = false },
-        title = { Text("Location permission is off") },
-        text = { Text("You can still search or move the map, or enter an address manually.") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_location_permission_is_off_3f1770f)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_you_can_still_search_or_d88c06b)) },
         confirmButton = { TextButton({
             showLocationSettings = false
             context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + context.packageName)))
-        }) { Text("Open Settings") } },
-        dismissButton = { TextButton({ showLocationSettings = false }) { Text("Continue manually") } })
+        }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_open_settings_134635e)) } },
+        dismissButton = { TextButton({ showLocationSettings = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_continue_manually_05acb97)) } })
     state.form?.let { form ->
         if (showMapPicker) AddressMapPicker(form, state.mapPreview, state.mapLoading, state.mapError,
             dismiss = { viewModel.clearMapPreview(); showMapPicker = false },
@@ -103,24 +103,24 @@ fun AddressRoute(onBack: () -> Unit, onMessage: (AddressMessage) -> Unit,
     }
     state.deleteConfirmation?.let { address ->
         AlertDialog(onDismissRequest = { viewModel.confirmDelete(null) },
-            title = { Text("Delete address?") },
-            text = { Text("This " + address.type.name.lowercase() + " address will be removed.") },
+            title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_delete_address_888fcb1)) },
+            text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_this_019dbc8) + address.type.name.lowercase() + " address will be removed.") },
             confirmButton = { Button(viewModel::delete, enabled = !state.submitting,
-                colors = ButtonDefaults.buttonColors(containerColor = T.red)) { Text("Delete") } },
-            dismissButton = { TextButton({ viewModel.confirmDelete(null) }) { Text("Cancel") } })
+                colors = ButtonDefaults.buttonColors(containerColor = T.red)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_delete_f6fdbe4)) } },
+            dismissButton = { TextButton({ viewModel.confirmDelete(null) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_cancel_77dfd21)) } })
     }
     val selectionMode = onSelect != null || onSelectAddress != null
     Scaffold(containerColor = T.canvas, topBar = {
-        TopAppBar(title = { Text(if (selectionMode) "Select delivery address" else "My Addresses",
+        TopAppBar(title = { Text(if (selectionMode) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_select_delivery_address_af45abe) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_my_addresses_b0239f5),
             fontWeight = FontWeight.Bold) },
-            navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, "Back") } },
+            navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) } },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
             Button(viewModel::add, Modifier.fillMaxWidth().navigationBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 12.dp).height(52.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = T.red)) {
-                Icon(AppIcons.Add, null); Spacer(Modifier.width(8.dp)); Text("Add New Address")
+                Icon(AppIcons.Add, null); Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_add_new_address_3e89e38))
             }
         }
     }) { padding ->
@@ -129,7 +129,7 @@ fun AddressRoute(onBack: () -> Unit, onMessage: (AddressMessage) -> Unit,
             state.error != null -> ContentStateView(ContentState.Error(description = state.error),
                 Modifier.padding(padding), onAction = viewModel::refresh)
             state.addresses.isEmpty() -> ContentStateView(ContentState.Empty(
-                title = "No saved addresses", description = "Add an address for delivery."),
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_no_saved_addresses_ec37dcd), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_add_an_address_for_delivery_947e319)),
                 Modifier.padding(padding), onAction = viewModel::add)
             else -> LazyColumn(Modifier.fillMaxSize().padding(padding)
                 .wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = AppDimensions.contentMaxWidth),

@@ -32,7 +32,7 @@ private fun PromotionManagementScreen(
     state: PromotionManagementUiState, back: () -> Unit, actions: PromotionManagementViewModel,
 ) {
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Offers & Coupons", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_offers_coupons_2c00e95), back)
         Row(
             Modifier.fillMaxWidth().padding(horizontal = AppSpacing.medium),
             horizontalArrangement = Arrangement.End,
@@ -40,15 +40,15 @@ private fun PromotionManagementScreen(
             TextButton(onClick = { actions.edit(null) }) {
                 Icon(AppIcons.Add, contentDescription = null)
                 Spacer(Modifier.width(AppSpacing.extraSmall))
-                Text("Create promotion")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_promotion_bd9428d))
             }
         }
         when {
             state.loading -> ContentStateView(ContentState.Loading)
             state.error != null -> ContentStateView(ContentState.Error(description = state.error), onAction = actions::refresh)
             state.promotions.isEmpty() -> ContentStateView(ContentState.Empty(
-                title = "No promotions", description = "Create an offer or coupon for customers.",
-                actionLabel = "Create promotion",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_promotions_72a4951), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_an_offer_or_coupon_58b3185),
+                actionLabel = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_promotion_bd9428d),
             ), onAction = { actions.edit(null) })
             else -> LazyColumn(Modifier.fillMaxSize().wrapContentWidth().widthIn(max = AppDimensions.contentMaxWidth),
                 contentPadding = PaddingValues(AppSpacing.medium),
@@ -70,19 +70,19 @@ private fun PromotionCard(
     verticalArrangement = Arrangement.spacedBy(AppSpacing.extraSmall)) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(promotion.name, style = MaterialTheme.typography.titleMedium)
-        Text(if (promotion.active) "Active" else "Inactive",
+        Text(if (promotion.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_a733b80) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive_09af574),
             color = if (promotion.active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
     }
-    Text("${promotion.kind.name} · ${promotion.discountLabel()}")
-    promotion.code?.let { Text("Code: $it") }
-    Text("Valid ${promotion.validFromEpochMillis.date()} – ${promotion.validUntilEpochMillis.date()}",
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_promotion_kind_name_promotion_discountlabel_633ac1f, promotion.kind.name, promotion.discountLabel()))
+    promotion.code?.let { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_code_it_30d6355, it)) }
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_valid_promotion_validfromepochmillis_date_pro_10727c8, promotion.validFromEpochMillis.date(), promotion.validUntilEpochMillis.date()),
         style = MaterialTheme.typography.bodySmall)
-    Text("Minimum ₹${promotion.minimumOrderMinor / 100.0}" +
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_minimum_promotion_minimumorderminor_100_0_a278faa, promotion.minimumOrderMinor / 100.0) +
         (promotion.maximumDiscountMinor?.let { " · Maximum discount ₹${it / 100.0}" } ?: ""))
     if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-        TextButton({ edit(promotion) }, enabled = !busy) { Text("Edit") }
-        TextButton({ toggle(promotion) }, enabled = !busy) { Text(if (promotion.active) "Deactivate" else "Activate") }
+        TextButton({ edit(promotion) }, enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_5301648)) }
+        TextButton({ toggle(promotion) }, enabled = !busy) { Text(if (promotion.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_deactivate_d65ded9) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_activate_92ef083)) }
     }
 } }
 
@@ -90,29 +90,29 @@ private fun PromotionCard(
 private fun PromotionFormDialog(
     form: PromotionForm, offersAllowed: Boolean, couponsAllowed: Boolean,
     update: (PromotionForm) -> Unit, save: () -> Unit, dismiss: () -> Unit,
-) = AlertDialog(onDismissRequest = dismiss, title = { Text(if (form.id == "new") "Create promotion" else "Edit promotion") },
+) = AlertDialog(onDismissRequest = dismiss, title = { Text(if (form.id == "new") androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_create_promotion_bd9428d) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_promotion_cd1c9af)) },
     text = { LazyColumn(verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
-        item { OutlinedTextField(form.name, { update(form.copy(name = it.take(80))) }, Modifier.fillMaxWidth(), label = { Text("Name") }) }
+        item { OutlinedTextField(form.name, { update(form.copy(name = it.take(80))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_name_709a232)) }) }
         item { Row {
-            if (offersAllowed) FilterChip(form.kind == PromotionKind.OFFER, { update(form.copy(kind = PromotionKind.OFFER, code = "")) }, { Text("Offer") })
+            if (offersAllowed) FilterChip(form.kind == PromotionKind.OFFER, { update(form.copy(kind = PromotionKind.OFFER, code = "")) }, { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_offer_3898b9a)) })
             Spacer(Modifier.width(AppSpacing.small))
-            if (couponsAllowed) FilterChip(form.kind == PromotionKind.COUPON, { update(form.copy(kind = PromotionKind.COUPON)) }, { Text("Coupon") })
+            if (couponsAllowed) FilterChip(form.kind == PromotionKind.COUPON, { update(form.copy(kind = PromotionKind.COUPON)) }, { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_coupon_31943e5)) })
         } }
         if (form.kind == PromotionKind.COUPON) item { OutlinedTextField(form.code,
-            { update(form.copy(code = it.filter(Char::isLetterOrDigit).uppercase().take(24))) }, Modifier.fillMaxWidth(), label = { Text("Coupon code") }) }
+            { update(form.copy(code = it.filter(Char::isLetterOrDigit).uppercase().take(24))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_coupon_code_b227f58)) }) }
         item { Row {
-            FilterChip(form.type == DiscountType.PERCENTAGE, { update(form.copy(type = DiscountType.PERCENTAGE)) }, { Text("Percentage") })
+            FilterChip(form.type == DiscountType.PERCENTAGE, { update(form.copy(type = DiscountType.PERCENTAGE)) }, { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_percentage_c4519ac)) })
             Spacer(Modifier.width(AppSpacing.small))
-            FilterChip(form.type == DiscountType.FIXED, { update(form.copy(type = DiscountType.FIXED)) }, { Text("Fixed") })
+            FilterChip(form.type == DiscountType.FIXED, { update(form.copy(type = DiscountType.FIXED)) }, { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_fixed_ab98f5b)) })
         } }
         item { NumberField(if (form.type == DiscountType.PERCENTAGE) "Discount percent" else "Fixed discount",
             form.value) { update(form.copy(value = it)) } }
         item { NumberField("Minimum order", form.minimum) { update(form.copy(minimum = it)) } }
         item { NumberField("Maximum discount (optional)", form.maximum) { update(form.copy(maximum = it)) } }
-        item { OutlinedTextField(form.validFrom, { update(form.copy(validFrom = it.take(10))) }, Modifier.fillMaxWidth(), label = { Text("Valid from (YYYY-MM-DD)") }) }
-        item { OutlinedTextField(form.validUntil, { update(form.copy(validUntil = it.take(10))) }, Modifier.fillMaxWidth(), label = { Text("Valid until (YYYY-MM-DD)") }) }
-    } }, confirmButton = { Button(save) { Text("Save") } },
-    dismissButton = { TextButton(dismiss) { Text("Cancel") } })
+        item { OutlinedTextField(form.validFrom, { update(form.copy(validFrom = it.take(10))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_valid_from_yyyy_mm_dd_d03f44c)) }) }
+        item { OutlinedTextField(form.validUntil, { update(form.copy(validUntil = it.take(10))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_valid_until_yyyy_mm_dd_06879d8)) }) }
+    } }, confirmButton = { Button(save) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_efc007a)) } },
+    dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } })
 
 @Composable
 private fun NumberField(label: String, value: String, change: (String) -> Unit) = OutlinedTextField(

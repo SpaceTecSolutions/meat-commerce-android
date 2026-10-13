@@ -13,6 +13,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spacetecsolutions.meatapp.core.designsystem.component.ContentState
 import com.spacetecsolutions.meatapp.core.designsystem.component.ContentStateView
+import com.spacetecsolutions.meatapp.core.designsystem.theme.AppDimensions
 import com.spacetecsolutions.meatapp.core.model.AdminDashboardPeriod
 
 @Composable
@@ -49,9 +50,12 @@ private fun AdminDashboardScreen(
                 isRefreshing = state.refreshing, onRefresh = onRefresh,
                 modifier = Modifier.fillMaxSize().padding(padding),
             ) {
+                BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+                    val contentMaxWidth =
+                        if (maxWidth >= AppDimensions.expandedContentBreakpoint) 600.dp else 440.dp
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
-                        .widthIn(max = DashboardStyle.maxWidth),
+                    modifier = Modifier.fillMaxSize()
+                        .widthIn(max = contentMaxWidth),
                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                 ) {
@@ -60,7 +64,7 @@ private fun AdminDashboardScreen(
                     item { DashboardMetricGrid(dashboard, onReports, onOrders) }
                     item { RevenueOverviewCard(dashboard, state.selectedPeriod, onPeriod) }
                     item { TopSellingProductSection(dashboard.topSellingProducts, dashboard.currencyCode, onProducts) }
-                }
+                }}
             }
         }
     }

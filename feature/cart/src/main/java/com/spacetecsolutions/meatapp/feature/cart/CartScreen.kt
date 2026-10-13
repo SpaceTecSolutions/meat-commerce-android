@@ -81,11 +81,11 @@ private fun CartScreen(
                         item {
                             Row(Modifier.fillMaxWidth().padding(vertical = AppSpacing.medium),
                                 verticalAlignment = Alignment.CenterVertically) {
-                                Text("Total Items: ${state.cart.distinctItemCount}",
+                                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_total_items_state_cart_distinctitemcount_7e03dc6, state.cart.distinctItemCount),
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.SemiBold)
                                 Spacer(Modifier.weight(1f))
-                                Text("Swipe to remove", style = MaterialTheme.typography.labelSmall,
+                                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_swipe_to_remove_7ab8442), style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             CartAdjustmentNotice(state.cart.adjustments)
@@ -127,7 +127,7 @@ private fun CartScreen(
                                     verticalAlignment = Alignment.CenterVertically) {
                                     Icon(AppIcons.Delivery, null, tint = T.red)
                                     Column(Modifier.padding(start = AppSpacing.small)) {
-                                        Text("Delivery Estimate", fontWeight = FontWeight.SemiBold)
+                                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_delivery_estimate_2509a3c), fontWeight = FontWeight.SemiBold)
                                         Text(estimate, style = MaterialTheme.typography.bodySmall,
                                             color = T.muted)
                                     }
@@ -143,11 +143,11 @@ private fun CartScreen(
     pendingLine?.let { line ->
         AlertDialog(
             onDismissRequest = { pendingRemoval = null },
-            title = { Text("Remove item?") },
-            text = { Text("Remove ${line.name} from your cart?") },
-            dismissButton = { TextButton(onClick = { pendingRemoval = null }) { Text("Cancel") } },
+            title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_remove_item_32d3a5e)) },
+            text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_remove_line_name_from_your_ef8498a, line.name)) },
+            dismissButton = { TextButton(onClick = { pendingRemoval = null }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_cancel_77dfd21)) } },
             confirmButton = {
-                TextButton(onClick = { pendingRemoval = null; onRemove(line.productId) }) { Text("Remove") }
+                TextButton(onClick = { pendingRemoval = null; onRemove(line.productId) }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.cart.R.string.ui_remove_e963907)) }
             },
         )
     }

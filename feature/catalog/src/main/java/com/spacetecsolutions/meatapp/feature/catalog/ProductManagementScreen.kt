@@ -57,11 +57,11 @@ fun ProductManagementRoute(
     state.deleteConfirmation?.let { product ->
         AlertDialog(
             onDismissRequest = viewModel::dismissDelete,
-            title = { Text("Delete Product?") },
-            text = { Text("${product.name} will be removed from the catalog. Historical orders remain unchanged.") },
+            title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_product_ce07177)) },
+            text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_product_name_will_be_removed_d7111b3, product.name)) },
             confirmButton = { Button({ pendingCacheEviction = product.imageUrls; viewModel.confirmDelete() },
-                enabled = !state.submitting) { Text("Delete") } },
-            dismissButton = { TextButton(viewModel::dismissDelete, enabled = !state.submitting) { Text("Cancel") } },
+                enabled = !state.submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_f6fdbe4)) } },
+            dismissButton = { TextButton(viewModel::dismissDelete, enabled = !state.submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_cancel_77dfd21)) } },
         )
     }
 }
@@ -97,7 +97,7 @@ private fun ProductManagementScreen(
                     onClick = onAdd,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = AppSpacing.large, vertical = AppSpacing.small),
                     shape = AppShapes.large,
-                ) { Icon(AppIcons.Add, null); Spacer(Modifier.width(AppSpacing.small)); Text("Add Product") }
+                ) { Icon(AppIcons.Add, null); Spacer(Modifier.width(AppSpacing.small)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_product_ee611e5)) }
 //            }
         }} else ({}),
     ) { padding ->
@@ -175,7 +175,7 @@ private fun ProductList(
         }
         if (state.nextCursor != null) item {
             TextButton(onClick = onLoadMore, enabled = !state.loadingMore, modifier = Modifier.fillMaxWidth()) {
-                if (state.loadingMore) CircularProgressIndicator(Modifier.size(AppSpacing.large)) else Text("Load more")
+                if (state.loadingMore) CircularProgressIndicator(Modifier.size(AppSpacing.large)) else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_load_more_dfe60ca))
             }
         }
         }

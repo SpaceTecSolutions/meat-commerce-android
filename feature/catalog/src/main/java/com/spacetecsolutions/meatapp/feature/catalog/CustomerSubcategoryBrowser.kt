@@ -27,9 +27,9 @@ internal fun CustomerSubcategoryBrowser(category: String, values: List<ProductSu
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Column(Modifier.padding(bottom = AppSpacing.extraSmall)) {
-                    Text("Choose from $category", style = MaterialTheme.typography.titleLarge,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_choose_from_category_202c2fd, category), style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold)
-                    Text("Select a cut to view available products",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_select_a_cut_to_view_e4dfdd0),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }

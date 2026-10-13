@@ -38,16 +38,17 @@ internal fun HomeCartBar(cart: CustomerCart, onViewCart: () -> Unit) {
                 }
             }
             Column(Modifier.weight(1f).padding(start = 5.dp)) {
-                Text("${cart.quantity} ${if (cart.quantity == 1) "ITEM" else "ITEMS"} · ${cart.totalMinor.cartMoney()}",
+                Text(androidx.compose.ui.res.pluralStringResource(R.plurals.ui_cart_item_count,
+                    cart.quantity, cart.quantity, cart.totalMinor.cartMoney()),
                     style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold,
                     color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("Ready in your cart", style = MaterialTheme.typography.labelSmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_ready_in_your_cart_c523e77), style = MaterialTheme.typography.labelSmall,
                     color = Color.White.copy(alpha = .7f), maxLines = 1)
             }
             Button(onClick = onViewCart, shape = RoundedCornerShape(11.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = CustomerHomeTokens.red),
                 contentPadding = PaddingValues(horizontal = 12.dp)) {
-                Text("View Cart", maxLines = 1)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_view_cart_7abd6c3), maxLines = 1)
                 Spacer(Modifier.width(3.dp))
                 Icon(AppIcons.ArrowRight, null, Modifier.size(15.dp))
             }

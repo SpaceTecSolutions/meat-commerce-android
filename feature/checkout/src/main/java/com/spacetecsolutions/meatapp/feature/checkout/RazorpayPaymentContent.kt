@@ -58,26 +58,26 @@ internal fun RazorpayPaymentContent(
             if (failed) Surface(shape = RoundedCornerShape(16.dp),
                 color = CustomerOrdersTokens.surface,
                 border = BorderStroke(1.dp, CustomerOrdersTokens.border)) {
-                Text("If money was deducted, check your payment status before retrying. " +
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_if_money_was_deducted_check_f0bfa2e) +
                     "Your bank or payment provider can confirm the transaction.",
                     Modifier.padding(16.dp), style = MaterialTheme.typography.bodySmall,
                     color = CustomerOrdersTokens.muted)
             }
             when {
                 status == PaymentAttemptStatus.PAID -> Button(viewOrders,
-                    Modifier.fillMaxWidth().height(50.dp)) { Text("View order") }
+                    Modifier.fillMaxWidth().height(50.dp)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_view_order_0df2797)) }
                 attempt?.retryAllowed == true -> {
                     Button(retry, Modifier.fillMaxWidth().height(50.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = CustomerOrdersTokens.red)) {
-                        Text("Retry payment")
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_retry_payment_39a413f))
                     }
                     OutlinedButton(viewOrders, Modifier.fillMaxWidth().height(50.dp)) {
-                        Text("View my order")
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_view_my_order_4cd8757))
                     }
                 }
                 status !in setOf(PaymentAttemptStatus.REFUNDED, PaymentAttemptStatus.PARTIALLY_REFUNDED) ->
                     OutlinedButton(reconcile, Modifier.fillMaxWidth().height(50.dp)) {
-                        Text("Check payment status")
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_check_payment_status_6eb4e64))
                     }
             }
         }

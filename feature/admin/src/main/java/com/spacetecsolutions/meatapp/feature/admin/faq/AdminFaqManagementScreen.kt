@@ -75,19 +75,19 @@ fun AdminFaqManagementRoute(back: () -> Unit, onMessage: (String) -> Unit,
         { it.id?.let { id -> state.items.firstOrNull { entry -> entry.id == id }?.let(viewModel::delete) } }); return }
     val filtered = remember(state.items, state.query) { state.items.filter {
         state.query.isBlank() || it.question.contains(state.query, true) || it.answer.contains(state.query, true) } }
-    Scaffold(topBar = { AppBackTopBar("FAQ Management", back) }, floatingActionButton = {
+    Scaffold(topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_management_839ae84), back) }, floatingActionButton = {
         ExtendedFloatingActionButton(
             onClick = viewModel::create,
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
-        ) { Icon(AppIcons.Add, null); Spacer(Modifier.width(8.dp)); Text("Add FAQ") }
+        ) { Icon(AppIcons.Add, null); Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_faq_b8921a5)) }
     }) { padding -> Column(Modifier.fillMaxSize().padding(padding).widthIn(max = 560.dp)) {
         OutlinedTextField(state.query, viewModel::search, Modifier.fillMaxWidth().padding(16.dp), singleLine = true,
-            leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text("Search FAQs") })
+            leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_search_faqs_1c8924c)) })
         when {
             state.loading -> ContentStateView(ContentState.Loading)
             state.error != null && state.items.isEmpty() -> ContentStateView(ContentState.Error(description = state.error), onAction = viewModel::refresh)
-            filtered.isEmpty() -> ContentStateView(ContentState.Empty(title = "No FAQs found", description = "Add customer questions and answers."))
+            filtered.isEmpty() -> ContentStateView(ContentState.Empty(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_faqs_found_bcdf8ec), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_customer_questions_and_answers_6d8c0d6)))
             else -> LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)) { items(filtered, key = FaqEntry::id) { item ->
                 ElevatedCard(onClick = { viewModel.edit(item) }, modifier = Modifier.fillMaxWidth().animateContentSize()) {
@@ -95,9 +95,10 @@ fun AdminFaqManagementRoute(back: () -> Unit, onMessage: (String) -> Unit,
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(item.question, fontWeight = FontWeight.Bold)
                             Text(item.answer, maxLines = 2, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("${if (item.active) "Active" else "Inactive"} · Order ${item.sortOrder}",
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_status_order,
+                                androidx.compose.ui.res.stringResource(if (item.active) com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active else com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive), item.sortOrder),
                                 style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-                        }; Icon(AppIcons.Edit, "Edit")
+                        }; Icon(AppIcons.Edit, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_edit_5301648))
                     }
                 }
             } }
@@ -110,17 +111,17 @@ private fun FaqFormScreen(form: FaqForm, saving: Boolean, update: (FaqForm) -> U
     back: () -> Unit, delete: () -> Unit) = Scaffold(
     topBar = { AppBackTopBar(if (form.id == null) "Add FAQ" else "Edit FAQ", back) },
     bottomBar = { Button(save, Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp), enabled = !saving) {
-        Text(if (form.id == null) "Publish FAQ" else "Save Changes") } },
+        Text(if (form.id == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_publish_faq_d4b840c) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_changes_fa2984b)) } },
 ) { padding -> LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
     verticalArrangement = Arrangement.spacedBy(14.dp)) {
     item { OutlinedTextField(form.question, { update(form.copy(question = it.take(200))) }, Modifier.fillMaxWidth(),
-        label = { Text("Question *") }, minLines = 2) }
+        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_question_2a46396)) }, minLines = 2) }
     item { OutlinedTextField(form.answer, { update(form.copy(answer = it.take(2000))) }, Modifier.fillMaxWidth(),
-        label = { Text("Answer *") }, minLines = 6) }
+        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_answer_661bf4f)) }, minLines = 6) }
     item { OutlinedTextField(form.order, { update(form.copy(order = it.filter(Char::isDigit).take(4))) }, Modifier.fillMaxWidth(),
-        label = { Text("Display Order") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)) }
+        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_display_order_04af3db)) }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)) }
     item { Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) {
-        Text("Active", fontWeight = FontWeight.SemiBold); Text("Visible to customers", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_a733b80), fontWeight = FontWeight.SemiBold); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_visible_to_customers_89b5cb2), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }; Switch(form.active, { update(form.copy(active = it)) }, colors = appSwitchColors()) } }
-    if (form.id != null) item { TextButton(delete, Modifier.fillMaxWidth()) { Icon(AppIcons.Delete, null); Text("Delete FAQ") } }
+    if (form.id != null) item { TextButton(delete, Modifier.fillMaxWidth()) { Icon(AppIcons.Delete, null); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delete_faq_897c5e8)) } }
 } }

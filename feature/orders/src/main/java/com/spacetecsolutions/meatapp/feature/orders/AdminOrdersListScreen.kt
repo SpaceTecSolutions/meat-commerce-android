@@ -72,16 +72,16 @@ internal fun AdminOrdersListScreen(
     Column(Modifier.fillMaxSize().background(T.canvas)) {
         TopAppBar(
             title = { Column {
-                if (staffPresentation) Text("MEAT STATION STAFF", style = MaterialTheme.typography.labelSmall,
+                if (staffPresentation) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_meat_station_staff_48feb6f), style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold, color = T.red)
-                Text(if (staffPresentation && !canAdjustFinalBill && !canUpdateStatus) "Orders Feed" else "Orders",
+                Text(if (staffPresentation && !canAdjustFinalBill && !canUpdateStatus) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_orders_feed_222517b) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_orders_cded093),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold, color = T.ink)
             } },
             actions = {
-                IconButton(onClick = { searchVisible = !searchVisible }) { Icon(AppIcons.Search, "Search orders") }
+                IconButton(onClick = { searchVisible = !searchVisible }) { Icon(AppIcons.Search, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_search_orders_7ab3015)) }
                 BadgedBox(badge = { if (paymentMethod != null || paymentStatus != null || categoryId != null) Badge() }) {
-                    IconButton(onClick = { filterOpen = true }) { Icon(AppIcons.Filter, "Filter orders") }
+                    IconButton(onClick = { filterOpen = true }) { Icon(AppIcons.Filter, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_filter_orders_16e3044)) }
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -91,9 +91,9 @@ internal fun AdminOrdersListScreen(
                 value = query,
                 onValueChange = { query = it.take(60) },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = AppSpacing.medium, vertical = AppSpacing.small),
-                placeholder = { Text("Order ID, customer or mobile") },
+                placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_id_customer_or_mobile_5c62c08)) },
                 leadingIcon = { Icon(AppIcons.Search, null) },
-                trailingIcon = { if (query.isNotEmpty()) IconButton({ query = "" }) { Icon(AppIcons.Close, "Clear") } },
+                trailingIcon = { if (query.isNotEmpty()) IconButton({ query = "" }) { Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_clear_719ea39)) } },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
             )
@@ -105,8 +105,8 @@ internal fun AdminOrdersListScreen(
                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(AppIcons.Security, null, tint = T.muted)
                     Column(Modifier.padding(start = 12.dp)) {
-                        Text("Read-Only View", fontWeight = FontWeight.SemiBold, color = T.ink)
-                        Text("You can inspect orders; operational actions are hidden.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_read_only_view_92d1304), fontWeight = FontWeight.SemiBold, color = T.ink)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_you_can_inspect_orders_operational_9601111),
                             style = MaterialTheme.typography.bodySmall, color = T.muted)
                     }
                 }
@@ -182,7 +182,7 @@ internal fun OrderStatusFilterRow(
                 border = if (active) null else BorderStroke(1.dp, T.border),
                 modifier = Modifier.heightIn(min = 40.dp).clickable(role = Role.Tab) { select(filter) },
             ) {
-                Text("${filter.label} ($count)", Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_filter_label_count_701f13d, filter.label, count), Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                     style = MaterialTheme.typography.labelMedium, maxLines = 1)
             }
         }
@@ -193,10 +193,11 @@ internal fun OrderStatusFilterRow(
 internal fun AdminOrderCard(order: CodOrder, busy: Boolean, onClick: () -> Unit,
     onConfirm: () -> Unit, onReject: () -> Unit, canAdjustFinalBill: Boolean = true,
     canUpdateStatus: Boolean = true) {
+    val orderDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_order_displaynumber_order_customername_6f2d3d7, order.displayNumber, order.customerName, order.orderStatus.label())
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().semantics {
-            contentDescription = "Order ${order.displayNumber}, ${order.customerName}, ${order.orderStatus.label()}"
+            contentDescription = orderDescription
         },
         color = T.surface, shape = RoundedCornerShape(18.dp),
         border = BorderStroke(1.dp, if (order.orderStatus == OrderStatus.PENDING)
@@ -211,8 +212,7 @@ internal fun AdminOrderCard(order: CodOrder, busy: Boolean, onClick: () -> Unit,
                         tint = order.orderStatus.strongColor())
                 }
                 Column(Modifier.weight(1f)) {
-                    Text(if (order.orderStatus == OrderStatus.PENDING) "REQUIRES CONFIRMATION"
-                        else "ORDER ID", style = MaterialTheme.typography.labelSmall,
+                    Text(if (order.orderStatus == OrderStatus.PENDING) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_requires_confirmation_901888d) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_id_c65cea8), style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
                         color = if (order.orderStatus == OrderStatus.PENDING) T.amber else T.muted)
                     Text(order.displayNumber.withHash(), style = MaterialTheme.typography.titleMedium,
@@ -243,10 +243,10 @@ internal fun AdminOrderCard(order: CodOrder, busy: Boolean, onClick: () -> Unit,
             }
             if (busy) LinearProgressIndicator(Modifier.fillMaxWidth(), color = T.red)
             if (order.canConfirm && canUpdateStatus) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (canUpdateStatus) OutlinedButton(onReject, Modifier.weight(1f), enabled = !busy) { Text("Reject") }
+                if (canUpdateStatus) OutlinedButton(onReject, Modifier.weight(1f), enabled = !busy) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reject_2b03b59)) }
                 if (canUpdateStatus) Button(onConfirm, Modifier.weight(1f), enabled = !busy,
                     colors = ButtonDefaults.buttonColors(containerColor = T.red)) {
-                    Text("Accept Order")
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_accept_order_830a9a3))
                 }
             }
         }

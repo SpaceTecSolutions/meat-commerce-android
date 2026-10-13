@@ -35,16 +35,16 @@ internal fun ReportProductSelectionSheet(
             .align(Alignment.CenterHorizontally).navigationBarsPadding()) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("Select Product", style = MaterialTheme.typography.headlineSmall,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_select_product_6020d74), style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold, color = ReportsStyle.ink)
-                    Text("Filter sales and volume reports by item", style = MaterialTheme.typography.bodySmall,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_filter_sales_and_volume_reports_3e61501), style = MaterialTheme.typography.bodySmall,
                         color = ReportsStyle.muted)
                 }
-                IconButton(dismiss) { Icon(AppIcons.Close, "Close product selection") }
+                IconButton(dismiss) { Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_close_product_selection_72cc952)) }
             }
             HorizontalDivider(Modifier.padding(top = 16.dp), color = ReportsStyle.border)
             OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth().padding(20.dp),
-                placeholder = { Text("Search products...") }, singleLine = true,
+                placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_search_products_b73f756)) }, singleLine = true,
                 leadingIcon = { Icon(AppIcons.Search, null) }, shape = RoundedCornerShape(14.dp))
             LazyColumn(Modifier.weight(1f, fill = false).heightIn(max = 480.dp),
                 contentPadding = PaddingValues(horizontal = 20.dp),
@@ -56,16 +56,16 @@ internal fun ReportProductSelectionSheet(
                         choice == product.id, product.id) { choice = product.id }
                 }
                 if (visible.isEmpty()) item {
-                    Text("No matching products", Modifier.padding(16.dp), color = ReportsStyle.muted)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_matching_products_6a98e19), Modifier.padding(16.dp), color = ReportsStyle.muted)
                 }
             }
             HorizontalDivider(Modifier.padding(top = 14.dp), color = ReportsStyle.border)
             Row(Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedButton(dismiss, Modifier.weight(1f).heightIn(min = 48.dp),
-                    shape = ReportsStyle.pillShape) { Text("Cancel") }
+                    shape = ReportsStyle.pillShape) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) }
                 Button({ select(choice) }, Modifier.weight(1f).heightIn(min = 48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = ReportsStyle.red),
-                    shape = ReportsStyle.pillShape) { Text("Apply Product") }
+                    shape = ReportsStyle.pillShape) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_apply_product_d6c44a5)) }
             }
         }
     }
@@ -80,7 +80,7 @@ private fun ProductChoiceRow(name: String, subtitle: String?, imageUrl: String?,
         verticalAlignment = Alignment.CenterVertically) {
         if (id == null) Box(Modifier.size(38.dp).background(ReportsStyle.surface, RoundedCornerShape(10.dp)),
             contentAlignment = Alignment.Center) {
-            Text("ALL", fontWeight = FontWeight.Bold, color = ReportsStyle.red)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_all_6b42874), fontWeight = FontWeight.Bold, color = ReportsStyle.red)
         } else RoundedSquareImage(imageUrl, name, 38.dp, cornerRadius = 10.dp)
         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
             Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis,

@@ -36,7 +36,7 @@ fun CustomerProductDetails(
 @Composable
 private fun ProductDetailState(onBack: () -> Unit, state: ContentState, onRetry: () -> Unit = {}) {
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Product details", onBack)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_product_details_0357f90), onBack)
         ContentStateView(state, onAction = onRetry)
     }
 }
@@ -94,7 +94,7 @@ private fun ProductDetailInformation(product: Product, quantity: Int,
         }
         if (product.description.isNotBlank()) {
             Spacer(Modifier.height(17.dp))
-            Text("ABOUT", style = MaterialTheme.typography.labelLarge,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_about_4012d26), style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold, color = T.ink)
             Spacer(Modifier.height(7.dp))
             Text(product.description, style = MaterialTheme.typography.bodyMedium, color = T.muted)
@@ -110,15 +110,14 @@ private fun ProductAvailabilityRow(product: Product, available: Boolean) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Surface(shape = RoundedCornerShape(50),
             color = if (available) T.green.copy(alpha = .08f) else T.rose) {
-            Text(if (available) "● In stock · ${product.stockQuantity.cleanProductQuantity()} available"
-                else "Out of Stock", Modifier.padding(horizontal = 11.dp, vertical = 5.dp),
+            Text(if (available) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_in_stock_product_stockquantity_cleanproductqu_2cec3b5, product.stockQuantity.cleanProductQuantity()) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_out_of_stock_bc67a8a), Modifier.padding(horizontal = 11.dp, vertical = 5.dp),
                 style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold,
                 color = if (available) T.green else T.red)
         }
         Spacer(Modifier.weight(1f))
         Surface(shape = RoundedCornerShape(6.dp), color = T.soft,
             border = BorderStroke(1.dp, T.border)) {
-            Text("PER ${product.unit.shortLabel().uppercase()}",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_per_product_unit_shortlabel_uppercase_f97f212, product.unit.shortLabel().uppercase()),
                 Modifier.padding(horizontal = 9.dp, vertical = 4.dp),
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold, color = T.muted)

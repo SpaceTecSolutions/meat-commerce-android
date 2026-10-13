@@ -64,10 +64,10 @@ internal fun CustomerLiveTrackingScreen(
                             Surface(color = T.green, shape = RoundedCornerShape(50)) {
                                 Spacer(Modifier.size(10.dp))
                             }
-                            Text("On the way", style = MaterialTheme.typography.labelMedium,
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_on_the_way_7884d39), style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold, color = T.ink)
-                            Text("|", color = T.border)
-                            Text("Arriving in ~${(route.durationSeconds / 60).coerceAtLeast(1)} min",
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_text_3eb4162), color = T.border)
+                            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_arriving_in_route_durationseconds_60_144319f, (route.durationSeconds / 60).coerceAtLeast(1)),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold, color = T.red)
                         }
@@ -86,7 +86,7 @@ internal fun CustomerLiveTrackingScreen(
                     onClick = { recenterSignal++ },
                     modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                     containerColor = T.surface, contentColor = T.red,
-                ) { Icon(AppIcons.LiveTracking, "Recenter map") }
+                ) { Icon(AppIcons.LiveTracking, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_recenter_map_f079280)) }
             }
             TrackingDeliveryPanel(order, riderLocation, route, stale, nowEpochMillis,
                 deliveryOtp, deliveryOtpError, onRetryOtp, onContact,
@@ -100,24 +100,24 @@ private fun LiveTrackingHeader(order: CodOrder, onBack: () -> Unit, onHelp: () -
     Column(Modifier.fillMaxWidth().statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onBack) { Icon(AppIcons.Back, "Back", tint = T.ink) }
+            IconButton(onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b), tint = T.ink) }
             Spacer(Modifier.weight(1f))
             Text(order.numberLabel(), style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold, color = T.ink)
             Spacer(Modifier.width(8.dp))
             Surface(shape = RoundedCornerShape(50), color = T.rose,
                 border = BorderStroke(1.dp, T.red.copy(alpha = .25f))) {
-                Text("LIVE", Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_live_6990f01), Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold, color = T.red)
             }
             Spacer(Modifier.weight(1f))
-            TextButton(onHelp) { Text("Help", color = T.ink) }
+            TextButton(onHelp) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_help_c47ae15), color = T.ink) }
         }
-        Text("Order is on the way", Modifier.fillMaxWidth(),
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_is_on_the_way_6550736), Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center, color = T.ink)
-        Text("Your delivery is heading towards the selected address",
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_your_delivery_is_heading_towards_9d2566a),
             Modifier.fillMaxWidth().padding(bottom = 10.dp),
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center, color = T.muted)

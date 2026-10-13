@@ -32,11 +32,11 @@ fun BannerManagementRoute(
 @Composable
 private fun BannerListScreen(state: BannerUiState, back: () -> Unit, actions: BannerManagementViewModel) {
     Scaffold(
-        topBar = { AppBackTopBar("Home Banners", back) },
+        topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_home_banners_97a13c0), back) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { actions.edit(null) },
-                icon = { Icon(AppIcons.Add, null) }, text = { Text("Add banner") },
+                icon = { Icon(AppIcons.Add, null) }, text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_banner_ba3ca5b)) },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             )
@@ -47,15 +47,15 @@ private fun BannerListScreen(state: BannerUiState, back: () -> Unit, actions: Ba
             state.error != null -> ContentStateView(ContentState.Error(description = state.error),
                 contentPadding = padding, onAction = actions::refresh)
             state.banners.isEmpty() -> ContentStateView(ContentState.Empty(
-                title = "No home banners", description = "Add one banner to activate the customer carousel.",
-                actionLabel = "Add banner"), contentPadding = padding, onAction = { actions.edit(null) })
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_home_banners_a6c1159), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_one_banner_to_activate_8bc16f7),
+                actionLabel = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_add_banner_ba3ca5b)), contentPadding = padding, onAction = { actions.edit(null) })
             else -> LazyColumn(
                 Modifier.fillMaxSize().padding(padding).widthIn(max = AppDimensions.contentMaxWidth)
                     .wrapContentWidth(Alignment.CenterHorizontally),
                 contentPadding = PaddingValues(AppSpacing.medium),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
             ) {
-                item { Text("${state.banners.count { it.active }} visible • ${state.banners.size}/5 banners",
+                item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_state_banners_count_it_active_31c40e0, state.banners.size),
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 items(state.banners, key = PromotionBanner::id) { banner ->
                     SwipeToDeleteBanner(banner, state.deletingId == banner.id, actions)
@@ -80,7 +80,7 @@ private fun SwipeToDeleteBanner(
     SwipeToDismissBox(
         state = dismissState,
         backgroundContent = { Box(Modifier.fillMaxSize().padding(AppSpacing.medium), contentAlignment = Alignment.CenterEnd) {
-            Icon(AppIcons.Delete, "Delete banner", tint = MaterialTheme.colorScheme.error)
+            Icon(AppIcons.Delete, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delete_banner_85288a6), tint = MaterialTheme.colorScheme.error)
         } },
         enableDismissFromStartToEnd = false,
     ) {
@@ -89,7 +89,7 @@ private fun SwipeToDeleteBanner(
             Row(Modifier.fillMaxWidth().padding(AppSpacing.small), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(banner.title, fontWeight = FontWeight.SemiBold, maxLines = 1)
-                    Text("Position ${banner.sortOrder + 1} • ${banner.contentAlignment.label()}",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_position_banner_sortorder_1_banner_7464d61, banner.sortOrder + 1, banner.contentAlignment.label()),
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 if (busy) AppLottieAnimation(AppAnimation.Loading, Modifier.size(38.dp), loop = true)

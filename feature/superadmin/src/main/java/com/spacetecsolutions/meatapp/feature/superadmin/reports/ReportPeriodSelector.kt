@@ -66,7 +66,7 @@ fun ReportPeriodSelector(
                     DateField("End", state.endDate, onEndChange, Modifier.weight(1f))
                 }
                 state.rangeError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                Button(onClick = onApplyCustom, modifier = Modifier.fillMaxWidth()) { Text("Apply range") }
+                Button(onClick = onApplyCustom, modifier = Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_apply_range_de4e5cb)) }
             }
         }
         if (state.selectedPeriod == ReportPeriodType.MONTHLY) {
@@ -74,7 +74,7 @@ fun ReportPeriodSelector(
                 onClick = { onPeriodSelected(ReportPeriodType.CURRENT_MONTH_BY_WEEK) },
                 modifier = Modifier.align(Alignment.End).heightIn(min = 32.dp),
                 contentPadding = PaddingValues(horizontal = AppSpacing.small),
-            ) { Text("View month by week", style = MaterialTheme.typography.labelMedium) }
+            ) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_view_month_by_week_81ff685), style = MaterialTheme.typography.labelMedium) }
         }
     }
 }
@@ -86,7 +86,7 @@ private fun DateField(label: String, value: String, onChange: (String) -> Unit, 
         onValueChange = onChange,
         modifier = modifier,
         label = { Text(label) },
-        placeholder = { Text("YYYY-MM-DD") },
+        placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_yyyy_mm_dd_d3f8f7b)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
     )

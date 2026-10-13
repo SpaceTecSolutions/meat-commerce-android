@@ -51,7 +51,7 @@ fun PaymentMethodsRoute(
         state.message?.let { onMessage(it); viewModel.consumeMessage() }
     }
     ManagedSettingsScreen(
-        title = "Payment Methods",
+        title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_payment_methods_ad68e79),
         state = state,
         onBack = onBack,
         rows = state.draft?.let(::paymentRows).orEmpty(),
@@ -73,7 +73,7 @@ private fun FeatureManagementScreen(
     onRefresh: () -> Unit,
 ) {
     ManagedSettingsScreen(
-        title = "Feature Management",
+        title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_feature_management_34b1ff4),
         state = state,
         onBack = onBack,
         rows = state.draft?.let(::featureRows).orEmpty(),
@@ -144,13 +144,13 @@ private fun FeatureList(
         }
         item {
             Column(Modifier.padding(top = AppSpacing.medium)) {
-                Text("Product Limit", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_product_limit_5380b9f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
                 OutlinedTextField(
                     value = state.maxProductsText,
                     onValueChange = onMaximumChange,
                     modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.extraSmall),
                     leadingIcon = { Icon(AppIcons.ProductLimit, null) },
-                    supportingText = { Text(state.maxProductsError ?: "Maximum products this client can publish") },
+                    supportingText = { Text(state.maxProductsError ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_maximum_products_this_client_can_12094bb)) },
                     isError = state.maxProductsError != null,
                     enabled = !state.saving,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -219,9 +219,9 @@ private fun SaveBar(saving: Boolean, onDiscard: () -> Unit, onSave: () -> Unit) 
             Modifier.fillMaxWidth().navigationBarsPadding().padding(AppSpacing.medium),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.small),
         ) {
-            OutlinedButton(onDiscard, Modifier.weight(1f), enabled = !saving) { Text("Discard") }
+            OutlinedButton(onDiscard, Modifier.weight(1f), enabled = !saving) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_discard_36fff63)) }
             Button(onSave, Modifier.weight(1f), enabled = !saving) {
-                if (saving) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp) else Text("Save changes")
+                if (saving) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp) else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_save_changes_179359b))
             }
         }
     }

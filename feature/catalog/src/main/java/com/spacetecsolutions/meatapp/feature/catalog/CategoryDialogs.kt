@@ -43,7 +43,7 @@ internal fun CategoryFormScreen(form: CategoryFormState, submitting: Boolean, ac
                 enabled = !submitting, shape = AppShapes.small,
             ) {
                 if (submitting) CircularProgressIndicator(Modifier.size(AppSpacing.large), strokeWidth = 2.dp)
-                else Text(if (form.editing) "Update Category" else "Save Category")
+                else Text(if (form.editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_update_category_dd17101) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_save_category_a1f54af))
             }
         },
     ) { padding ->
@@ -59,30 +59,30 @@ internal fun CategoryFormScreen(form: CategoryFormState, submitting: Boolean, ac
                     TextButton({ picker.launch("image/*") }, enabled = !submitting) {
                         Icon(AppIcons.Camera, null, Modifier.size(18.dp))
                         Spacer(Modifier.width(AppSpacing.extraSmall))
-                        Text(if (image == null) "Add Photo" else "Change Photo")
+                        Text(if (image == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_photo_560a4bd) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_change_photo_6080b45))
                     }
                     imageError?.let { Text(it, color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall) }
                 }
                 OutlinedTextField(
-                    form.name, actions.onName, Modifier.fillMaxWidth(), label = { Text("Category Name") },
+                    form.name, actions.onName, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_name_912f070)) },
                     singleLine = true, isError = form.nameError != null,
                     supportingText = form.nameError?.let { { Text(it) } }, enabled = !submitting,
                     shape = AppShapes.extraSmall,
                 )
                 OutlinedTextField(
-                    form.description, actions.onDescription, Modifier.fillMaxWidth(), label = { Text("Description") },
+                    form.description, actions.onDescription, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_description_55f8ebc)) },
                     minLines = 3, maxLines = 5, enabled = !submitting, shape = AppShapes.extraSmall,
                 )
                 OutlinedTextField(
-                    form.sortOrder, actions.onSortOrder, Modifier.fillMaxWidth(), label = { Text("Display Order") },
+                    form.sortOrder, actions.onSortOrder, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_display_order_04af3db)) },
                     singleLine = true, isError = form.sortOrderError != null,
                     supportingText = form.sortOrderError?.let { { Text(it) } }, enabled = !submitting,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), shape = AppShapes.extraSmall,
                 )
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Status", style = MaterialTheme.typography.labelMedium)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_status_bae7d5b), style = MaterialTheme.typography.labelMedium)
                         Text(
                             if (form.active) "Active" else "Inactive", style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -125,11 +125,10 @@ internal data class CategoryFormActions(
 fun CategoryStatusDialog(category: ProductCategory, submitting: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     val action = if (category.active) "Deactivate" else "Activate"
     AlertDialog(
-        onDismissRequest = onDismiss, title = { Text("$action Category?") },
-        text = { Text(if (category.active) "Customers will no longer see ${category.name}. Existing products are preserved."
-            else "Customers will see ${category.name} and its active products.") },
+        onDismissRequest = onDismiss, title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_action_category_d7a3cde, action)) },
+        text = { Text(if (category.active) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_customers_will_no_longer_see_1c987dd, category.name) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_customers_will_see_category_name_7c3237f, category.name)) },
         confirmButton = { Button(onConfirm, enabled = !submitting) { Text(action) } },
-        dismissButton = { TextButton(onDismiss, enabled = !submitting) { Text("Cancel") } },
+        dismissButton = { TextButton(onDismiss, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_cancel_77dfd21)) } },
     )
 }
 
@@ -138,13 +137,12 @@ fun CategoryDeleteDialog(category: ProductCategory, submitting: Boolean, onDismi
     val blocked = category.productCount > 0
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (blocked) "Category contains products" else "Delete Category?") },
-        text = { Text(if (blocked) "${category.productCount} products use ${category.name}. Move or delete them before deleting this category."
-            else "Delete ${category.name}? This cannot be undone.") },
+        title = { Text(if (blocked) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_contains_products_dcc10ac) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_category_61aa7cf)) },
+        text = { Text(if (blocked) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_productcount_products_use_category_120912b, category.productCount, category.name) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_category_name_this_cannot_a56b0c3, category.name)) },
         confirmButton = {
-            if (blocked) TextButton(onDismiss) { Text("Close") }
-            else Button(onConfirm, enabled = !submitting) { Text("Delete") }
+            if (blocked) TextButton(onDismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_close_bbfa773)) }
+            else Button(onConfirm, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_f6fdbe4)) }
         },
-        dismissButton = { if (!blocked) TextButton(onDismiss, enabled = !submitting) { Text("Cancel") } },
+        dismissButton = { if (!blocked) TextButton(onDismiss, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_cancel_77dfd21)) } },
     )
 }

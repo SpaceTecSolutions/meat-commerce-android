@@ -148,7 +148,7 @@ fun AppNavHost(
                         },
                         icon = {
                             if (destination.icon == NavigationIcon.CART && cartBadgeCount > 0) {
-                                BadgedBox({ Badge { Text(if (cartBadgeCount > 99) "99+" else "$cartBadgeCount") } }) {
+                                BadgedBox({ Badge { Text(if (cartBadgeCount > 99) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.core.designsystem.R.string.ui_badge_overflow_99_plus) else cartBadgeCount.toString()) } }) {
                                     Icon(if (stitchBottomNav) destination.icon.stitchImageVector()
                                         else destination.icon.imageVector(), destination.label)
                                 }

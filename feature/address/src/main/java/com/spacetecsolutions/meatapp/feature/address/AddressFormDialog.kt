@@ -30,9 +30,9 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
     val imeVisible = WindowInsets.isImeVisible
     Scaffold(
         containerColor = T.canvas, topBar = {
-        TopAppBar(title = { Text(if (form.editing) "Edit Delivery Location" else "Add New Address",
+        TopAppBar(title = { Text(if (form.editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_edit_delivery_location_dc554c0) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_add_new_address_3e89e38),
             fontWeight = FontWeight.Bold) }, navigationIcon = {
-            IconButton({ if (!submitting) onDismiss() }) { Icon(AppIcons.Back, "Back") }
+            IconButton({ if (!submitting) onDismiss() }) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) }
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         if (!imeVisible) Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
@@ -42,14 +42,14 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onDismiss, Modifier.weight(1f).height(52.dp), enabled = !submitting,
                         colors = ButtonDefaults.buttonColors(containerColor = T.soft, contentColor = T.ink),
-                        shape = RoundedCornerShape(10.dp)) { Text("Cancel") }
+                        shape = RoundedCornerShape(10.dp)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_cancel_77dfd21)) }
                     Button(onSave, Modifier.weight(1.5f).height(52.dp), enabled = !submitting,
                         colors = ButtonDefaults.buttonColors(containerColor = T.red),
                         shape = RoundedCornerShape(10.dp)) {
                         if (submitting) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp,
                             color = T.surface)
                         else { Icon(AppIcons.Check, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp))
-                            Text(if (form.editing) "Update Address" else "Save Address") }
+                            Text(if (form.editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_update_address_33c0a66) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_save_address_4aa8d2a)) }
                     }
                 }
             }
@@ -60,14 +60,13 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
             .verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)) {
             AddressLocationPreview(form, !submitting, onChooseOnMap, onUseCurrentLocation)
-            Text(if (form.verifiedLocation) "Delivery pin selected. Review the address details."
-                else "Choose a pin or enter the geographic address below.",
+            Text(if (form.verifiedLocation) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_delivery_pin_selected_review_the_91ad533) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_choose_a_pin_or_enter_964b3cf),
                 style = MaterialTheme.typography.bodySmall, color = T.muted)
             /*Button(onUseCurrentLocation, Modifier.fillMaxWidth().height(48.dp), enabled = !submitting,
                 colors = ButtonDefaults.buttonColors(containerColor = T.rose, contentColor = T.red),
                 shape = RoundedCornerShape(10.dp)) {
                 Icon(AppIcons.LiveTracking, null, Modifier.size(18.dp))
-                Spacer(Modifier.width(8.dp)); Text("Use Current Location")
+                Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_use_current_location_9cbae60))
             }*/
             AddressTypePicker(form.type, submitting) { type -> update { it.copy(type = type) } }
             if (!form.editing) {
@@ -85,8 +84,8 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
                 border = BorderStroke(1.dp, T.border)) {
                 Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Set as default address", fontWeight = FontWeight.SemiBold, color = T.ink)
-                        Text("Used automatically for quick checkout",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_set_as_default_address_b62ebb6), fontWeight = FontWeight.SemiBold, color = T.ink)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_used_automatically_for_quick_checkout_a8e388f),
                             style = MaterialTheme.typography.bodySmall, color = T.muted)
                     }
                     Switch(form.makeDefault, { value -> update { it.copy(makeDefault = value) } },
@@ -97,7 +96,7 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
             if (form.editing && onDelete != null) TextButton(onDelete,
                 Modifier.align(Alignment.CenterHorizontally), enabled = !submitting) {
                 Icon(AppIcons.Delete, null, Modifier.size(17.dp)); Spacer(Modifier.width(6.dp))
-                Text("Delete this address")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_delete_this_address_7c63592))
             }
             if (verification == AddressVerification.VALIDATING)
                 LinearProgressIndicator(Modifier.fillMaxWidth(), color = T.red)
@@ -120,7 +119,7 @@ private fun AddressGroup(title: String, content: @Composable ColumnScope.() -> U
 
 @Composable
 private fun AddressTypePicker(selected: AddressType, disabled: Boolean, onSelect: (AddressType) -> Unit) {
-    Text("ADDRESS TYPE", style = MaterialTheme.typography.labelMedium, color = T.muted)
+    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_address_type_f1083b0), style = MaterialTheme.typography.labelMedium, color = T.muted)
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AddressType.entries.forEach { type ->
             val active = selected == type
@@ -155,7 +154,7 @@ private fun AddressFormFields(form: AddressFormState, disabled: Boolean,
             form.errors["address"]?.contains("verify") == true)
             TextButton(onChooseOnMap, enabled = !disabled) {
                 Icon(AppIcons.Map, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp))
-                Text("Choose on Map")
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_choose_on_map_a0d7227))
             }
         AddressField("Landmark (Optional)", form.landmark, form.errors["landmark"], disabled) { value ->
             update { it.copy(landmark = value) } }

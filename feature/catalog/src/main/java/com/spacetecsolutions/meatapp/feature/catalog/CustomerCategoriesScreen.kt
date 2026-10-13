@@ -93,8 +93,8 @@ fun CustomerCategoriesRoute(
         val selectedCategory = state.selectedCategory
         if (selectedCategory == null) {
             CustomerSearchTopBar(
-                title = "Categories",
-                placeholder = "Search categories...",
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_categories_6ccb600),
+                placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_search_categories_1bf5c01),
                 searchVisible = searchVisible,
                 searchQuery = state.categorySearch,
                 onBack = onBack,
@@ -116,7 +116,7 @@ fun CustomerCategoriesRoute(
         } else if (state.loadingSubcategories) {
             CustomerSearchTopBar(
                 title = selectedCategory.name,
-                placeholder = "Search products...",
+                placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_search_products_b73f756),
                 searchVisible = false,
                 searchQuery = "",
                 onBack = viewModel::showCategories,
@@ -129,7 +129,7 @@ fun CustomerCategoriesRoute(
         } else if (state.subcategories.isNotEmpty() && state.selectedSubcategory == null) {
             CustomerSearchTopBar(
                 title = selectedCategory.name,
-                placeholder = "Search subcategories...",
+                placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_search_subcategories_e87dd4a),
                 searchVisible = false,
                 searchQuery = "",
                 onBack = viewModel::showCategories,
@@ -140,7 +140,7 @@ fun CustomerCategoriesRoute(
         } else {
             CustomerSearchTopBar(
                 title = state.selectedSubcategory?.name ?: selectedCategory.name,
-                placeholder = "Search products...",
+                placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_search_products_b73f756),
                 searchVisible = searchVisible,
                 searchQuery = state.search,
                 onBack = {

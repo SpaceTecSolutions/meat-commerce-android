@@ -83,9 +83,9 @@ private fun AdminCategoriesScreen(
             )
             state.categories.isEmpty() -> ContentStateView(
                 ContentState.Empty(
-                    title = "No categories added",
-                    description = "Add the first category to organize products.",
-                    actionLabel = "Add Category",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_added_3f223f9),
+                    description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_the_first_category_to_237f105),
+                    actionLabel = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_category_9c4eb09),
                 ),
                 contentPadding = padding, onAction = onAdd,
             )
@@ -113,8 +113,8 @@ private fun AdminCategoriesScreen(
                 if (state.error != null) item { Text(state.error, color = MaterialTheme.colorScheme.error) }
                 if (visible.isEmpty()) item {
                     ContentStateView(ContentState.Empty(
-                        title = "No matching categories",
-                        description = "Try another category name.",
+                        title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_matching_categories_a89be26),
+                        description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_try_another_category_name_2672bb6),
                     ))
                 }
                 items(visible, key = ProductCategory::id) { category ->
@@ -136,9 +136,9 @@ private fun AdminCategoriesScreen(
 @Composable
 private fun CategoriesTopBar(onBack: () -> Unit, onAdd: () -> Unit) {
     TopAppBar(
-        title = { Text("Categories", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) },
-        navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, "Back") } },
-        actions = { TextButton(onAdd) { Text("+ Add Category") } },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_categories_6ccb600), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) },
+        navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_back_b52b36b)) } },
+        actions = { TextButton(onAdd) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_category_6046a84)) } },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
         expandedHeight = 56.dp,
     )

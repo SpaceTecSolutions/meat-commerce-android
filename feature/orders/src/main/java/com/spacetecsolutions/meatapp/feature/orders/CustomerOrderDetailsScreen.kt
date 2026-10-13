@@ -29,14 +29,14 @@ internal fun CustomerOrderDetailsScreen(order: CodOrder, nowEpochMillis: Long, b
     if (showInvoice) CustomerInvoiceDialog(order = order, onDismiss = { showInvoice = false })
     requestedOption?.let { option -> AlertDialog(onDismissRequest = { requestedOption = null },
         title = { Text(option) },
-        text = { Text("Tell us what went wrong and our support team will help.") },
-        confirmButton = { TextButton({ requestedOption = null; onHelp() }) { Text("Contact support") } },
-        dismissButton = { TextButton({ requestedOption = null }) { Text("Close") } }) }
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_tell_us_what_went_wrong_1a11e02)) },
+        confirmButton = { TextButton({ requestedOption = null; onHelp() }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_contact_support_2b658ff)) } },
+        dismissButton = { TextButton({ requestedOption = null }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_bbfa773)) } }) }
     Scaffold(containerColor = T.canvas, topBar = {
-        TopAppBar(title = { Text("Order Details", style = MaterialTheme.typography.titleLarge,
+        TopAppBar(title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_details_abb713a), style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold) },
-            navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, "Back") } },
-            actions = { TextButton(onHelp) { Text("Help", color = T.red) } },
+            navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b)) } },
+            actions = { TextButton(onHelp) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_help_c47ae15), color = T.red) } },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         if (order.canCustomerCancel || order.canReorder) Surface(color = T.surface,
@@ -46,12 +46,12 @@ internal fun CustomerOrderDetailsScreen(order: CodOrder, nowEpochMillis: Long, b
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (order.canCustomerCancel) OutlinedButton(onCancel,
                     Modifier.weight(1f).height(48.dp), enabled = !busy) {
-                    Text("Cancel Order", color = T.red)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_order_8712544), color = T.red)
                 }
                 if (order.canReorder) Button(onReorder, Modifier.weight(1f).height(48.dp),
                     enabled = !busy,
                     colors = ButtonDefaults.buttonColors(containerColor = T.red)) {
-                    Text("Reorder")
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_reorder_33d9978))
                 }
             }
         }
@@ -87,9 +87,9 @@ internal fun CustomerOrderDetailsScreen(order: CodOrder, nowEpochMillis: Long, b
                     if (order.orderStatus == OrderStatus.DELIVERED) item {
                         /*Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlinedButton({ showInvoice = true },
-                                Modifier.weight(1f)) { Text("Invoice") }
+                                Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_invoice_f9f3881)) }
                             OutlinedButton({ requestedOption = "Report an issue" },
-                                Modifier.weight(1f)) { Text("Report issue") }
+                                Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_report_issue_6e2c712)) }
                         }*/
                         Row(Modifier.fillMaxWidth().clickable(onClick = { showInvoice = true }),
                             horizontalArrangement = Arrangement.Center) {

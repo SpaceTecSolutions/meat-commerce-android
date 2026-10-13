@@ -155,15 +155,15 @@ private fun CustomerOrdersListScreen(
     if (datePickerOpen) {
         val picker = rememberDatePickerState(initialSelectedDateMillis = selectedDate)
         DatePickerDialog(onDismissRequest = { datePickerOpen = false },
-            confirmButton = { TextButton({ selectedDate = picker.selectedDateMillis; datePickerOpen = false }) { Text("Apply") } },
-            dismissButton = { TextButton({ selectedDate = null; datePickerOpen = false }) { Text("All dates") } }) {
+            confirmButton = { TextButton({ selectedDate = picker.selectedDateMillis; datePickerOpen = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_apply_cfea419)) } },
+            dismissButton = { TextButton({ selectedDate = null; datePickerOpen = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_all_dates_69feaaf)) } }) {
             DatePicker(state = picker)
         }
     }
     Column(Modifier.fillMaxSize().background(T.canvas)) {
         TopAppBar(title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("My Orders", style = MaterialTheme.typography.titleLarge,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_my_orders_db2821a), style = MaterialTheme.typography.titleLarge,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = T.ink)
                 if (state.orders.isNotEmpty()) Surface(
                     Modifier.padding(start = 10.dp), color = T.rose,
@@ -173,21 +173,21 @@ private fun CustomerOrdersListScreen(
                 }
             }
         },
-            navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, "Back") } },
+            navigationIcon = { IconButton(onBack) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_back_b52b36b)) } },
             actions = { IconButton({ datePickerOpen = true }) {
-            Icon(AppIcons.Calendar, "Filter orders by date", tint = T.ink)
+            Icon(AppIcons.Calendar, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_filter_orders_by_date_542122e), tint = T.ink)
         } }, colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
         if (state.refreshing) LinearProgressIndicator(Modifier.fillMaxWidth())
         CustomerOrderStatusTabs(state.selectedTab, actions::selectTab)
         selectedDate?.let { selected -> TextButton({ selectedDate = null }) {
-            Text("${java.time.Instant.ofEpochMilli(selected).atZone(java.time.ZoneOffset.UTC).toLocalDate()} · Clear date filter")
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_java_time_instant_ofepochmilli_selected_276847f, java.time.Instant.ofEpochMilli(selected).atZone(java.time.ZoneOffset.UTC).toLocalDate()))
         } }
         PullToRefreshBox(isRefreshing = state.refreshing, onRefresh = { actions.refresh() }, modifier = Modifier.fillMaxSize()) {
         when {
             state.loading -> ContentStateView(ContentState.Loading)
             state.error != null -> ContentStateView(
                 ContentState.Error(
-                    title = "Unable to load your orders",
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_unable_to_load_your_orders_e5e152e),
                     description = state.error,
                     retryLabel = "Retry",
                 ),

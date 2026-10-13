@@ -28,10 +28,11 @@ fun CustomerCategoryCard(
     modifier: Modifier = Modifier,
 ) {
     val count = category.activeProductCount.coerceAtLeast(0)
+    val categoryDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_name_categoryitemcount_count_54d7751, category.name, categoryItemCount(count))
     Card(
         onClick = onClick,
         modifier = modifier.semantics(mergeDescendants = true) {
-            contentDescription = "${category.name}, ${categoryItemCount(count)}"
+            contentDescription = categoryDescription
         }
             .shadow(elevation = 8.dp, AppShapes.medium),
         shape = AppShapes.medium,
@@ -106,11 +107,11 @@ internal fun AdminCategoryRow(
                 colors = appSwitchColors(),
             )
             Box {
-                IconButton({ menu = true }, enabled = !busy) { Icon(AppIcons.MoreVertical, "Category actions") }
+                IconButton({ menu = true }, enabled = !busy) { Icon(AppIcons.MoreVertical, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_actions_e7c0183)) }
                 DropdownMenu(menu, { menu = false }) {
-                    DropdownMenuItem({ Text("Edit") }, { menu = false; onEdit() },
+                    DropdownMenuItem({ Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_edit_5301648)) }, { menu = false; onEdit() },
                         leadingIcon = { Icon(AppIcons.Edit, null) })
-                    DropdownMenuItem({ Text("Delete") }, { menu = false; onDelete() },
+                    DropdownMenuItem({ Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_f6fdbe4)) }, { menu = false; onDelete() },
                         leadingIcon = { Icon(AppIcons.Delete, null) })
                 }
             }

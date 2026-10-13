@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.customerhome
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.AppError
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class CustomerHomeViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val repository: CustomerHomeRepository,
     private val messaging: com.spacetecsolutions.meatapp.core.domain.repository.MessagingRepository,
     private val products: ProductRepository,
@@ -80,7 +82,7 @@ class CustomerHomeViewModel @Inject constructor(
             ) }
             is AppResult.Failure -> mutableState.update { it.copy(
                 updatingProductIds = it.updatingProductIds - product.id,
-                cartMessage = result.error.cartText(),
+                cartMessage = result.error.cartText(context),
             ) }
         }
         if (result is AppResult.Success) refreshCart()
@@ -103,7 +105,7 @@ class CustomerHomeViewModel @Inject constructor(
             ) }
             is AppResult.Failure -> mutableState.update { it.copy(
                 updatingProductIds = it.updatingProductIds - product.id,
-                cartMessage = result.error.cartText(),
+                cartMessage = result.error.cartText(context),
             ) }
         }
     }
@@ -123,22 +125,22 @@ class CustomerHomeViewModel @Inject constructor(
                         current.data?.cartQuantity ?: result.value.cartQuantity else result.value.cartQuantity),
             ) }
             is AppResult.Failure -> mutableState.update {
-                it.copy(loading = false, refreshing = false, error = result.error.message())
+                it.copy(loading = false, refreshing = false, error = result.error.message(context))
             }
         }
     }
 }
 
-private fun AppError.cartText() = when (this) {
-    AppError.Network, AppError.Offline, AppError.Timeout -> "Couldn't update cart. Check your connection."
-    AppError.NotFound -> "This product is no longer available."
+private fun AppError.cartText(context: Context) = when (this) {
+    AppError.Network, AppError.Offline, AppError.Timeout -> context.getString(R.string.home_cart_offline)
+    AppError.NotFound -> context.getString(R.string.home_product_unavailable)
     is AppError.Validation -> message
-    else -> "Couldn't update cart right now. Please try again."
+    else -> context.getString(R.string.home_cart_update_failed)
 }
 
-private fun AppError.message() = when (this) {
-    AppError.Network -> "You're offline. Check your connection and try again."
-    AppError.Unauthorized -> "Please sign in again to continue."
-    AppError.Forbidden -> "This home is not available for your account."
-    else -> "We couldn't load the shop right now."
+private fun AppError.message(context: Context) = when (this) {
+    AppError.Network -> context.getString(R.string.home_offline)
+    AppError.Unauthorized -> context.getString(R.string.home_sign_in_again)
+    AppError.Forbidden -> context.getString(R.string.home_unavailable)
+    else -> context.getString(R.string.home_load_failed)
 }

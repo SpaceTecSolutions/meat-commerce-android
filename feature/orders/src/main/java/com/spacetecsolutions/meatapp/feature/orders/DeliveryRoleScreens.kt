@@ -34,7 +34,7 @@ fun DeliveryHomeRoute(
                     .widthIn(max = AppDimensions.contentMaxWidth).padding(AppSpacing.medium),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
             ) {
-                Text("Hello, ${state.user?.displayName.orEmpty()}", style = MaterialTheme.typography.headlineSmall)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_hello_state_user_displayname_orempty_14f44d5, state.user?.displayName.orEmpty()), style = MaterialTheme.typography.headlineSmall)
                 ElevatedCard(onClick = openOrders, modifier = Modifier.fillMaxWidth()) {
                     Metric("Assigned Orders", active.toString(), "View today's active deliveries")
                 }
@@ -67,14 +67,14 @@ fun DeliveryHistoryRoute(viewModel: DeliveryRoleViewModel = hiltViewModel()) {
             state.loading -> ContentStateView(ContentState.Loading)
             state.error != null -> ContentStateView(ContentState.Error(description = state.error), onAction = viewModel::refresh)
             state.orders.none { it.orderStatus in terminalStatuses } -> ContentStateView(ContentState.Empty(
-                title = "No delivery history", description = "Completed assignments will appear here."))
+                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_delivery_history_ac02474), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_completed_assignments_will_appear_here_977a44e)))
             else -> LazyColumn(contentPadding = PaddingValues(AppSpacing.medium),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
                 items(state.orders.filter { it.orderStatus in terminalStatuses }, key = CodOrder::id) { order ->
                     ElevatedCard(onClick = { selected = order }, modifier = Modifier.fillMaxWidth()) {
                         Row(Modifier.fillMaxWidth().padding(AppSpacing.medium),
                             horizontalArrangement = Arrangement.SpaceBetween) {
-                            Column { Text("Order ${order.displayNumber}", style = MaterialTheme.typography.titleMedium)
+                            Column { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_order_displaynumber_5a620eb, order.displayNumber), style = MaterialTheme.typography.titleMedium)
                                 Text(order.customerName) }
                             Text(order.orderStatus.label(), color = MaterialTheme.colorScheme.primary)
                         }
@@ -115,19 +115,19 @@ fun DeliveryProfileRoute(
     }
     if (confirmLogout) AlertDialog(
         onDismissRequest = { confirmLogout = false },
-        title = { Text("Logout?") },
-        text = { Text("You will need to sign in again to access delivery assignments.") },
-        confirmButton = { Button({ confirmLogout = false; logout() }) { Text("Logout") } },
-        dismissButton = { TextButton({ confirmLogout = false }) { Text("Cancel") } },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_logout_d9be757)) },
+        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_you_will_need_to_sign_b1db1ea)) },
+        confirmButton = { Button({ confirmLogout = false; logout() }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_logout_e43d612)) } },
+        dismissButton = { TextButton({ confirmLogout = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_77dfd21)) } },
     )
     if (profileInfo) AlertDialog(
         onDismissRequest = { profileInfo = false },
-        title = { Text("Profile Information") },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_profile_information_53910b4)) },
         text = { Column {
-            Text(state.user?.displayName ?: "Delivery User", style = MaterialTheme.typography.titleMedium)
+            Text(state.user?.displayName ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_user_d5bb508), style = MaterialTheme.typography.titleMedium)
             Text(state.user?.mobileNumber.orEmpty(), color = MaterialTheme.colorScheme.onSurfaceVariant)
         } },
-        confirmButton = { TextButton({ profileInfo = false }) { Text("Close") } },
+        confirmButton = { TextButton({ profileInfo = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_bbfa773)) } },
     )
 }
 
@@ -139,11 +139,11 @@ fun DeliveryNotificationsScreen(back: () -> Unit, onOpen: (com.spacetecsolutions
 @Composable
 fun DeliveryHelpScreen(back: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
-        AppBackTopBar("Help", back)
+        AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_help_c47ae15), back)
         Column(Modifier.padding(AppSpacing.large), verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
-            Text("Delivery Help", style = MaterialTheme.typography.headlineSmall)
-            Text("For assignment, customer, collection, or account issues, contact your shop Admin.")
-            Text("Only deliver orders visible in Assigned Orders. Never collect a different COD amount without reporting it.")
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_help_305cba6), style = MaterialTheme.typography.headlineSmall)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_for_assignment_customer_collection_or_42a9f78))
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_only_deliver_orders_visible_in_b8a7411))
         }
     }
 }

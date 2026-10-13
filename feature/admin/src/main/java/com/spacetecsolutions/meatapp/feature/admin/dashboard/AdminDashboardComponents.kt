@@ -27,16 +27,16 @@ import kotlin.math.roundToLong
 internal fun AdminDashboardHeader(unread: Int, notifications: () -> Unit, showNotifications: Boolean) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
         Column(Modifier.weight(1f)) {
-            Text("Hello, Meat 👋", fontSize = 24.sp, lineHeight = 30.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_hello_meat_3caa717), fontSize = 24.sp, lineHeight = 30.sp,
                 fontWeight = FontWeight.Bold, color = DashboardStyle.ink)
-            Text("Here's what's happening today", fontSize = 14.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_here_s_what_s_happening_dba7522), fontSize = 14.sp,
                 color = DashboardStyle.muted)
         }
         if (showNotifications) Surface(onClick = notifications, modifier = Modifier.size(44.dp), shape = CircleShape,
             color = DashboardStyle.card, shadowElevation = 2.dp) {
             BadgedBox(badge = { if (unread > 0) Badge(containerColor = DashboardStyle.red) },
                 modifier = Modifier.padding(11.dp)) {
-                Icon(AppIcons.NotificationsOutline, "Notifications, $unread unread", tint = DashboardStyle.ink)
+                Icon(AppIcons.NotificationsOutline, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_notifications_unread_unread_593b8b5, unread), tint = DashboardStyle.ink)
             }
         }
     }
@@ -100,9 +100,9 @@ internal fun RevenueOverviewCard(dashboard: AdminDashboard, period: AdminDashboa
         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("Revenue Overview", fontSize = 17.sp, fontWeight = FontWeight.SemiBold,
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_revenue_overview_3e1871f), fontSize = 17.sp, fontWeight = FontWeight.SemiBold,
                         color = DashboardStyle.ink)
-                    Text("Revenue (₹)", fontSize = 12.sp, color = DashboardStyle.muted)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_revenue_67e26cd), fontSize = 12.sp, color = DashboardStyle.muted)
                 }
                 DashboardPeriodSelector(period, onPeriod)
             }
@@ -145,9 +145,9 @@ private fun RevenueEmptyState() {
                 Icon(AppIcons.Analytics, null, Modifier.padding(12.dp).size(23.dp), tint = DashboardStyle.red)
             }
             Spacer(Modifier.height(10.dp))
-            Text("No finalized revenue", fontSize = 15.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_finalized_revenue_1669f43), fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold, color = DashboardStyle.ink)
-            Text("Sales for this period will appear here.", fontSize = 12.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_sales_for_this_period_will_6f95383), fontSize = 12.sp,
                 color = DashboardStyle.muted)
         }
     }
@@ -157,9 +157,9 @@ private fun RevenueEmptyState() {
 internal fun TopSellingProductSection(products: List<AdminDashboardProduct>, currencyCode: String, onClick: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Top Selling Products", Modifier.weight(1f), fontSize = 17.sp,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_top_selling_products_4fe882f), Modifier.weight(1f), fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold, color = DashboardStyle.ink)
-            if (products.isNotEmpty()) Text("TOP 3", fontSize = 11.sp,
+            if (products.isNotEmpty()) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_top_3_a2e4384), fontSize = 11.sp,
                 fontWeight = FontWeight.Bold, color = DashboardStyle.red)
         }
         if (products.isEmpty()) Surface(shape = DashboardStyle.metricShape, color = DashboardStyle.card,
@@ -170,9 +170,9 @@ internal fun TopSellingProductSection(products: List<AdminDashboardProduct>, cur
                     Icon(AppIcons.ProductsOutline, null, Modifier.padding(10.dp).size(18.dp), tint = DashboardStyle.muted)
                 }
                 Spacer(Modifier.height(6.dp))
-                Text("No sales data yet", fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_sales_data_yet_d7a9aa9), fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
                     color = DashboardStyle.ink)
-                Text("Products with sales will appear here", fontSize = 12.sp,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_products_with_sales_will_appear_3329a37), fontSize = 12.sp,
                     color = DashboardStyle.muted)
             }
         } else products.take(3).forEachIndexed { index, product -> Surface(onClick = onClick, shape = DashboardStyle.metricShape,
@@ -200,7 +200,7 @@ internal fun TopSellingProductSection(products: List<AdminDashboardProduct>, cur
                     Text(money(product.revenueMinor, currencyCode), fontSize = 15.sp,
                         fontWeight = FontWeight.Bold, color = DashboardStyle.ink,
                         maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("Total Revenue", fontSize = 10.sp, color = DashboardStyle.muted)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_total_revenue_f3a8370), fontSize = 10.sp, color = DashboardStyle.muted)
                 }
             }
         } }

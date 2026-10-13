@@ -23,9 +23,10 @@ import java.util.Locale
 @Composable
 internal fun HomeBestSellerCard(product: Product, quantity: Int, cartLoaded: Boolean, updating: Boolean,
     onClick: () -> Unit, onAdd: () -> Unit, onQuantityChange: (Int) -> Unit) {
+    val productDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_product_name_product_effectivepriceminor_home_32d13f3, product.name, product.effectivePriceMinor.homeMoney(), product.unit.homeUnit())
     Card(onClick = onClick,
         modifier = Modifier.width(146.dp).semantics {
-            contentDescription = "${product.name}, ${product.effectivePriceMinor.homeMoney()} per ${product.unit.homeUnit()}"
+            contentDescription = productDescription
         }, shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = CustomerHomeTokens.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp, pressedElevation = 1.dp),
@@ -44,7 +45,7 @@ internal fun HomeBestSellerCard(product: Product, quantity: Int, cartLoaded: Boo
                             style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
                             color = CustomerHomeTokens.ink, maxLines = 1,
                             overflow = TextOverflow.Ellipsis)
-                        Text("/ ${product.unit.homeUnit()}", style = MaterialTheme.typography.labelSmall,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_product_unit_homeunit_65dd60e, product.unit.homeUnit()), style = MaterialTheme.typography.labelSmall,
                             color = CustomerHomeTokens.muted)
                     }
                     if (cartLoaded) HomeProductAddControl(product, quantity, updating, onAdd, onQuantityChange)
@@ -63,19 +64,19 @@ private fun HomeProductAddControl(product: Product, quantity: Int, updating: Boo
         modifier = Modifier.height(34.dp), shape = RoundedCornerShape(9.dp),
         contentPadding = PaddingValues(horizontal = 9.dp, vertical = 0.dp),
         border = BorderStroke(1.dp, CustomerHomeTokens.red)) {
-        Text("ADD +", style = MaterialTheme.typography.labelMedium,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_add_e2a7724), style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold, color = CustomerHomeTokens.red, maxLines = 1)
     } else Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp)) {
         IconButton({ onQuantityChange(-1) }, enabled = !updating,
             modifier = Modifier.size(26.dp)) {
-            Icon(AppIcons.Remove, "Remove one", Modifier.size(16.dp), tint = CustomerHomeTokens.red)
+            Icon(AppIcons.Remove, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_remove_one_afbcf5f), Modifier.size(16.dp), tint = CustomerHomeTokens.red)
         }
         Text(quantity.toString(), style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold, color = CustomerHomeTokens.red)
         IconButton({ onQuantityChange(1) }, enabled = !updating,
             modifier = Modifier.size(26.dp)) {
-            Icon(AppIcons.Add, "Add one", Modifier.size(16.dp), tint = CustomerHomeTokens.red)
+            Icon(AppIcons.Add, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_add_one_bb49f01), Modifier.size(16.dp), tint = CustomerHomeTokens.red)
         }
     }
 }

@@ -37,17 +37,17 @@ import kotlin.math.max
 internal fun ReportsTopBar(back: () -> Unit, periodLabel: String, openFilters: () -> Unit,
     export: (() -> Unit)? = null) {
     TopAppBar(
-        title = { Text("Reports", fontWeight = FontWeight.Bold, color = ReportsStyle.ink) },
-        navigationIcon = { IconButton(back) { Icon(AppIcons.Back, "Back") } },
+        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_reports_88bc3fe), fontWeight = FontWeight.Bold, color = ReportsStyle.ink) },
+        navigationIcon = { IconButton(back) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_back_b52b36b)) } },
         actions = {
-            export?.let { IconButton(it) { Icon(AppIcons.Download, "Export Excel report") } }
+            export?.let { IconButton(it) { Icon(AppIcons.Download, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_export_excel_report_28f70d2)) } }
             Row(Modifier.padding(end = 16.dp).clip(ReportsStyle.pillShape)
                 .background(ReportsStyle.surface).border(1.dp, ReportsStyle.rose, ReportsStyle.pillShape)
                 .clickable(onClick = openFilters).padding(horizontal = 12.dp, vertical = 9.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(periodLabel, color = ReportsStyle.red, fontWeight = FontWeight.SemiBold,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Icon(AppIcons.ArrowDown, "Open report filters", Modifier.size(20.dp), tint = ReportsStyle.red)
+                Icon(AppIcons.ArrowDown, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_open_report_filters_9f618b0), Modifier.size(20.dp), tint = ReportsStyle.red)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = ReportsStyle.canvas),
@@ -64,7 +64,7 @@ internal fun ProductSelector(name: String, open: () -> Unit) {
                 Icon(AppIcons.ProductsOutline, null, Modifier.size(18.dp), tint = ReportsStyle.muted)
             }
             Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                Text("PRODUCT", style = MaterialTheme.typography.labelSmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_product_964bd56), style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold, color = ReportsStyle.muted)
                 Text(name, fontWeight = FontWeight.SemiBold, color = ReportsStyle.ink,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -140,11 +140,12 @@ private fun ReportMetricCard(metric: ReportMetric, modifier: Modifier = Modifier
 @Composable
 internal fun ReportComparisonText(change: Double?) {
     if (change == null) {
-        Text("No comparison data", style = MaterialTheme.typography.labelSmall,
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_comparison_data_d08712a), style = MaterialTheme.typography.labelSmall,
             color = ReportsStyle.muted)
     } else {
         val positive = change >= 0
-        Text("${if (positive) "↑" else "↓"} ${kotlin.math.abs(change)}% vs previous period",
+        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_report_period_change,
+            if (positive) "↑" else "↓", kotlin.math.abs(change)),
             style = MaterialTheme.typography.labelSmall,
             color = if (positive) Success else MaterialTheme.colorScheme.error,
             maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -167,16 +168,16 @@ internal fun SalesBarChart(points: List<ReportSeriesPoint>, currency: String, pe
 internal fun TopProductsSection(products: List<AdminTopProductReport>, currency: String) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("Top Products", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_top_products_2ebf4b3), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold, color = ReportsStyle.ink)
-            Text("Ranked by revenue", style = MaterialTheme.typography.labelMedium, color = ReportsStyle.red)
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_ranked_by_revenue_0d5662e), style = MaterialTheme.typography.labelMedium, color = ReportsStyle.red)
         }
         if (products.isEmpty()) ReportsSurface(Modifier.heightIn(min = 130.dp)) {
             Column(Modifier.align(Alignment.Center).padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(AppIcons.ProductsOutline, null, tint = ReportsStyle.muted)
                 Spacer(Modifier.height(8.dp))
-                Text("No product sales", fontWeight = FontWeight.SemiBold, color = ReportsStyle.ink)
-                Text("No completed product transactions in this period.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_product_sales_4db2330), fontWeight = FontWeight.SemiBold, color = ReportsStyle.ink)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_completed_product_transactions_in_a808cd8),
                     style = MaterialTheme.typography.bodySmall, color = ReportsStyle.muted)
             }
         }
@@ -197,7 +198,7 @@ private fun TopProductRow(product: AdminTopProductReport, currency: String) {
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(product.revenueMinor.money(currency), fontWeight = FontWeight.Bold, color = ReportsStyle.ink)
-                Text("REVENUE", style = MaterialTheme.typography.labelSmall, color = ReportsStyle.muted)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_revenue_9ee5830), style = MaterialTheme.typography.labelSmall, color = ReportsStyle.muted)
             }
         }
     }
@@ -212,8 +213,8 @@ internal fun ProductPerformanceSection(report: AdminReport, product: Product?) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             RoundedSquareImage(performance?.imageUrl ?: product?.imageUrls?.firstOrNull(), product?.name ?: performance?.productName, 56.dp)
             Column(Modifier.padding(start = AppSpacing.medium)) {
-                Text(product?.name ?: performance?.productName ?: "Selected product", fontWeight = FontWeight.Bold)
-                Text("${report.completedOrders} completed orders · ${report.quantitySold.quantity(report.quantityUnit)}",
+                Text(product?.name ?: performance?.productName ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_selected_product_6178469), fontWeight = FontWeight.Bold)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_report_completedorders_completed_orders_repor_abd01d9, report.completedOrders, report.quantitySold.quantity(report.quantityUnit)),
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -224,8 +225,8 @@ internal fun ProductPerformanceSection(report: AdminReport, product: Product?) {
 internal fun ReportEmptyState(productSelected: Boolean, changeFilters: () -> Unit) = ContentStateView(
     ContentState.Empty(
         title = if (productSelected) "No sales for this product" else "No report data",
-        description = "No completed sales were found for the selected period.",
-        actionLabel = "Change Filters",
+        description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_no_completed_sales_were_found_754b384),
+        actionLabel = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_change_filters_e264d74),
     ),
     onAction = changeFilters,
 )

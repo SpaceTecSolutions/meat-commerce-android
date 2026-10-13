@@ -31,7 +31,7 @@ internal fun CustomerAddressDetail(order: CodOrder, model: CustomerOrderUiModel,
             if (order.addressSummary.isNotBlank()) TextButton(onNavigate,
                 contentPadding = PaddingValues(0.dp)) {
                 Icon(AppIcons.Location, null, Modifier.size(16.dp), tint = T.red)
-                Spacer(Modifier.width(3.dp)); Text("View Map", color = T.red)
+                Spacer(Modifier.width(3.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_view_map_7e06a4c), color = T.red)
             }
         }
         if (order.addressLabel.isNotBlank()) Surface(color = T.soft,
@@ -44,15 +44,14 @@ internal fun CustomerAddressDetail(order: CodOrder, model: CustomerOrderUiModel,
         if (model.formattedDeliveryTime.isNotBlank()) {
             HorizontalDivider(color = T.border)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(if (order.orderStatus == OrderStatus.DELIVERED) "Delivered Slot"
-                    else "Estimated Delivery", style = MaterialTheme.typography.bodySmall,
+                Text(if (order.orderStatus == OrderStatus.DELIVERED) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivered_slot_f787da3) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_estimated_delivery_1166329), style = MaterialTheme.typography.bodySmall,
                     color = T.muted)
                 Text(model.formattedDeliveryTime,
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.SemiBold, color = T.ink)
             }
             order.deliverySlotChangeReason?.takeIf(String::isNotBlank)?.let { reason ->
-                Text("Delivery time changed: $reason", style = MaterialTheme.typography.bodySmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivery_time_changed_reason_b8eaf1e, reason), style = MaterialTheme.typography.bodySmall,
                     color = T.muted)
             }
         }
@@ -113,7 +112,7 @@ internal fun CustomerOrderItemsDetail(order: CodOrder) {
             }
             if (order.items.size > 3) TextButton({ expanded = !expanded },
                 Modifier.fillMaxWidth()) {
-                Text(if (expanded) "Show Less" else "Show More (" +
+                Text(if (expanded) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_show_less_08d205d) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_show_more_84e9fe0) +
                     (order.items.size - 3) + " more)", color = T.red)
             }
         }
@@ -146,12 +145,12 @@ internal fun CustomerDetailHelp(onHelp: () -> Unit) {
             Icon(AppIcons.Call, null, Modifier.size(20.dp), tint = T.muted)
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text("Need Help with this Order?", style = MaterialTheme.typography.bodyMedium,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_need_help_with_this_order_e065805), style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold, color = T.ink)
-                Text("Contact our support team", style = MaterialTheme.typography.bodySmall,
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_contact_our_support_team_6456b67), style = MaterialTheme.typography.bodySmall,
                     color = T.muted)
             }
-            TextButton(onHelp) { Text("Call Us", color = T.ink) }
+            TextButton(onHelp) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_call_us_84207ab), color = T.ink) }
         }
     }
 }
@@ -160,7 +159,7 @@ internal fun CustomerDetailHelp(onHelp: () -> Unit) {
 internal fun CustomerDownloadInvoice() {
     CustomerDetailSurface {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-            Text("Download Invoice")
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_download_invoice_5366b40))
             Spacer(Modifier.width(10.dp))
             Icon(AppIcons.DownloadInvoice, null, Modifier.size(20.dp), tint = T.red)
         }

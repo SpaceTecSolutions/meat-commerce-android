@@ -35,9 +35,9 @@ internal fun CustomerProductListContent(
             state.loading && state.products.isEmpty() -> ProductListSkeleton()
             state.error != null && state.products.isEmpty() -> ContentStateView(
                 state = if (state.offline) ContentState.Offline(
-                    title = "You're offline", description = state.error,
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_you_re_offline_f4d9cea), description = state.error,
                 ) else ContentState.Error(
-                    title = "Unable to load products", description = state.error,
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_unable_to_load_products_a380784), description = state.error,
                 ),
                 onAction = onRefresh,
             )
@@ -101,7 +101,7 @@ private fun ProductList(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 if (state.loadingMore) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                else Text("Load more products")
+                else Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_load_more_products_e9797b4))
             }
         }
     }

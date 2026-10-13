@@ -111,14 +111,14 @@ class DeliveryTrackingService : Service() {
 
     private fun createChannel() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, "Live delivery tracking", NotificationManager.IMPORTANCE_LOW),
+            NotificationChannel(CHANNEL_ID, getString(R.string.live_tracking_notification_channel), NotificationManager.IMPORTANCE_LOW),
         )
     }
 
     private fun notification() = NotificationCompat.Builder(this, CHANNEL_ID)
         .setSmallIcon(R.mipmap.ic_launcher)
-        .setContentTitle("Live delivery tracking")
-        .setContentText("Location is shared only for the active delivery")
+        .setContentTitle(getString(R.string.live_tracking_notification_title))
+        .setContentText(getString(R.string.live_tracking_notification_text))
         .setOngoing(true).setCategory(Notification.CATEGORY_SERVICE).build()
 
     private fun persist(value: TrackingIdentity) = getSharedPreferences(PREFS, MODE_PRIVATE).edit()

@@ -42,7 +42,7 @@ private fun SuperAdminReportsScreen(
 ) {
     Column(Modifier.fillMaxSize()) {
         AppTopBar(
-            title = "Revenue Reports",
+            title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_revenue_reports_c88b937),
             actionIcon = AppIcons.Calendar,
             actionDescription = "Custom report range",
             onAction = { onPeriodSelected(ReportPeriodType.CUSTOM) },

@@ -27,7 +27,7 @@ internal fun AccountTopBar(title: String, back: () -> Unit) {
         Row(Modifier.fillMaxWidth().height(58.dp).padding(horizontal = 14.dp),
             verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = back, modifier = Modifier.size(42.dp)) {
-                Icon(AppIcons.Back, "Back", tint = AccountStyle.ink)
+                Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_back_b52b36b), tint = AccountStyle.ink)
             }
             Text(title, Modifier.padding(start = 9.dp), fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold, color = AccountStyle.ink)

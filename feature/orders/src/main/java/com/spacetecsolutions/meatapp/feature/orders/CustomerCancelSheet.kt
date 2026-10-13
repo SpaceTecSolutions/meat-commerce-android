@@ -29,24 +29,24 @@ internal fun CustomerCancelSheet(order: CodOrder, reason: String, change: (Strin
             .verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Cancel " + order.numberLabel(), Modifier.weight(1f),
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancel_1791a62) + order.numberLabel(), Modifier.weight(1f),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold, color = T.ink)
-                IconButton(dismiss) { Icon(AppIcons.Close, "Close") }
+                IconButton(dismiss) { Icon(AppIcons.Close, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_close_bbfa773)) }
             }
             Surface(color = T.amberSurface, shape = RoundedCornerShape(14.dp),
                 border = BorderStroke(1.dp, T.amber.copy(alpha = .25f))) {
                 Row(Modifier.padding(14.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Icon(AppIcons.Pending, null, tint = T.amber)
-                    Text("Cancelling this order cannot be undone.",
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cancelling_this_order_cannot_be_b72933b),
                         style = MaterialTheme.typography.bodyMedium, color = T.ink)
                 }
             }
-            Text("Why are you cancelling?", style = MaterialTheme.typography.titleSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_why_are_you_cancelling_6133e7d), style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold, color = T.ink)
             OutlinedTextField(reason, change, Modifier.fillMaxWidth(),
-                placeholder = { Text("Tell us the reason") },
-                supportingText = { Text("Required · " + reason.length + "/200") },
+                placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_tell_us_the_reason_d733998)) },
+                supportingText = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_required_891f60a) + reason.length + "/200") },
                 minLines = 2, maxLines = 3,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = T.red,
@@ -69,12 +69,12 @@ internal fun CustomerCancelSheet(order: CodOrder, reason: String, change: (Strin
                 enabled = reason.isNotBlank(),
                 colors = ButtonDefaults.buttonColors(containerColor = T.red),
                 shape = RoundedCornerShape(10.dp)) {
-                Text("Yes, Cancel Order", fontWeight = FontWeight.Bold)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_yes_cancel_order_3f4f671), fontWeight = FontWeight.Bold)
             }
             Button(dismiss, Modifier.fillMaxWidth().height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = T.soft,
                     contentColor = T.ink),
-                shape = RoundedCornerShape(10.dp)) { Text("Don't Cancel (Keep Order)") }
+                shape = RoundedCornerShape(10.dp)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_don_t_cancel_keep_order_2097c23)) }
         }
     }
 }

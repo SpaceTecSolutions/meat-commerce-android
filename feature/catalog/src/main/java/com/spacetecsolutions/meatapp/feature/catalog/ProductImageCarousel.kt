@@ -65,7 +65,7 @@ internal fun ProductImageCarousel(images: List<String>, productName: String, onB
                 .padding(start = 16.dp, top = 10.dp), shape = CircleShape,
                 color = T.surface.copy(alpha = .9f), shadowElevation = 2.dp) {
                 IconButton(onClick = onBack, Modifier.size(40.dp)) {
-                    Icon(AppIcons.Back, "Back", tint = T.ink)
+                    Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_back_b52b36b), tint = T.ink)
                 }
             }
         }

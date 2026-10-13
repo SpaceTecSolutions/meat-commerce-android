@@ -50,20 +50,20 @@ fun CustomerFaqRoute(back: () -> Unit, contactSupport: () -> Unit,
     val state by viewModel.state.collectAsStateWithLifecycle()
     val filtered = remember(state.items, state.query) { state.items.filter {
         state.query.isBlank() || it.question.contains(state.query, true) || it.answer.contains(state.query, true) } }
-    Scaffold(topBar = { AppBackTopBar("Frequently Asked Questions", back) }) { padding ->
+    Scaffold(topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_frequently_asked_questions_d790b40), back) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).widthIn(max = 600.dp)) {
-            Text("How can we help?", style = MaterialTheme.typography.headlineSmall,
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_how_can_we_help_d996154), style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 16.dp, top = 20.dp))
-            Text("Find quick answers about ordering, payments and delivery.",
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_find_quick_answers_about_ordering_745cd67),
                 color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp))
             /*OutlinedTextField(state.query, viewModel::search, Modifier.fillMaxWidth().padding(16.dp), singleLine = true,
-                leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text("Search questions") },
+                leadingIcon = { Icon(AppIcons.Search, null) }, placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_search_questions_f3934f4)) },
                 shape = MaterialTheme.shapes.extraLarge)*/
             when {
                 state.loading -> ContentStateView(ContentState.Loading)
                 state.error != null -> ContentStateView(ContentState.Error(description = state.error), onAction = viewModel::refresh)
-                filtered.isEmpty() -> ContentStateView(ContentState.Empty(title = "No answers found",
-                    description = "Try another search or contact support."), onAction = contactSupport)
+                filtered.isEmpty() -> ContentStateView(ContentState.Empty(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_no_answers_found_7618d9a),
+                    description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_try_another_search_or_contact_5f9deaf)), onAction = contactSupport)
                 else -> LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     items(filtered, key = FaqEntry::id) { faq ->
@@ -82,7 +82,7 @@ fun CustomerFaqRoute(back: () -> Unit, contactSupport: () -> Unit,
                         }
                     }
                     item { OutlinedButton(contactSupport, Modifier.fillMaxWidth()) {
-                        Icon(AppIcons.Help, null); Spacer(Modifier.width(8.dp)); Text("Contact Support")
+                        Icon(AppIcons.Help, null); Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_contact_support_fe1a292))
                     } }
                 }
             }

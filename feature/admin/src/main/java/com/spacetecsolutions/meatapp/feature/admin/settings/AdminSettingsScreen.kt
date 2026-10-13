@@ -95,17 +95,20 @@ fun AdminSettingsScreen(
 ) {
     Column(Modifier.fillMaxSize().statusBarsPadding().background(AdminAccountColors.canvas)) {
         AdminAccountTopBar("Profile & Account", onDashboard, onHelpSupport)
+        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            val contentMaxWidth =
+                if (maxWidth >= AppDimensions.expandedContentBreakpoint) 600.dp else 440.dp
         Column(
-            Modifier.fillMaxSize().wrapContentWidth(Alignment.CenterHorizontally)
-                .widthIn(max = 440.dp).verticalScroll(rememberScrollState())
+            Modifier.fillMaxSize().widthIn(max = contentMaxWidth)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             AdminIdentityCard(user, onProfileInformation)
-            AdminAccountGroup("Account") {
+            /*AdminAccountGroup("Account") {
                 AdminAccountRow(AppIcons.Profile, "Profile Information", "Name, phone & login credentials", onProfileInformation)
                 AdminAccountRow(AppIcons.Password, "Change Password", "Keep your account secure", onChangePassword, false)
-            }
+            }*/
             AdminAccountGroup("Store Management") {
                 AdminAccountRow(AppIcons.Categories, "Categories", "Manage product categories", onCategories)
                 AdminAccountRow(AppIcons.Offer, "Home Banners", "Manage storefront promotions", onBanners,
@@ -137,14 +140,15 @@ fun AdminSettingsScreen(
             }
             Spacer(Modifier.height(8.dp))
         }
+        }
     }
 }
 
 @Composable
 private fun LogoutDialog(role: String, dismiss: () -> Unit, confirm: () -> Unit) = AlertDialog(
     onDismissRequest = dismiss,
-    title = { Text("Logout?") },
-    text = { Text("You will need to sign in again to access the $role application.") },
-    confirmButton = { Button(confirm) { Text("Logout") } },
-    dismissButton = { TextButton(dismiss) { Text("Cancel") } },
+    title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_logout_d9be757)) },
+    text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_you_will_need_to_sign_ec125cb, role)) },
+    confirmButton = { Button(confirm) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_logout_e43d612)) } },
+    dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
 )

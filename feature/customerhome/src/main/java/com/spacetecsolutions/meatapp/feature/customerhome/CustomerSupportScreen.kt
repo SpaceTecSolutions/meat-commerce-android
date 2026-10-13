@@ -42,9 +42,9 @@ fun CustomerSupportRoute(back: () -> Unit, call: (String) -> Unit,
                         Icon(AppIcons.Contact, null, tint = AccountStyle.red)
                     }
                     Column(Modifier.padding(start = 14.dp)) {
-                        Text("Need some help?", fontSize = 21.sp, fontWeight = FontWeight.Bold,
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_need_some_help_f77b2b8), fontSize = 21.sp, fontWeight = FontWeight.Bold,
                             color = AccountStyle.ink)
-                        Text("We're here to assist you with your orders, delivery status, or account queries.",
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_we_re_here_to_assist_216fac5),
                             fontSize = 14.sp, lineHeight = 21.sp, color = AccountStyle.muted)
                     }
                 }
@@ -57,13 +57,13 @@ fun CustomerSupportRoute(back: () -> Unit, call: (String) -> Unit,
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 AccountSectionLabel("Get in Touch")
-                Text("Direct Support", fontSize = 12.sp, color = AccountStyle.muted)
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_direct_support_3750b67), fontSize = 12.sp, color = AccountStyle.muted)
             }
             when {
                 state.loading -> CircularProgressIndicator(color = AccountStyle.red)
                 state.error != null -> AccountCard(Modifier.fillMaxWidth()) {
                     Text(state.error.orEmpty())
-                    TextButton(onClick = viewModel::refresh) { Text("Retry") }
+                    TextButton(onClick = viewModel::refresh) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_retry_9f5cd8a)) }
                 }
                 else -> {
                     val support = state.support
@@ -80,18 +80,18 @@ fun CustomerSupportRoute(back: () -> Unit, call: (String) -> Unit,
                     support?.email?.let { SupportContact(AppIcons.Email, "Send Email", it,
                         it, AccountStyle.red, Color(0xFFFFEEEE)) { email(it) } }
                     if (support?.callNumber == null && support?.whatsappNumber == null && support?.email == null)
-                        Text("Support contact details are not configured yet.", color = AccountStyle.muted)
+                        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_support_contact_details_are_not_73c1d1a), color = AccountStyle.muted)
                 }
             }
             Spacer(Modifier.height(28.dp))
-            onStaffSignIn?.let { action -> TextButton(onClick = action) { Text("Staff sign in") } }
+            onStaffSignIn?.let { action -> TextButton(onClick = action) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_staff_sign_in_e04dc83)) } }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Surface(shape = CircleShape, color = Color.White,
                     border = BorderStroke(1.dp, AccountStyle.line)) {
-                    Text("CUSTOMER CARE", Modifier.padding(horizontal = 18.dp, vertical = 9.dp),
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_customer_care_a44b64c), Modifier.padding(horizontal = 18.dp, vertical = 9.dp),
                         fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AccountStyle.ink)
                 }
-                Text("Direct assistance with your orders and deliveries.",
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_direct_assistance_with_your_orders_6eb38ef),
                     Modifier.padding(top = 11.dp), fontSize = 12.sp, color = AccountStyle.muted)
             }
             }

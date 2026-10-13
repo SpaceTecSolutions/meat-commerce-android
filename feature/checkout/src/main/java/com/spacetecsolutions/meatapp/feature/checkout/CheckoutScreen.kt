@@ -91,14 +91,14 @@ private fun CheckoutScreen(
         containerColor = CustomerCommerceTokens.canvas,
         topBar = {
             if (ready) CenterAlignedTopAppBar(
-                title = { Text(if (state.reviewing) "Checkout Payment" else "Checkout Delivery") },
+                title = { Text(if (state.reviewing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_checkout_payment_5935d0b) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_checkout_delivery_de53aac)) },
                 navigationIcon = { IconButton(onClick = {
                     when {
                         state.reviewing -> actions.edit()
                         state.deliveryStep -> actions.backToAddress()
                         else -> onBack()
                     }
-                }) { Icon(AppIcons.Back, "Back") } },
+                }) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.checkout.R.string.ui_back_b52b36b)) } },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = CustomerCommerceTokens.surface),
             )
