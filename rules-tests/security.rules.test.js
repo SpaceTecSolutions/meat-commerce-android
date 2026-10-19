@@ -9,7 +9,16 @@ let env;
 const projectId = 'meatbush-rules-test';
 const user = (role, shopId = 'shop-a', active = true) => ({ role, shopId, active, displayName: role });
 const db = uid => env.authenticatedContext(uid).firestore();
-const store = uid => env.authenticatedContext(uid).storage('gs://meatbush-rules-test.appspot.com');
+const storageClaims = {
+  super: { role: 'SUPER_ADMIN', active: true, shopId: 'shop-a' },
+  'admin-a': { role: 'ADMIN', active: true, shopId: 'shop-a' },
+  'admin-b': { role: 'ADMIN', active: true, shopId: 'shop-b' },
+  'staff-manager': { role: 'STAFF', active: true, shopId: 'shop-a', permissions: ['MANAGE_PRODUCTS'] },
+  'staff-other': { role: 'STAFF', active: true, shopId: 'shop-a', permissions: ['VIEW_ORDERS'] },
+  'admin-inactive': { role: 'ADMIN', active: false, shopId: 'shop-a' },
+};
+const store = uid => env.authenticatedContext(uid, storageClaims[uid] ?? {})
+  .storage('gs://meatbush-rules-test.appspot.com');
 
 before(async () => {
   env = await initializeTestEnvironment({
@@ -105,6 +114,9 @@ test('Storage upload paths enforce shop membership and image type', async () => 
   const jpeg = new Uint8Array([0xff, 0xd8, 0xff]);
   await assertSucceeds(uploadBytes(ref(store('admin-a'), 'shops/shop-a/products/uploads/one.jpg'), jpeg, { contentType: 'image/jpeg' }));
   await assertFails(uploadBytes(ref(store('admin-b'), 'shops/shop-a/products/uploads/two.jpg'), jpeg, { contentType: 'image/jpeg' }));
+  await assertSucceeds(uploadBytes(ref(store('staff-manager'), 'shops/shop-a/categories/uploads/staff.jpg'), jpeg, { contentType: 'image/jpeg' }));
+  await assertFails(uploadBytes(ref(store('staff-other'), 'shops/shop-a/categories/uploads/no-permission.jpg'), jpeg, { contentType: 'image/jpeg' }));
+  await assertFails(uploadBytes(ref(store('admin-inactive'), 'shops/shop-a/categories/uploads/inactive.jpg'), jpeg, { contentType: 'image/jpeg' }));
   await assertFails(uploadBytes(ref(store('admin-a'), 'shops/shop-a/products/uploads/file.txt'), jpeg, { contentType: 'text/plain' }));
 });
 

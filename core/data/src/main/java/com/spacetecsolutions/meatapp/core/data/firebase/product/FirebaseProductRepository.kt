@@ -3,8 +3,9 @@ package com.spacetecsolutions.meatapp.core.data.firebase.product
 import android.util.Log
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
+import com.spacetecsolutions.meatapp.core.data.firebase.image.FirebaseImageUploader
+import com.spacetecsolutions.meatapp.core.data.firebase.image.ImageProcessingException
+import com.spacetecsolutions.meatapp.core.data.firebase.image.ImageUploadKind
 import com.spacetecsolutions.meatapp.core.common.result.AppError
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
 import com.spacetecsolutions.meatapp.core.domain.repository.ProductRepository
@@ -17,8 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 internal class FirebaseProductRepository @Inject constructor(
     private val functions: FirebaseFunctions,
-    private val storage: FirebaseStorage,
-    private val compressor: ProductImageCompressor,
+    private val imageUploader: FirebaseImageUploader,
     private val cartBadgeStore: CartBadgeStore,
     private val customerCart: CustomerCartRepository,
     private val auth: FirebaseAuth,
@@ -91,10 +91,7 @@ internal class FirebaseProductRepository @Inject constructor(
         val session = rawCall("adminBeginProductImageUpload", emptyMap())
         val path = session["storagePath"] as? String ?: error("Missing storage path")
         val token = session["uploadToken"] as? String ?: error("Missing upload token")
-        val bytes = compressor.compress(localUri)
-        require(bytes.size <= MAX_UPLOAD_BYTES) { "Compressed image is too large" }
-        val metadata = StorageMetadata.Builder().setContentType("image/jpeg").build()
-        storage.reference.child(path).putBytes(bytes, metadata).await()
+        imageUploader.upload(localUri, path, ImageUploadKind.PRODUCT)
         AppResult.Success(ProductImageUpload(token))
     } catch (error: Exception) {
         AppResult.Failure(error.toAppError())
@@ -134,7 +131,6 @@ internal class FirebaseProductRepository @Inject constructor(
         functions.getHttpsCallable(name).call(payload).await().data as? Map<*, *>
             ?: error("Invalid product response")
 
-    private companion object { const val MAX_UPLOAD_BYTES = 5 * 1024 * 1024 }
 }
 
 private fun logCartFailure(error: Exception) {
@@ -206,6 +202,7 @@ private fun Map<*, *>.int(key: String) = (this[key] as? Number)?.toInt()
     ?: error("Missing product field: $key")
 
 private fun Throwable.toAppError(): AppError {
+    if (this is ImageProcessingException) return AppError.Validation(message = userMessage)
     val exception = this as? FirebaseFunctionsException
     val reason = (exception?.details as? Map<*, *>)?.get("reason") as? String
     return when {

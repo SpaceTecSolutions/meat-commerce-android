@@ -30,6 +30,7 @@ internal fun ProductFormScreen(
     subcategories: List<ProductSubcategory>,
     submitting: Boolean,
     onManageCategories: () -> Unit,
+    canManageCategories: Boolean,
     actions: ProductFormActions,
 ) {
     val context = LocalContext.current
@@ -85,7 +86,8 @@ internal fun ProductFormScreen(
                 ProductImageField(form, submitting, imageError, actions.onRemoveImage) { picker.launch("image/*") }
                 ProductField("Product Name", form.name, actions.onName, form.nameError, submitting)
                 AdaptiveFieldPair(
-                    first = { CategorySelector(form, categories, submitting, actions.onCategory, onManageCategories) },
+                    first = { CategorySelector(form, categories, submitting, actions.onCategory, onManageCategories,
+                        canManageCategories) },
                     second = { UnitSelector(form.unit, submitting, actions.onUnit) },
                 )
                 if (subcategories.isNotEmpty()) SubcategorySelector(
@@ -189,14 +191,14 @@ private fun ProductField(
 @Composable
 private fun CategorySelector(
     form: ProductFormState, categories: List<ProductCategory>, submitting: Boolean,
-    select: (String) -> Unit, manage: () -> Unit,
+    select: (String) -> Unit, manage: () -> Unit, canManageCategories: Boolean,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val available = categories.filter { it.active || it.id == form.categoryId }
     if (available.isEmpty()) Column {
         OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_a3c686e)) },
             placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_available_38ae64e)) })
-        TextButton(onClick = manage) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_manage_categories_9a34917)) }
+        if (canManageCategories) TextButton(onClick = manage) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_manage_categories_9a34917)) }
     } else ExposedDropdownMenuBox(expanded, { expanded = it && !submitting }) {
         OutlinedTextField(
             available.firstOrNull { it.id == form.categoryId }?.name.orEmpty(), {},
@@ -209,6 +211,11 @@ private fun CategorySelector(
             available.forEach { category -> DropdownMenuItem({ Text(category.name) }, {
                 select(category.id); expanded = false
             }) }
+        }
+    }
+    if (available.isNotEmpty() && canManageCategories) {
+        TextButton(onClick = manage, enabled = !submitting) {
+            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_manage_categories_9a34917))
         }
     }
 }

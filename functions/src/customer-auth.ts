@@ -54,9 +54,13 @@ export const authSignInCustomerWithPhone = onCall(options, async (request) => {
     await releasePhoneProof(proof, uid);
     await firestore.collection("users").doc(uid).update({lastLoginAt: FieldValue.serverTimestamp()});
     const shopId = string(profile.get("shopId"));
+    const permissions = Array.isArray(profile.get("permissions")) ?
+      profile.get("permissions") as string[] : [];
     return {customToken: await getAuth().createCustomToken(uid, {
       role,
+      active: true,
       ...(shopId ? {shopId} : role === "CUSTOMER" ? {shopId: "default"} : {}),
+      ...(role === "STAFF" ? {permissions} : {}),
     })};
   }
   const existingProofProfile = await firestore.collection("users").doc(proof.uid).get();
@@ -82,12 +86,12 @@ export const authSignInCustomerWithPhone = onCall(options, async (request) => {
       } else if (string(current.get("uid")) !== proof.uid) duplicateAccount();
       transaction.update(existingProofProfile.ref, {lastLoginAt: FieldValue.serverTimestamp()});
     });
-    await getAuth().setCustomUserClaims(proof.uid, {role, ...(shopId ? {shopId} : {}), permissions});
+    await getAuth().setCustomUserClaims(proof.uid, {role, active: true, ...(shopId ? {shopId} : {}), permissions});
     return {customToken: await getAuth().createCustomToken(proof.uid, {
-      role, ...(shopId ? {shopId} : {}), permissions,
+      role, active: true, ...(shopId ? {shopId} : {}), permissions,
     })};
   }
-  await getAuth().setCustomUserClaims(proof.uid, {role: "CUSTOMER", shopId: "default"});
+  await getAuth().setCustomUserClaims(proof.uid, {role: "CUSTOMER", active: true, shopId: "default"});
   try {
     await firestore.runTransaction(async (transaction) => {
       const current = await transaction.get(mappingRef);
@@ -104,7 +108,7 @@ export const authSignInCustomerWithPhone = onCall(options, async (request) => {
     if (error instanceof HttpsError) throw error;
     throw new HttpsError("internal", "Customer sign-in failed");
   }
-  return {customToken: await getAuth().createCustomToken(proof.uid, {role: "CUSTOMER", shopId: "default"})};
+  return {customToken: await getAuth().createCustomToken(proof.uid, {role: "CUSTOMER", active: true, shopId: "default"})};
 });
 
 export const authRegisterCustomer = onCall(options, async (request) => {
@@ -127,7 +131,7 @@ export const authRegisterCustomer = onCall(options, async (request) => {
     const user = await getAuth().createUser({email: internalEmail, password, phoneNumber: mobile,
       displayName, disabled: false});
     createdUid = user.uid;
-    await getAuth().setCustomUserClaims(user.uid, {role: "CUSTOMER", shopId: "default"});
+    await getAuth().setCustomUserClaims(user.uid, {role: "CUSTOMER", active: true, shopId: "default"});
     await firestore.runTransaction(async (transaction) => {
       const [freshToken, freshMapping] = await Promise.all([
         transaction.get(tokenReference), transaction.get(mappingReference),

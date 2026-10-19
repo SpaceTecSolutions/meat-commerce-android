@@ -1,0 +1,8 @@
+<resources>
+    <string name="image_processing_unsupported">This image format is not supported or the image cannot be opened. Choose another image.</string>
+    <string name="image_processing_read_failed">The selected image cannot be accessed. Choose it again and retry.</string>
+    <string name="image_processing_encode_failed">The image could not be prepared for upload. Please try another image.</string>
+    <string name="image_processing_too_large">This image is still too large after compression. Choose a smaller image.</string>
+    <string name="image_processing_no_cache">There is not enough storage space to prepare this image. Free some space and retry.</string>
+    <string name="image_processing_low_memory">This image is too large for this device to process. Choose a smaller image.</string>
+</resources>

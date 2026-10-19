@@ -3,10 +3,10 @@ import {getFirestore} from "./database.js";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {
   beginCatalogUpload, catalogOptions, categoryResponse, deleteCatalogImageUrls, finalizeUpload, integer, normalize,
-  requireAdmin, requireAdminOrStaffAny, publicCustomerShop, shop, text,
+  requireAdmin, requireAdminOrStaff, requireAdminOrStaffAny, publicCustomerShop, shop, text,
 } from "./catalog-common.js";
 
-export const adminBeginCategoryImageUpload = beginCatalogUpload("categories");
+export const adminBeginCategoryImageUpload = beginCatalogUpload("categories", "MANAGE_PRODUCTS");
 
 export const adminGetCategories = onCall(catalogOptions, async (request) => {
   const context = await requireAdminOrStaffAny(request, ["MANAGE_PRODUCTS", "MANAGE_STOCK"]);
@@ -23,7 +23,7 @@ export const customerGetActiveCategories = onCall(catalogOptions, async (request
 });
 
 export const adminCreateCategory = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request);
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS");
   const input = categoryInput(request.data);
   const reference = shop(context).collection("categories").doc();
   const image = await finalizeUpload(context, input.imageUploadToken, "categories", reference.id);
@@ -43,7 +43,7 @@ export const adminCreateCategory = onCall(catalogOptions, async (request) => {
 });
 
 export const adminUpdateCategory = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request);
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS");
   const categoryId = text(request.data?.categoryId);
   const expectedRevision = integer(request.data?.expectedRevision, -1);
   if (!categoryId || expectedRevision < 0) throw new HttpsError("invalid-argument", "Category revision required");
@@ -72,13 +72,13 @@ export const adminUpdateCategory = onCall(catalogOptions, async (request) => {
 });
 
 export const adminSetCategoryActive = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request);
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS");
   return mutateCategory(context, request.data, (current) => ({active: request.data?.active === true,
     revision: integer(current.revision) + 1}), "CATEGORY_STATUS_CHANGED");
 });
 
 export const adminDeleteCategory = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request);
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS");
   const categoryId = text(request.data?.categoryId);
   const expectedRevision = integer(request.data?.expectedRevision, -1);
   const reference = shop(context).collection("categories").doc(categoryId);
@@ -95,7 +95,7 @@ export const adminDeleteCategory = onCall(catalogOptions, async (request) => {
 });
 
 export const adminUpdateCategoryOrder = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request);
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS");
   const ids = Array.isArray(request.data?.categoryIds) ? request.data.categoryIds.filter((id: unknown) => typeof id === "string") : [];
   const snapshot = await shop(context).collection("categories").get();
   if (ids.length !== snapshot.size || new Set(ids).size !== ids.length || ids.some((id: string) => !snapshot.docs.some((doc) => doc.id === id))) {

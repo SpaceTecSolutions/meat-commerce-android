@@ -59,7 +59,9 @@ export const adminCreateStaff = onCall(options, async (request) => {
       transaction.create(firestore.collection("users").doc(auth.uid), profile);
       transaction.create(lookup, {uid: auth.uid, active: value.active, createdAt: now, updatedAt: now});
     });
-    await getAuth().setCustomUserClaims(auth.uid, {role: "STAFF", shopId: context.shopId, permissions: value.permissions});
+    await getAuth().setCustomUserClaims(auth.uid, {
+      role: "STAFF", active: value.active, shopId: context.shopId, permissions: value.permissions,
+    });
   } catch (error) { await getAuth().deleteUser(auth.uid).catch(() => undefined); throw error; }
   return {staff: response(auth.uid, profile)};
 });
@@ -88,6 +90,8 @@ export const adminUpdateStaff = onCall(options, async (request) => {
   } catch (error) {
     await getAuth().updateUser(userId, {phoneNumber: oldMobile}).catch(() => undefined); throw error;
   }
-  await getAuth().setCustomUserClaims(userId, {role: "STAFF", shopId: context.shopId, permissions: value.permissions});
+  await getAuth().setCustomUserClaims(userId, {
+    role: "STAFF", active: value.active, shopId: context.shopId, permissions: value.permissions,
+  });
   return {staff: response(userId, {...previous.data(), ...value})};
 });

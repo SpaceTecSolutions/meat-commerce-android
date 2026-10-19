@@ -1,6 +1,7 @@
 package com.spacetecsolutions.meatapp.core.navigation
 
 import com.spacetecsolutions.meatapp.core.model.UserRole
+import com.spacetecsolutions.meatapp.core.model.StaffPermission
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -74,6 +75,27 @@ class RoleNavigationRegistryTest {
 
         assertTrue(result is NavigationDecision.Allowed)
         assertEquals("Home Banners", (result as NavigationDecision.Allowed).destination.label)
+    }
+
+    @Test
+    fun `only product managers can open staff category management`() {
+        assertTrue(RoleNavigationRegistry.validateRoute(
+            UserRole.STAFF, StaffRoutes.CATEGORIES, setOf(StaffPermission.MANAGE_PRODUCTS),
+        ) is NavigationDecision.Allowed)
+        assertTrue(RoleNavigationRegistry.validateRoute(
+            UserRole.STAFF, StaffRoutes.CATEGORIES, setOf(StaffPermission.MANAGE_STOCK),
+        ) is NavigationDecision.Denied)
+    }
+
+    @Test
+    fun `product manager retains catalog access alongside read only orders permission`() {
+        val permissions = setOf(StaffPermission.VIEW_ORDERS, StaffPermission.MANAGE_PRODUCTS)
+        assertTrue(RoleNavigationRegistry.validateRoute(
+            UserRole.STAFF, StaffRoutes.PRODUCTS, permissions,
+        ) is NavigationDecision.Allowed)
+        assertTrue(RoleNavigationRegistry.validateRoute(
+            UserRole.STAFF, StaffRoutes.CATEGORIES, permissions,
+        ) is NavigationDecision.Allowed)
     }
 
     @Test
