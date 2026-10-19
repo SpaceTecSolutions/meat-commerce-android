@@ -2,25 +2,32 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     function signedIn() { return request.auth != null; }
-    function profile() { return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data; }
     function activeAdmin(shopId) {
-      return signedIn() && profile().active == true
-        && profile().role == 'ADMIN' && profile().shopId == shopId;
+      return signedIn() && request.auth.token.active == true
+        && request.auth.token.role == 'ADMIN' && request.auth.token.shopId == shopId;
+    }
+    function activeStaff(shopId, permission) {
+      return signedIn() && request.auth.token.active == true
+        && request.auth.token.role == 'STAFF' && request.auth.token.shopId == shopId
+        && request.auth.token.permissions is list && request.auth.token.permissions.hasAny([permission]);
+    }
+    function canManageCatalog(shopId) {
+      return activeAdmin(shopId) || activeStaff(shopId, 'MANAGE_PRODUCTS');
     }
     function imageUnder(maxBytes) {
       return request.resource.size > 0 && request.resource.size <= maxBytes
         && request.resource.contentType.matches('image/(jpeg|png|webp)');
     }
     match /shops/{shopId}/categories/uploads/{fileName} {
-      allow create: if activeAdmin(shopId) && imageUnder(5 * 1024 * 1024);
+      allow create: if canManageCatalog(shopId) && imageUnder(5 * 1024 * 1024);
       allow read, update, delete: if false;
     }
     match /shops/{shopId}/subcategories/uploads/{fileName} {
-      allow create: if activeAdmin(shopId) && imageUnder(5 * 1024 * 1024);
+      allow create: if canManageCatalog(shopId) && imageUnder(5 * 1024 * 1024);
       allow read, update, delete: if false;
     }
     match /shops/{shopId}/products/uploads/{fileName} {
-      allow create: if activeAdmin(shopId) && request.resource.size > 0
+      allow create: if canManageCatalog(shopId) && request.resource.size > 0
         && request.resource.size <= 5 * 1024 * 1024
         && request.resource.contentType == 'image/jpeg';
       allow read, update, delete: if false;

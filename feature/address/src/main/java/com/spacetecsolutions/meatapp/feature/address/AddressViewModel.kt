@@ -177,7 +177,7 @@ class AddressViewModel @Inject constructor(
                     deleteConfirmation = null, message = AddressMessage(success, true))
             }
             is AppResult.Failure -> mutableState.update {
-                it.copy(submitting = false, message = AddressMessage(result.error.displayMessage(), false))
+                it.copy(submitting = false, message = AddressMessage(result.error.displayMessage(context), false))
             }
         }
     }

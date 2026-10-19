@@ -1,14 +1,21 @@
 package com.spacetecsolutions.meatapp.feature.orders
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,11 +49,20 @@ internal fun AdminOrderProgress(order: CodOrder) {
                     !reached -> T.muted
                     order.orderStatus == OrderStatus.DELIVERED -> T.green
                     index == current && current == 2 -> T.amber
-                    else -> T.red
+                    else -> T.green
                 }
+                val pulse = rememberInfiniteTransition(label = "checkout arrow pulse")
+                val arrowScale by pulse.animateFloat(
+                    initialValue = 1f, targetValue = 1.16f,
+                    animationSpec = infiniteRepeatable(tween(720), RepeatMode.Reverse),
+                    label = "checkout arrow scale",
+                )
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    Surface(shape = RoundedCornerShape(50),
+                    Surface(
+                        modifier = Modifier
+                            .scale(if (index == current && current == 2) arrowScale else 1f),
+                        shape = RoundedCornerShape(50),
                         color = if (reached) color else T.canvas,
                         border = BorderStroke(2.dp, if (reached) color else T.border)) {
                         Box(Modifier.size(22.dp), contentAlignment = Alignment.Center) {

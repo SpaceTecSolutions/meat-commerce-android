@@ -3,10 +3,10 @@ import {getFirestore} from "./database.js";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {
   beginCatalogUpload, catalogOptions, deleteCatalogImageUrls, finalizeUpload, integer, normalize,
-  publicCustomerShop, requireAdmin, shop, text,
+  publicCustomerShop, requireAdmin, requireAdminOrStaff, shop, text,
 } from "./catalog-common.js";
 
-export const adminBeginSubcategoryImageUpload = beginCatalogUpload("subcategories");
+export const adminBeginSubcategoryImageUpload = beginCatalogUpload("subcategories", "MANAGE_PRODUCTS");
 
 async function enabled() {
   return (await getFirestore().collection("appConfig").doc("features").get())
@@ -36,7 +36,7 @@ export const customerGetActiveSubcategories = onCall(catalogOptions, async (requ
     .map((doc) => response(doc.id, doc.data())).sort((a, b) => a.sortOrder - b.sortOrder)};
 });
 export const adminGetSubcategories = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request); if (!await enabled()) throw new HttpsError("failed-precondition", "Subcategories disabled");
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS"); if (!await enabled()) throw new HttpsError("failed-precondition", "Subcategories disabled");
   const categoryId = text(request.data?.categoryId); if (!categoryId) throw new HttpsError("invalid-argument", "Category required");
   const [snap, products] = await Promise.all([
     shop(context).collection("subcategories").where("categoryId", "==", categoryId).limit(100).get(),
@@ -52,7 +52,7 @@ export const adminGetSubcategories = onCall(catalogOptions, async (request) => {
     productCount: counts.get(doc.id) ?? 0}))};
 });
 export const adminSaveSubcategory = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request); if (!await enabled()) throw new HttpsError("failed-precondition", "Subcategories disabled");
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS"); if (!await enabled()) throw new HttpsError("failed-precondition", "Subcategories disabled");
   const value = input(request.data); const id = text(request.data?.subcategoryId);
   const ref = id ? shop(context).collection("subcategories").doc(id) : shop(context).collection("subcategories").doc();
   const image = await finalizeUpload(context, value.imageUploadToken, "subcategories", ref.id);
@@ -76,7 +76,7 @@ export const adminSaveSubcategory = onCall(catalogOptions, async (request) => {
   return {subcategory: response(ref.id, {...(previous.data() ?? {}), ...next})};
 });
 export const adminDeleteSubcategory = onCall(catalogOptions, async (request) => {
-  const context = await requireAdmin(request); const id = text(request.data?.subcategoryId);
+  const context = await requireAdminOrStaff(request, "MANAGE_PRODUCTS"); const id = text(request.data?.subcategoryId);
   if (!id) throw new HttpsError("invalid-argument", "Subcategory required");
   const ref = shop(context).collection("subcategories").doc(id);
   const current = await ref.get();

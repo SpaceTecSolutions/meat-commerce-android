@@ -158,11 +158,9 @@ private suspend fun saveCrop(
     val left = (-originX / scale).toInt().coerceIn(0, bitmap.width - cropSize)
     val top = (-originY / scale).toInt().coerceIn(0, bitmap.height - cropSize)
     val cropped = Bitmap.createBitmap(bitmap, left, top, cropSize, cropSize)
-    val output = if (cropSize == 1200) cropped else Bitmap.createScaledBitmap(cropped, 1200, 1200, true)
     val directory = File(context.cacheDir, "cropped_images").apply { mkdirs() }
-    val file = File(directory, "${UUID.randomUUID()}.jpg")
-    file.outputStream().buffered().use { check(output.compress(Bitmap.CompressFormat.JPEG, 88, it)) }
-    if (output !== cropped) output.recycle()
+    val file = File(directory, "${UUID.randomUUID()}.png")
+    file.outputStream().buffered().use { check(cropped.compress(Bitmap.CompressFormat.PNG, 100, it)) }
     cropped.recycle()
     Uri.fromFile(file).toString()
 }

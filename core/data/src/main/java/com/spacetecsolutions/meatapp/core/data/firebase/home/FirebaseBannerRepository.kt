@@ -2,11 +2,11 @@ package com.spacetecsolutions.meatapp.core.data.firebase.home
 
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
 import com.spacetecsolutions.meatapp.core.common.result.AppError
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
-import com.spacetecsolutions.meatapp.core.data.firebase.product.ProductImageCompressor
+import com.spacetecsolutions.meatapp.core.data.firebase.image.FirebaseImageUploader
+import com.spacetecsolutions.meatapp.core.data.firebase.image.ImageProcessingException
+import com.spacetecsolutions.meatapp.core.data.firebase.image.ImageUploadKind
 import com.spacetecsolutions.meatapp.core.domain.repository.BannerRepository
 import com.spacetecsolutions.meatapp.core.model.*
 import kotlinx.coroutines.tasks.await
@@ -14,8 +14,7 @@ import javax.inject.Inject
 
 internal class FirebaseBannerRepository @Inject constructor(
     private val functions: FirebaseFunctions,
-    private val storage: FirebaseStorage,
-    private val compressor: ProductImageCompressor,
+    private val imageUploader: FirebaseImageUploader,
 ) : BannerRepository {
     override suspend fun getBanners() = runResult {
         call("adminGetBanners").bannerList()
@@ -25,11 +24,7 @@ internal class FirebaseBannerRepository @Inject constructor(
         val session = call("adminBeginBannerImageUpload")
         val path = session["storagePath"] as? String ?: error("Missing storage path")
         val token = session["uploadToken"] as? String ?: error("Missing upload token")
-        val bytes = compressor.compress(localUri)
-        require(bytes.size <= 5 * 1024 * 1024) { "Banner image is too large" }
-        storage.reference.child(path).putBytes(
-            bytes, StorageMetadata.Builder().setContentType("image/jpeg").build(),
-        ).await()
+        imageUploader.upload(localUri, path, ImageUploadKind.BANNER)
         BannerImageUpload(token)
     }
 
@@ -100,6 +95,7 @@ private fun Map<*, *>.bannerList() = (this["banners"] as? List<*>).orEmpty()
     .mapNotNull { (it as? Map<*, *>)?.toBanner() }
 
 private fun Throwable.bannerError(): AppError {
+    if (this is ImageProcessingException) return AppError.Validation(message = userMessage)
     val exception = this as? FirebaseFunctionsException
     return when (exception?.code) {
         FirebaseFunctionsException.Code.UNAUTHENTICATED -> AppError.Unauthorized

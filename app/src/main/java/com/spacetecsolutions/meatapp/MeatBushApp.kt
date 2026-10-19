@@ -47,6 +47,7 @@ import com.spacetecsolutions.meatapp.feature.superadmin.reports.SuperAdminReport
 import com.spacetecsolutions.meatapp.feature.superadmin.audit.AuditLogRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.audit.SuperAdminMoreScreen
 import com.spacetecsolutions.meatapp.feature.catalog.CustomerCategoriesRoute
+import com.spacetecsolutions.meatapp.feature.catalog.AdminCategoriesRoute
 import com.spacetecsolutions.meatapp.feature.customerhome.CustomerHomeRoute
 import com.spacetecsolutions.meatapp.feature.customerhome.CustomerProfileRoute
 import com.spacetecsolutions.meatapp.feature.customerhome.CustomerProfileInformationRoute
@@ -201,9 +202,17 @@ fun MeatBushApp(
                                 StaffRoutes.PRODUCTS -> if (uiState.authenticatedUser?.permissions?.any {
                                         it == StaffPermission.MANAGE_PRODUCTS || it == StaffPermission.MANAGE_STOCK
                                     } == true)
-                                    ProductManagementRoute(onCategories = {}, onMessage = { message -> snackbarManager.show(
+                                    ProductManagementRoute(onCategories = { navigate(StaffRoutes.CATEGORIES) }, onMessage = { message -> snackbarManager.show(
                                         AppSnackbarMessage(message.text, if (message.success) AppSnackbarType.SUCCESS else AppSnackbarType.ERROR)) },
                                         operatorPermissions = uiState.authenticatedUser?.permissions)
+                                else StaffAccessDenied()
+                                StaffRoutes.CATEGORIES -> if (uiState.authenticatedUser?.permissions?.contains(StaffPermission.MANAGE_PRODUCTS) == true)
+                                    AdminCategoriesRoute(
+                                        onBack = { navigate(StaffRoutes.PRODUCTS) },
+                                        onMessage = { snackbarManager.show(AppSnackbarMessage(
+                                            it.text, if (it.success) AppSnackbarType.SUCCESS else AppSnackbarType.ERROR)) },
+                                        subcategoriesAllowed = uiState.featureConfig?.subcategoriesAllowed == true,
+                                    )
                                 else StaffAccessDenied()
                                 StaffRoutes.MORE -> uiState.authenticatedUser?.let {
                                     StaffMoreScreen(it, navigate, viewModel::signOut)

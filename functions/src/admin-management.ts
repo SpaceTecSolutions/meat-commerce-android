@@ -43,7 +43,7 @@ export const superAdminCreateAdmin = onCall(
     try {
       authUser = await getAuth().createUser({email: internalEmail, password, displayName, disabled: false});
       const userId = authUser.uid;
-      await getAuth().setCustomUserClaims(userId, {role: "ADMIN"});
+      await getAuth().setCustomUserClaims(userId, {role: "ADMIN", active: true, shopId: "default"});
       const now = FieldValue.serverTimestamp();
       await firestore.runTransaction(async (transaction) => {
         if ((await transaction.get(mappingReference)).exists) throw duplicateMobile();
@@ -93,6 +93,9 @@ export const superAdminUpdateAdmin = onCall(
       updatedAt: FieldValue.serverTimestamp(), createdAt: FieldValue.serverTimestamp(),
     }, {merge: true});
     await batch.commit();
+    await getAuth().setCustomUserClaims(userId, {
+      role: "ADMIN", active: current.active === true, shopId: current.shopId ?? "default",
+    });
     return {admin: adminResponse(userId, {...current, displayName, mobileNumber: mobile, updatedAt: Timestamp.now()})};
   },
 );
@@ -117,6 +120,9 @@ export const superAdminSetAdminActive = onCall(
     batch.set(firestore.collection("authCredentials").doc(lookupId), {active, updatedAt: FieldValue.serverTimestamp()}, {merge: true});
     batch.create(firestore.collection("auditLogs").doc(), audit(request, active ? "ADMIN_ACTIVATED" : "ADMIN_DISABLED", userId));
     await batch.commit();
+    await getAuth().setCustomUserClaims(userId, {
+      role: "ADMIN", active, shopId: current.shopId ?? "default",
+    });
     return {admin: adminResponse(userId, {...current, active, updatedAt: Timestamp.now()})};
   },
 );

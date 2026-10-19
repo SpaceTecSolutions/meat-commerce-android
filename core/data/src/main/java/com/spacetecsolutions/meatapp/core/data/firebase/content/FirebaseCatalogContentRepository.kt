@@ -2,10 +2,10 @@ package com.spacetecsolutions.meatapp.core.data.firebase.content
 
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
 import com.spacetecsolutions.meatapp.core.common.result.*
-import com.spacetecsolutions.meatapp.core.data.firebase.product.ProductImageCompressor
+import com.spacetecsolutions.meatapp.core.data.firebase.image.FirebaseImageUploader
+import com.spacetecsolutions.meatapp.core.data.firebase.image.ImageProcessingException
+import com.spacetecsolutions.meatapp.core.data.firebase.image.ImageUploadKind
 import com.spacetecsolutions.meatapp.core.domain.repository.CatalogContentRepository
 import com.spacetecsolutions.meatapp.core.model.*
 import javax.inject.Inject
@@ -13,8 +13,7 @@ import kotlinx.coroutines.tasks.await
 
 internal class FirebaseCatalogContentRepository @Inject constructor(
     private val functions: FirebaseFunctions,
-    private val storage: FirebaseStorage,
-    private val compressor: ProductImageCompressor,
+    private val imageUploader: FirebaseImageUploader,
 ) : CatalogContentRepository {
     override suspend fun getSubcategories(categoryId: String, admin: Boolean) = result {
         call(if (admin) "adminGetSubcategories" else "customerGetActiveSubcategories",
@@ -24,10 +23,7 @@ internal class FirebaseCatalogContentRepository @Inject constructor(
         val session = call("adminBeginSubcategoryImageUpload", emptyMap())
         val path = session["storagePath"] as? String ?: error("Missing storagePath")
         val token = session["uploadToken"] as? String ?: error("Missing uploadToken")
-        val bytes = compressor.compress(localUri)
-        require(bytes.size <= MAX_UPLOAD_BYTES) { "Compressed image is too large" }
-        val metadata = StorageMetadata.Builder().setContentType("image/jpeg").build()
-        storage.reference.child(path).putBytes(bytes, metadata).await()
+        imageUploader.upload(localUri, path, ImageUploadKind.SUBCATEGORY)
         SubcategoryImageUpload(token)
     }
     override suspend fun saveSubcategory(input: SubcategoryInput) = result {
@@ -58,7 +54,6 @@ internal class FirebaseCatalogContentRepository @Inject constructor(
     private suspend fun <T> result(block: suspend () -> T): AppResult<T> = try { AppResult.Success(block()) }
     catch (error: Exception) { AppResult.Failure(error.contentError()) }
 
-    private companion object { const val MAX_UPLOAD_BYTES = 5 * 1024 * 1024 }
 }
 
 private fun <T> Map<*, *>.list(key: String, mapper: (Map<*, *>) -> T) =
@@ -80,7 +75,9 @@ private fun Map<*, *>.faq() = FaqEntry(
     updatedAtEpochMillis = (this["updatedAtEpochMillis"] as? Number)?.toLong() ?: 0,
     createdBy = this["createdBy"] as? String,
 )
-private fun Throwable.contentError(): AppError { val e = this as? FirebaseFunctionsException; return when (e?.code) {
+private fun Throwable.contentError(): AppError {
+    if (this is ImageProcessingException) return AppError.Validation(message = userMessage)
+    val e = this as? FirebaseFunctionsException; return when (e?.code) {
     FirebaseFunctionsException.Code.UNAUTHENTICATED -> AppError.Unauthorized
     FirebaseFunctionsException.Code.PERMISSION_DENIED -> AppError.Forbidden
     FirebaseFunctionsException.Code.NOT_FOUND -> AppError.NotFound

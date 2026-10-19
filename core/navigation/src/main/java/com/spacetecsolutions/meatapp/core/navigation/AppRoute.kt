@@ -88,6 +88,7 @@ object RoleNavigationRegistry {
         ),
         UserRole.STAFF to listOf(
             destination(UserRole.STAFF, "profile", "Profile", NavigationIcon.PROFILE),
+            destination(UserRole.STAFF, "categories", "Categories", NavigationIcon.CATEGORIES),
             destination(UserRole.STAFF, "faq", "FAQ Management", NavigationIcon.MORE),
             destination(UserRole.STAFF, "help", "Help & Support", NavigationIcon.MORE),
         ),
@@ -116,7 +117,7 @@ object RoleNavigationRegistry {
         val capabilities = StaffCapabilities.from(staffPermissions)
         val all = destinations.getValue(UserRole.STAFF).associateBy(RoleDestination::route)
         val secondary = secondaryDestinations.getValue(UserRole.STAFF).associateBy(RoleDestination::route)
-        if (capabilities.isOrdersReadOnly) return listOfNotNull(
+        if (capabilities.isOrdersReadOnly && !capabilities.canOpenProducts && !capabilities.canManageFaq) return listOfNotNull(
             all[StaffRoutes.ORDERS], secondary[StaffRoutes.PROFILE],
         )
         return buildList {
@@ -137,6 +138,7 @@ object RoleNavigationRegistry {
             addAll(destinationsFor(role, staffPermissions).map(RoleDestination::route))
             add(StaffRoutes.PROFILE)
             add(StaffRoutes.HELP)
+            if (capabilities.canManageProducts) add(StaffRoutes.CATEGORIES)
             if (capabilities.canManageFaq) add(StaffRoutes.FAQ)
         }
         return (destinations.getValue(role) + secondaryDestinations.getValue(role))
@@ -232,6 +234,7 @@ object StaffRoutes {
     const val HOME = "staff/home"
     const val ORDERS = "staff/orders"
     const val PRODUCTS = "staff/products"
+    const val CATEGORIES = "staff/categories"
     const val MORE = "staff/more"
     const val PROFILE = "staff/profile"
     const val FAQ = "staff/faq"

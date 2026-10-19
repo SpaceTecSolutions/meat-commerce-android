@@ -42,7 +42,8 @@ fun ProductManagementRoute(
         viewModel::requestDelete, canManageProducts, canManageStock, operatorPermissions != null,
     ) else {
         HideAppBottomBar()
-        ProductFormScreen(form, state.categories, state.subcategories, state.submitting, onCategories, ProductFormActions(
+        ProductFormScreen(form, state.categories, state.subcategories, state.submitting, onCategories,
+            canManageProducts, ProductFormActions(
             viewModel::updateName, viewModel::updateDescription, viewModel::updateCategory,
             viewModel::updateSubcategory,
             viewModel::updateUnit, viewModel::updatePrice, viewModel::updateOfferPrice,
