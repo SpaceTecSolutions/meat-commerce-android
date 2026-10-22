@@ -59,14 +59,14 @@ fun CustomerProfileRoute(
                 CustomerOrdersEntry(openOrders)
             }
             Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                CustomerProfileSectionLabel("Account & Delivery")
+                CustomerProfileSectionLabel("Delivery")
                 CustomerProfileGroup {
                     CustomerProfileRow(AppIcons.Location, "Delivery Addresses",
                         "Manage saved home & work addresses", openAddresses,
                         tint = Color(0xFFEA580C), iconBackground = Color(0xFFFFF7ED))
-                    CustomerProfileRow(AppIcons.Profile, "Profile Information",
+                    /*CustomerProfileRow(AppIcons.Profile, "Profile Information",
                         "Name, phone & login credentials", openProfileInformation,
-                        divider = false, tint = Color(0xFF2563EB), iconBackground = Color(0xFFEFF6FF))
+                        divider = false, tint = Color(0xFF2563EB), iconBackground = Color(0xFFEFF6FF))*/
                 }
             }
             Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {

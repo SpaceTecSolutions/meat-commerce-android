@@ -397,7 +397,7 @@ fun MeatBushApp(
                                 CustomerRoutes.ORDERS -> CustomerOrdersRoute(
                                     onStartShopping = { navigate(CustomerRoutes.CATEGORIES) },
                                     onHelp = { navigate(CustomerRoutes.PROFILE) },
-                                    onBack = { navigate(CustomerRoutes.PROFILE) },
+                                    onBack = { backDispatcher?.onBackPressed() },
                                     onNavigate = { address -> openNavigation(context, address) },
                                     onCall = { mobile -> openDialer(context, mobile) },
                                     onMessage = { message -> snackbarManager.show(AppSnackbarMessage(
