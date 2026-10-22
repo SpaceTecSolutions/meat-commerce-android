@@ -23,6 +23,7 @@ export const adminCreateBanner = onCall(catalogOptions, async (request) => {
   const current = await collection.get();
   if (current.size >= 5) throw new HttpsError("failed-precondition", "Maximum 5 banners allowed");
   if (current.empty && !input.active) throw new HttpsError("failed-precondition", "The first banner must be visible");
+  input.sortOrder = Math.max(-1, ...current.docs.map((doc) => integer(doc.get("sortOrder")))) + 1;
   const reference = collection.doc();
   const image = await finalizeUpload(context, input.imageUploadToken, "banners", reference.id);
   if (!image) throw new HttpsError("invalid-argument", "Banner image is required");
@@ -97,18 +98,19 @@ export const adminDeleteBanner = onCall(catalogOptions, async (request) => {
 function validate(data: any) {
   const title = text(data?.title).trim(); const subtitle = text(data?.subtitle).trim();
   const buttonEnabled = data?.buttonEnabled === true; const buttonText = text(data?.buttonText, "Shop Now").trim();
+  const textEnabled = data?.textEnabled !== false;
   const actionRoute = text(data?.actionRoute).trim() || null;
   const contentAlignment = text(data?.contentAlignment, "BOTTOM_START");
   const buttonColor = text(data?.buttonColor, "RED");
   const buttonTextColor = text(data?.buttonTextColor, "WHITE");
   const buttonShape = text(data?.buttonShape, "ROUNDED");
-  if (!title || title.length > 80 || subtitle.length > 180 || !alignments.has(contentAlignment) ||
+  if (title.length > 80 || subtitle.length > 180 || !alignments.has(contentAlignment) ||
       integer(data?.sortOrder) < 0 || (buttonEnabled && (!buttonText || !actionRoute)) ||
       !["RED", "WHITE"].includes(buttonColor) || !["WHITE", "RED", "BLACK"].includes(buttonTextColor) ||
       !["ROUNDED", "CAPSULE"].includes(buttonShape)) {
     throw new HttpsError("invalid-argument", "Check banner text, alignment and button action");
   }
-  return {title, subtitle, buttonEnabled, buttonText, actionRoute, contentAlignment,
+  return {title, subtitle, textEnabled, buttonEnabled, buttonText, actionRoute, contentAlignment,
     textPlacement: placement(data?.textPlacement), buttonPlacement: placement(data?.buttonPlacement),
     subtitlePlacement: placement(data?.subtitlePlacement), buttonColor, buttonTextColor, buttonShape,
     buttonArrow: data?.buttonArrow === true,
@@ -116,7 +118,7 @@ function validate(data: any) {
     imageUploadToken: text(data?.imageUploadToken) || undefined};
 }
 function response(id: string, value: FirebaseFirestore.DocumentData) {
-  return {id, title: text(value.title), subtitle: text(value.subtitle), imageUrl: value.imageUrl ?? null,
+  return {id, title: text(value.title), subtitle: text(value.subtitle), textEnabled: value.textEnabled !== false, imageUrl: value.imageUrl ?? null,
     actionRoute: value.actionRoute ?? null, active: value.active === true, sortOrder: integer(value.sortOrder),
     contentAlignment: text(value.contentAlignment, "BOTTOM_START"), buttonEnabled: value.buttonEnabled === true,
     textPlacement: value.textPlacement ?? null, buttonPlacement: value.buttonPlacement ?? null,

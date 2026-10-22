@@ -159,6 +159,7 @@ private fun CheckoutScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CheckoutDeliverySelection(
     state: CheckoutUiState,
@@ -173,7 +174,7 @@ private fun CheckoutDeliverySelection(
     Box(Modifier.fillMaxSize().background(CustomerCommerceTokens.canvas).padding(padding),
         contentAlignment = Alignment.TopCenter) {
         LazyColumn(
-            Modifier.fillMaxHeight().fillMaxWidth().widthIn(max = AppDimensions.formMaxWidth).imePadding(),
+            Modifier.fillMaxHeight().fillMaxWidth().widthIn(max = AppDimensions.formMaxWidth).imeNestedScroll(),
             contentPadding = PaddingValues(horizontal = AppSpacing.medium, vertical = AppSpacing.small),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.compact),
         ) {

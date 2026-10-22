@@ -24,7 +24,8 @@ import com.spacetecsolutions.meatapp.core.model.AddressType
 internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
     verification: AddressVerification, update: ((AddressFormState) -> AddressFormState) -> Unit,
     onDismiss: () -> Unit, onSave: () -> Unit, onUseCurrentLocation: () -> Unit,
-    onChooseOnMap: () -> Unit, onDelete: (() -> Unit)? = null) {
+    onChooseOnMap: () -> Unit, onSearchLocation: () -> Unit,
+    onDelete: (() -> Unit)? = null) {
     androidx.activity.compose.BackHandler(enabled = !submitting, onBack = onDismiss)
     com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar()
     val imeVisible = WindowInsets.isImeVisible
@@ -33,6 +34,12 @@ internal fun AddressFormDialog(form: AddressFormState, submitting: Boolean,
         TopAppBar(title = { Text(if (form.editing) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_edit_delivery_location_dc554c0) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_add_new_address_3e89e38),
             fontWeight = FontWeight.Bold) }, navigationIcon = {
             IconButton({ if (!submitting) onDismiss() }) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) }
+        }, actions = {
+            IconButton(onSearchLocation, enabled = !submitting) {
+                Icon(AppIcons.Search, androidx.compose.ui.res.stringResource(
+                    com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_location_accessibility),
+                    tint = T.red)
+            }
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         if (!imeVisible) Surface(color = androidx.compose.ui.graphics.Color.Transparent) {

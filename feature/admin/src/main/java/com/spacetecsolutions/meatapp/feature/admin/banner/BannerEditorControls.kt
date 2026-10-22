@@ -9,7 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 internal fun BannerPlacementControls(form: BannerForm, actions: BannerManagementViewModel) {
-    listOf("Text", "Message", "Button").forEach { target ->
+    (if (form.textEnabled) listOf("Text", "Message", "Button") else listOf("Button")).forEach { target ->
         Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_target_alignment_58e08c1, target), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf("LEFT", "CENTER", "RIGHT").forEachIndexed { index, alignment ->

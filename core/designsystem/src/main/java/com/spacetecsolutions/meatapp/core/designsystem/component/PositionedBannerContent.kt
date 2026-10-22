@@ -43,13 +43,15 @@ fun PositionedBannerContent(banner: PromotionBanner, modifier: Modifier = Modifi
                     callback(current)
                 }
             }
-        Box(Modifier.align(BiasAlignment(text.x * 2 - 1, text.y * 2 - 1)).fillMaxWidth(.68f)
-            .drag(text, onMoveText, .32f) { latestText }) {
-            val alignment = when (text.alignment) { "RIGHT" -> TextAlign.End; "CENTER" -> TextAlign.Center; else -> TextAlign.Start }
-            Text(banner.title, Modifier.fillMaxWidth(), color = Color.White, fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge, textAlign = alignment, maxLines = 2)
+        if (banner.textEnabled) {
+            Box(Modifier.align(BiasAlignment(text.x * 2 - 1, text.y * 2 - 1)).fillMaxWidth(.68f)
+                .drag(text, onMoveText, .32f) { latestText }) {
+                val alignment = when (text.alignment) { "RIGHT" -> TextAlign.End; "CENTER" -> TextAlign.Center; else -> TextAlign.Start }
+                if (banner.title.isNotBlank()) Text(banner.title, Modifier.fillMaxWidth(), color = Color.White, fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge, textAlign = alignment, maxLines = 2)
+            }
         }
-        if (banner.subtitle.isNotBlank()) {
+        if (banner.textEnabled && banner.subtitle.isNotBlank()) {
             val alignment = when (subtitle.alignment) { "RIGHT" -> TextAlign.End; "CENTER" -> TextAlign.Center; else -> TextAlign.Start }
             Text(banner.subtitle,
                 Modifier.align(BiasAlignment(subtitle.x * 2 - 1, subtitle.y * 2 - 1)).fillMaxWidth(.68f)

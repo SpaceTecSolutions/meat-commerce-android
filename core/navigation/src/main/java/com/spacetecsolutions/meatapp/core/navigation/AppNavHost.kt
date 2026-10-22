@@ -10,7 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -128,7 +133,7 @@ fun AppNavHost(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (showBottomBar) NavigationBar(
-                modifier = Modifier.height(64.dp),
+                modifier = Modifier.navigationBarsPadding().height(64.dp),
                 containerColor = MaterialTheme.colorScheme.surface,
                 tonalElevation = androidx.compose.ui.unit.Dp.Hairline,
                 windowInsets = WindowInsets(0, 0, 0, 0),
@@ -171,7 +176,15 @@ fun AppNavHost(
         NavHost(
             navController = navController,
             startDestination = destinations.first().route,
-            modifier = Modifier.fillMaxSize().padding(padding),
+            // Screens are drawn edge-to-edge by the activity. Apply safe insets here once so
+            // bottom actions, cart controls, and footer links remain reachable on gesture and
+            // three-button navigation devices. Descendant inset modifiers consume the same
+            // insets and therefore do not add duplicate padding.
+            modifier = Modifier.fillMaxSize().padding(padding).windowInsetsPadding(
+                if (showBottomBar) WindowInsets.safeDrawing.only(
+                    WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
+                ) else WindowInsets.safeDrawing,
+            ),
             enterTransition = {
                 slideInHorizontally(tween(AppMotion.SCREEN_MILLIS)) { it / 10 } +
                     fadeIn(tween(AppMotion.STANDARD_MILLIS))

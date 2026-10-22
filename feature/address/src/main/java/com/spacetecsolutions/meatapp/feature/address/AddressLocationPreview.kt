@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -39,12 +40,7 @@ internal fun AddressLocationPreview(form: AddressFormState, enabled: Boolean, se
             ready.uiSettings.setAllGesturesEnabled(false)
             ready.uiSettings.isMapToolbarEnabled = false
         } } }, modifier = Modifier.fillMaxSize())
-        OutlinedButton(search, Modifier.align(Alignment.TopCenter).padding(10.dp).fillMaxWidth(), enabled = enabled,
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = T.surface, contentColor = T.ink)) {
-            Icon(AppIcons.Search, null, tint = T.red); Spacer(Modifier.width(8.dp))
-            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_address_or_landmark_dcd28a7), Modifier.weight(1f), maxLines = 1)
-        }
+        Box(Modifier.fillMaxSize().clickable(enabled = enabled, onClick = search))
         if (form.latitude != null && form.longitude != null)
             Icon(AppIcons.Location, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_location_df7899b),
                 Modifier.align(Alignment.Center).size(34.dp), tint = T.red)

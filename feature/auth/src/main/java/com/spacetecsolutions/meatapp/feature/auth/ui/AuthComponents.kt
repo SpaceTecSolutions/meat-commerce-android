@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
@@ -225,17 +226,20 @@ internal fun GradientLoginButton(text: String, loading: Boolean, onClick: () -> 
 
 @Composable
 internal fun OtpField(value: String, onValueChange: (String) -> Unit, enabled: Boolean, error: String?) {
+    var hasFocus by remember { mutableStateOf(false) }
+    val activeIndex = if (hasFocus) value.length.coerceAtMost(5) else -1
     BasicTextField(
         value = value,
         onValueChange = { onValueChange(it.filter(Char::isDigit).take(6)) },
         enabled = enabled,
+        modifier = Modifier.fillMaxWidth().onFocusChanged { hasFocus = it.isFocused },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         textStyle = TextStyle(color = Color.Transparent),
         decorationBox = {
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppSpacing.small)) {
                     repeat(6) { index ->
-                        val active = index == value.length
+                        val active = index == activeIndex
                         Box(
                             modifier = Modifier.weight(1f).aspectRatio(1f)
                                 .border(

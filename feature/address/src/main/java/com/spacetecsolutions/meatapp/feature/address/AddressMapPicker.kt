@@ -1,9 +1,5 @@
 package com.spacetecsolutions.meatapp.feature.address
 
-import android.app.Activity
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,65 +17,22 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.designsystem.theme.CustomerAddressTokens as T
 import com.spacetecsolutions.meatapp.core.model.DetectedAddress
-import java.util.ServiceConfigurationError
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
     loading: Boolean, error: String?, dismiss: () -> Unit,
-    onIdle: (Double, Double) -> Unit, onMove: () -> Unit, confirm: () -> Unit,
+    onIdle: (Double, Double) -> Unit, onMove: () -> Unit,
+    onPlaceSelected: (DetectedAddress) -> Unit, confirm: () -> Unit,
     useCurrentLocation: () -> Unit) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var map by remember { mutableStateOf<GoogleMap?>(null) }
     var mapMoved by remember { mutableStateOf(false) }
-    var searchError by remember { mutableStateOf<String?>(null) }
-    var searching by remember { mutableStateOf(false) }
+    var programmaticCameraMove by remember { mutableStateOf(false) }
     val view = remember { MapView(context).apply { onCreate(null) } }
-    val autocomplete = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val intent = result.data
-        if (result.resultCode == Activity.RESULT_OK && intent != null) {
-            val prediction = PlaceAutocomplete.getPredictionFromIntent(intent)
-            if (prediction != null) scope.launch {
-                searching = true; searchError = null
-                try {
-                    val request = FetchPlaceRequest.builder(prediction.placeId,
-                        listOf(Place.Field.LOCATION))
-                        .setSessionToken(PlaceAutocomplete.getSessionTokenFromIntent(intent)).build()
-                    val point = Places.createClient(context).fetchPlace(request).await().place.location
-                    if (point != null) map?.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 17f))
-                    else searchError = "This result has no map location. Try another."
-                } catch (_: ServiceConfigurationError) {
-                    searchError = "Search is temporarily unavailable. Move the map or retry."
-                } catch (_: Exception) {
-                    searchError = "Search is temporarily unavailable. Move the map or retry."
-                } finally { searching = false }
-            }
-        }
-    }
-    fun launchSearch() {
-        runCatching {
-            synchronized(Places::class.java) {
-                if (!Places.isInitialized()) {
-                    val key = context.packageManager.getApplicationInfo(context.packageName,
-                        PackageManager.GET_META_DATA).metaData
-                        ?.getString("com.google.android.geo.API_KEY").orEmpty()
-                    require(key.isNotBlank())
-                    Places.initializeWithNewPlacesApiEnabled(context, key)
-                }
-            }
-            autocomplete.launch(PlaceAutocomplete.IntentBuilder().setCountries(listOf("IN")).build(context))
-        }.onFailure { searchError = "Google search is not configured. Move the map instead." }
-    }
     DisposableEffect(view) {
         view.onStart(); view.onResume()
         onDispose { view.onPause(); view.onStop(); view.onDestroy() }
@@ -87,12 +40,11 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
     androidx.activity.compose.BackHandler(onBack = dismiss)
     com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar()
     Scaffold(containerColor = T.canvas, topBar = {
-        TopAppBar(title = { Column {
-            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_choose_location_b6f07d5), style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold)
-            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_move_pin_or_search_address_7309477), style = MaterialTheme.typography.labelSmall,
-                color = T.muted)
-        } }, navigationIcon = { IconButton(dismiss) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) } },
+        TopAppBar(title = {
+            AddressLocationSearchBar(Modifier.fillMaxWidth()) { selected ->
+                onPlaceSelected(selected)
+            }
+        }, navigationIcon = { IconButton(dismiss) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) } },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         Surface(color = T.surface, shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
@@ -121,11 +73,11 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                         }
                     }
                 }
-                if (loading || searching) LinearProgressIndicator(Modifier.fillMaxWidth(), color = T.red)
-                (error ?: searchError)?.let { Text(it, color = MaterialTheme.colorScheme.error,
+                if (loading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = T.red)
+                error?.let { Text(it, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall) }
                 Button(confirm, Modifier.fillMaxWidth().height(48.dp),
-                    enabled = preview != null && !loading && !searching,
+                    enabled = preview != null && !loading,
                     colors = ButtonDefaults.buttonColors(containerColor = T.red),
                     shape = RoundedCornerShape(10.dp)) {
                     Icon(AppIcons.Check, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp))
@@ -144,9 +96,14 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                     LatLng(form.latitude, form.longitude) else LatLng(12.9716, 77.5946)
                 ready.moveCamera(CameraUpdateFactory.newLatLngZoom(initial,
                     if (form.latitude == null) 11f else 17f))
-                ready.setOnCameraMoveStartedListener { mapMoved = true; onMove() }
+                ready.setOnCameraMoveStartedListener {
+                    mapMoved = true
+                    if (!programmaticCameraMove) onMove()
+                }
                 ready.setOnCameraIdleListener {
-                    if (mapMoved || (form.latitude != null && form.longitude != null)) {
+                    if (programmaticCameraMove) {
+                        programmaticCameraMove = false
+                    } else if (mapMoved || (form.latitude != null && form.longitude != null)) {
                         val point = ready.cameraPosition.target
                         onIdle(point.latitude, point.longitude)
                     }
@@ -157,20 +114,10 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
             Icon(AppIcons.Location, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_pin_f82b203),
                 Modifier.align(Alignment.Center).padding(bottom = 30.dp).size(48.dp),
                 tint = T.red)
-            Column(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(::launchSearch, Modifier.fillMaxWidth().height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = T.surface, contentColor = T.ink),
-                    shape = RoundedCornerShape(14.dp), elevation = ButtonDefaults.buttonElevation(3.dp)) {
-                    Icon(AppIcons.Search, null, Modifier.size(19.dp)); Spacer(Modifier.width(8.dp))
-                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_address_or_landmark_dcd28a7), Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyMedium, color = T.muted)
-                }
-                Surface(Modifier.align(Alignment.CenterHorizontally), color = T.ink,
-                    shape = RoundedCornerShape(50)) {
-                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_drag_map_to_adjust_delivery_9db6fee), Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                        style = MaterialTheme.typography.labelSmall, color = T.surface)
-                }
+            Surface(Modifier.align(Alignment.TopCenter).padding(top = 12.dp), color = T.ink,
+                shape = RoundedCornerShape(50)) {
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_drag_map_to_adjust_delivery_9db6fee), Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelSmall, color = T.surface)
             }
             SmallFloatingActionButton(useCurrentLocation,
                 Modifier.align(Alignment.CenterEnd).padding(end = 12.dp),
@@ -183,9 +130,11 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
         if (preview != null && map != null) {
             val target = map!!.cameraPosition.target
             if (kotlin.math.abs(target.latitude - preview.latitude) > .002 ||
-                kotlin.math.abs(target.longitude - preview.longitude) > .002)
+                kotlin.math.abs(target.longitude - preview.longitude) > .002) {
+                programmaticCameraMove = true
                 map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     LatLng(preview.latitude, preview.longitude), 17f))
+            }
         }
     }
 }

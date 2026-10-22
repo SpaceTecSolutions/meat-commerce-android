@@ -226,7 +226,15 @@ class ProductManagementViewModel @Inject constructor(
 
     private fun loadSubcategories(categoryId: String) = viewModelScope.launch {
         when (val result = contentRepository.getSubcategories(categoryId, admin = true)) {
-            is AppResult.Success -> mutableState.update { it.copy(subcategories = result.value) }
+            is AppResult.Success -> mutableState.update { state ->
+                val active = result.value.filter(ProductSubcategory::active)
+                val form = state.form?.let { current ->
+                    if (current.subcategoryId != null && active.none { it.id == current.subcategoryId })
+                        current.copy(subcategoryId = null)
+                    else current
+                }
+                state.copy(subcategories = active, form = form)
+            }
             is AppResult.Failure -> mutableState.update { it.copy(subcategories = emptyList()) }
         }
     }

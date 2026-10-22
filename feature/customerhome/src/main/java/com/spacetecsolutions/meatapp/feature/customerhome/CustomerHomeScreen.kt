@@ -152,6 +152,7 @@ private fun CustomerHomeScreen(
         HomeLocationHeader(
             addressLabel = data?.deliveryAddressLabel ?: "Select location",
             notifications = data?.unreadNotifications ?: 0,
+            activeOrderInProgress = state.activeOrderInProgress,
             onLocation = onLocation,
             onNotifications = onNotifications,
             onProfile = onProfile,

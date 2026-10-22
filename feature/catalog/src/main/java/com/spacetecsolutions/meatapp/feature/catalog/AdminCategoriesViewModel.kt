@@ -35,7 +35,9 @@ class AdminCategoriesViewModel @Inject constructor(
         }
     }
 
-    fun openCreate() = mutableState.update { it.copy(form = CategoryFormState()) }
+    fun openCreate() = mutableState.update { state -> state.copy(form = CategoryFormState(
+        sortOrder = ((state.categories.maxOfOrNull(ProductCategory::sortOrder) ?: -1) + 1).toString(),
+    )) }
     fun updateSearch(value: String) = mutableState.update { it.copy(search = value.take(60)) }
     fun openEdit(category: ProductCategory) = mutableState.update {
         it.copy(form = CategoryFormState(

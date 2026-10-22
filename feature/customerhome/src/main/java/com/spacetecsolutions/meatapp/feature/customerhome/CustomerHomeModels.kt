@@ -11,6 +11,7 @@ data class CustomerHomeUiState(
     val cartQuantities: Map<String, Int> = emptyMap(),
     val cart: CustomerCart? = null,
     val cartLoaded: Boolean = false,
+    val activeOrderInProgress: Boolean = false,
     val updatingProductIds: Set<String> = emptySet(),
     val cartMessage: String? = null,
 )

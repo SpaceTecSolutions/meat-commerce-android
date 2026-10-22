@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -55,7 +57,14 @@ internal fun CustomerAuthSheet(state: CustomerAuthState, onDismiss: () -> Unit,
     onChangeNumber: () -> Unit, onRetryOtp: () -> Unit,
     onSuccessAnimationFinished: () -> Unit,
     onTerms: () -> Unit, onPrivacy: () -> Unit) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val isVerifyingOtp = state.phase in setOf(CustomerAuthPhase.CONVERGING, CustomerAuthPhase.VERIFYING)
+    val userDismissLocked = isVerifyingOtp || state.phase == CustomerAuthPhase.SUCCESS
+    val currentVerificationLock by rememberUpdatedState(isVerifyingOtp)
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { target -> !currentVerificationLock || target != SheetValue.Hidden },
+    )
+    BackHandler(enabled = userDismissLocked) { }
     LaunchedEffect(state.phase) {
         if (state.phase == CustomerAuthPhase.SUCCESS) {
             kotlinx.coroutines.delay(1400)
@@ -65,13 +74,10 @@ internal fun CustomerAuthSheet(state: CustomerAuthState, onDismiss: () -> Unit,
     }
     ModalBottomSheet(
         onDismissRequest = {
-            if (state.phase !in setOf(
-                    CustomerAuthPhase.CONVERGING,
-                    CustomerAuthPhase.VERIFYING,
-                    CustomerAuthPhase.SUCCESS,
-                )) onDismiss()
+            if (!userDismissLocked) onDismiss()
         },
         sheetState = sheetState,
+        sheetGesturesEnabled = !userDismissLocked,
         containerColor = Color.White,
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
         dragHandle = { Box(Modifier.padding(top = 13.dp, bottom = 20.dp).size(48.dp, 5.dp)
@@ -163,6 +169,7 @@ private fun OtpEntryContent(state: CustomerAuthState, otp: (String) -> Unit,
     changeNumber: () -> Unit, resend: () -> Unit) {
     val converging = state.phase == CustomerAuthPhase.CONVERGING
     val verifying = state.phase in setOf(CustomerAuthPhase.CONVERGING, CustomerAuthPhase.VERIFYING)
+    var otpFocused by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (!verifying) TextButton(onClick = changeNumber) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_text_0dccf90), fontSize = 22.sp, color = muted) }
@@ -190,13 +197,14 @@ private fun OtpEntryContent(state: CustomerAuthState, otp: (String) -> Unit,
                 fontSize = 12.sp, color = muted, textAlign = TextAlign.Center)
         }
         Box(Modifier.fillMaxWidth()) {
-            OtpTiles(state.otp, converging || state.phase == CustomerAuthPhase.VERIFYING)
+            OtpTiles(state.otp, verifying, otpFocused)
             if (!verifying) {
                 val focusRequester = remember { FocusRequester() }
                 val otpFieldDescription = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.R.string.ui_six_digit_verification_code_7c0f5e4)
                 LaunchedEffect(state.phase) { focusRequester.requestFocus() }
                 BasicTextField(value = state.otp, onValueChange = otp,
                     modifier = Modifier.matchParentSize().focusRequester(focusRequester)
+                        .onFocusChanged { otpFocused = it.isFocused }
                         .semantics { contentDescription = otpFieldDescription }.alpha(0.01f),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                     singleLine = true)
@@ -222,7 +230,7 @@ private fun OtpEntryContent(state: CustomerAuthState, otp: (String) -> Unit,
 }
 
 @Composable
-private fun OtpTiles(code: String, verifying: Boolean) {
+private fun OtpTiles(code: String, verifying: Boolean, focused: Boolean) {
     val convergence by animateFloatAsState(
         targetValue = if (verifying) 1f else 0f,
         animationSpec = tween(durationMillis = 820, easing = FastOutSlowInEasing),
@@ -280,7 +288,12 @@ private fun OtpTiles(code: String, verifying: Boolean) {
                     spotColor = red.copy(alpha = .35f)),
                 shape = RoundedCornerShape(16.dp),
                 color = field,
-                border = BorderStroke(2.dp, if (verifying) red else Color(0xFFD9DEE8)),
+                border = BorderStroke(2.dp, when {
+                    verifying -> red
+                    code.getOrNull(index) != null -> red
+                    focused && index == code.length.coerceAtMost(5) -> red
+                    else -> Color(0xFFD9DEE8)
+                }),
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(code.getOrNull(index)?.toString().orEmpty(),

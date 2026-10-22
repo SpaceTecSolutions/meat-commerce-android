@@ -7,6 +7,8 @@
     <string name="home_sign_in_again">Please sign in again to continue.</string>
     <string name="home_unavailable">This home is not available for your account.</string>
     <string name="home_load_failed">We couldn\'t load the shop right now.</string>
+    <string name="home_profile_active_order_hint">Active order in progress. Open your profile to check your orders.</string>
+    <string name="home_profile_open_description">Open your profile.</string>
     <string name="delete_orders_check_failed">Unable to check current orders. Retry before deleting.</string>
     <string name="delete_order_in_progress">An active order is still in progress. Finish or cancel it first.</string>
     <string name="delete_connection_lost">Connection lost. Your account may still be processing deletion; retry safely.</string>
