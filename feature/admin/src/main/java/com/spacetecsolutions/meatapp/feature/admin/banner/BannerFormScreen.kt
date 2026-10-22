@@ -49,18 +49,29 @@ internal fun BannerFormScreen(form: BannerForm, busy: Boolean, actions: BannerMa
                     onMoveSubtitle = { position -> actions.update { it.copy(subtitlePlacement = position) } },
                     onMoveButton = { position -> actions.update { it.copy(buttonPlacement = position) } })
             }
-            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_drag_title_message_and_button_dc0da25), style = MaterialTheme.typography.bodySmall)
+            if (form.textEnabled) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_drag_title_message_and_button_dc0da25), style = MaterialTheme.typography.bodySmall)
             OutlinedButton(onClick = { picker.launch("image/*") }, enabled = !busy, modifier = Modifier.fillMaxWidth()) {
                 Icon(AppIcons.Camera, null); Spacer(Modifier.width(AppSpacing.small))
                 Text(if (form.existingImage == null && form.selectedImage == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_choose_banner_image_069e607) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_change_image_62a7b48))
             }
             Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_use_a_landscape_image_the_d5770cb),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedTextField(form.title, { value -> actions.update { it.copy(title = value.take(80)) } },
-                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_title_768e0c1)) }, singleLine = true, enabled = !busy)
-            OutlinedTextField(form.subtitle, { value -> actions.update { it.copy(subtitle = value.take(180)) } },
-                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_message_68f4145)) }, minLines = 2, maxLines = 3, enabled = !busy)
-            BannerPlacementControls(form, actions)
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_banner_display_text), fontWeight = FontWeight.SemiBold)
+                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_show_banner_title_and_message),
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Switch(form.textEnabled, { value -> actions.update { it.copy(textEnabled = value) } },
+                    enabled = !busy, colors = appSwitchColors())
+            }
+            if (form.textEnabled) {
+                OutlinedTextField(form.title, { value -> actions.update { it.copy(title = value.take(80)) } },
+                    Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_title_768e0c1)) }, singleLine = true, enabled = !busy)
+                OutlinedTextField(form.subtitle, { value -> actions.update { it.copy(subtitle = value.take(180)) } },
+                    Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_message_68f4145)) }, minLines = 2, maxLines = 3, enabled = !busy)
+            }
+            if (form.textEnabled || form.buttonEnabled) BannerPlacementControls(form, actions)
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_show_action_button_745ef4f), fontWeight = FontWeight.SemiBold)
                     Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_opens_the_selected_product_c03cf6f), style = MaterialTheme.typography.bodySmall,
@@ -80,9 +91,20 @@ internal fun BannerFormScreen(form: BannerForm, busy: Boolean, actions: BannerMa
                 Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_button_text_color_e0174b5), style = MaterialTheme.typography.labelLarge)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("WHITE", "RED", "BLACK").forEach { color ->
-                        FilterChip(form.buttonTextColor == color,
+                FilterChip(form.buttonTextColor == color,
                             { actions.update { it.copy(buttonTextColor = color) } },
-                            label = { Text(color.lowercase().replaceFirstChar(Char::uppercase)) })
+                            label = { Row(verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Box(Modifier.size(14.dp).background(
+                                    when (color) { "RED" -> MaterialTheme.colorScheme.primary; "BLACK" -> Color.Black; else -> Color.White },
+                                    androidx.compose.foundation.shape.CircleShape,
+                                ))
+                                Text(androidx.compose.ui.res.stringResource(when (color) {
+                                    "RED" -> com.spacetecsolutions.meatapp.feature.admin.R.string.ui_text_color_red
+                                    "BLACK" -> com.spacetecsolutions.meatapp.feature.admin.R.string.ui_text_color_black
+                                    else -> com.spacetecsolutions.meatapp.feature.admin.R.string.ui_text_color_white
+                                }))
+                            } })
                     }
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -138,9 +160,9 @@ internal fun BannerPreview(banner: PromotionBanner, modifier: Modifier, override
             Modifier.align(banner.contentAlignment.boxAlignment()).fillMaxWidth(.72f).padding(AppSpacing.medium),
             horizontalAlignment = banner.contentAlignment.horizontal(),
         ) {
-            Text(banner.title, color = Color.White, style = MaterialTheme.typography.titleLarge,
+            if (banner.textEnabled && banner.title.isNotBlank()) Text(banner.title, color = Color.White, style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold, textAlign = banner.contentAlignment.textAlign())
-            if (banner.subtitle.isNotBlank()) Text(banner.subtitle, color = Color.White.copy(alpha = .9f),
+            if (banner.textEnabled && banner.subtitle.isNotBlank()) Text(banner.subtitle, color = Color.White.copy(alpha = .9f),
                 style = MaterialTheme.typography.bodySmall, textAlign = banner.contentAlignment.textAlign())
             if (banner.buttonEnabled) Surface(
                 color = if (banner.buttonColor == "WHITE") Color.White else MaterialTheme.colorScheme.primary,
@@ -156,7 +178,7 @@ internal fun BannerPreview(banner: PromotionBanner, modifier: Modifier, override
 }
 
 private fun BannerForm.preview() = PromotionBanner(
-    id = id.orEmpty(), title = title.ifBlank { "Banner title" }, subtitle = subtitle,
+    id = id.orEmpty(), title = title, subtitle = subtitle, textEnabled = textEnabled,
     imageUrl = existingImage, contentAlignment = alignment, buttonEnabled = buttonEnabled,
     buttonText = buttonText.ifBlank { "Shop Now" }, active = active,
     textPlacement = textPlacement, buttonPlacement = buttonPlacement,

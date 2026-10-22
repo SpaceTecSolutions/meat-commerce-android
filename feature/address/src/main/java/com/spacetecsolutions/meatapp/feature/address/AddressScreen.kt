@@ -91,11 +91,13 @@ fun AddressRoute(onBack: () -> Unit, onMessage: (AddressMessage) -> Unit,
         if (showMapPicker) AddressMapPicker(form, state.mapPreview, state.mapLoading, state.mapError,
             dismiss = { viewModel.clearMapPreview(); showMapPicker = false },
             onIdle = viewModel::previewMapLocation, onMove = viewModel::clearMapPreview,
+            onPlaceSelected = viewModel::previewCurrentLocation,
             confirm = { viewModel.confirmMapLocation(); showMapPicker = false },
             useCurrentLocation = useCurrentLocation)
         else AddressFormDialog(form, state.submitting, state.verification,
             viewModel::updateForm, viewModel::dismissForm, viewModel::save, useCurrentLocation,
             { showMapPicker = true },
+            onSearchLocation = { showMapPicker = true },
             onDelete = if (form.editing) ({ state.addresses.firstOrNull { it.id == form.id }?.let {
                 address -> viewModel.dismissForm(); viewModel.confirmDelete(address)
             } }) else null)

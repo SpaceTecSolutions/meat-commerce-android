@@ -62,7 +62,7 @@ private fun BannerInput.payload(): Map<String, Any?> = mapOf(
     "textPlacement" to textPlacement?.payload(), "buttonPlacement" to buttonPlacement?.payload(),
     "subtitlePlacement" to subtitlePlacement?.payload(), "buttonColor" to buttonColor,
     "buttonTextColor" to buttonTextColor,
-    "buttonShape" to buttonShape, "buttonArrow" to buttonArrow,
+    "buttonShape" to buttonShape, "buttonArrow" to buttonArrow, "textEnabled" to textEnabled,
 )
 
 private fun BannerPlacement.payload() = mapOf("x" to x, "y" to y, "alignment" to alignment)
@@ -89,6 +89,7 @@ internal fun Map<*, *>.toBanner() = PromotionBanner(
     buttonTextColor = this["buttonTextColor"] as? String ?: "WHITE",
     buttonShape = this["buttonShape"] as? String ?: "ROUNDED",
     buttonArrow = this["buttonArrow"] as? Boolean ?: false,
+    textEnabled = this["textEnabled"] as? Boolean ?: true,
 )
 
 private fun Map<*, *>.bannerList() = (this["banners"] as? List<*>).orEmpty()

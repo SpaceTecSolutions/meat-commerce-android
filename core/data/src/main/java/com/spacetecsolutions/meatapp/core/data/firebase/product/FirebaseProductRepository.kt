@@ -28,6 +28,7 @@ internal class FirebaseProductRepository @Inject constructor(
         val product = response["product"] as? Map<*, *> ?: response
         AppResult.Success(product.toProduct())
     } catch (error: Exception) {
+        Log.e("CustomerProduct", "customerGetProduct failed: code=${(error as? FirebaseFunctionsException)?.code ?: "LOCAL"}, productId=$productId", error)
         AppResult.Failure(error.toAppError())
     }
 
@@ -172,7 +173,7 @@ private fun Map<*, *>.productList(): List<Product> =
 private fun Map<*, *>.toProduct() = Product(
     id = string("id"),
     categoryId = string("categoryId"),
-    categoryName = string("categoryName"),
+    categoryName = this["categoryName"] as? String ?: string("categoryId"),
     subcategoryId = this["subcategoryId"] as? String,
     subcategoryName = this["subcategoryName"] as? String,
     name = string("name"),

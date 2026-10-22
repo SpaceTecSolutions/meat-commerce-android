@@ -14,6 +14,11 @@
     <string name="address_offline">You\'re offline. Check your connection and try again.</string>
     <string name="address_not_found">This address no longer exists</string>
     <string name="address_update_failed">We couldn\'t update the address. Please try again.</string>
+    <string name="address_places_search_error">Location search is unavailable right now. Check your connection and try again.</string>
+    <string name="address_places_network_error">Couldn\'t connect to location search. Check your internet connection and retry.</string>
+    <string name="address_places_access_denied">Location search is not authorized. Please contact support.</string>
+    <string name="address_places_quota_error">Location search has reached its usage limit. Try again later.</string>
+    <string name="address_places_sdk_unavailable">Location search is not configured correctly. Please contact support.</string>
     <string name="ui_active_delivery_destination">Active delivery destination</string>
     <string name="ui_preferred_address">Preferred address</string>
     <string name="ui_set_as_default">Set as Default</string>
@@ -55,6 +60,12 @@
     <string name="ui_my_addresses_b0239f5">My Addresses</string>
     <string name="ui_save_address_4aa8d2a">Save Address</string>
     <string name="ui_search_or_move_the_map_b35168c">Search or move the map to your delivery location.</string>
+    <string name="ui_search_location_title">Search location</string>
+    <string name="ui_search_location_accessibility">Search locations</string>
+    <string name="ui_clear_search">Clear search</string>
+    <string name="ui_retry_search">Retry</string>
+    <string name="ui_no_location_results">No matching locations found.</string>
+    <string name="ui_searching_locations">Searching locations…</string>
     <string name="ui_select_delivery_address_af45abe">Select delivery address</string>
     <string name="ui_update_address_33c0a66">Update Address</string>
 </resources>

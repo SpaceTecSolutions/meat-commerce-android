@@ -1,6 +1,7 @@
 package com.spacetecsolutions.meatapp.feature.customerhome
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.contentDescription
@@ -35,11 +38,17 @@ import com.spacetecsolutions.meatapp.core.model.*
 import java.text.NumberFormat
 import java.util.Locale
 import kotlinx.coroutines.delay
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 
 @Composable
 internal fun HomeLocationHeader(
     addressLabel: String,
     notifications: Int,
+    activeOrderInProgress: Boolean,
     profileName: String,
     onLocation: () -> Unit,
     onNotifications: () -> Unit,
@@ -94,12 +103,48 @@ internal fun HomeLocationHeader(
             }
         }
         Spacer(Modifier.width(8.dp))
-        Surface(onClick = onProfile, modifier = Modifier.size(38.dp), shape = CircleShape,
-            color = CustomerHomeTokens.ink) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(profileName.trim().firstOrNull()?.uppercase() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_u_b2c7c0c),
-                    color = Color.White, fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.labelLarge)
+        val profileDescription = androidx.compose.ui.res.stringResource(
+            if (activeOrderInProgress) R.string.home_profile_active_order_hint
+            else R.string.home_profile_open_description,
+        )
+        Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+            if (activeOrderInProgress) {
+                val pulse = rememberInfiniteTransition(label = "active order profile pulse")
+                val scale by pulse.animateFloat(
+                    initialValue = 0.85f,
+                    targetValue = 1.45f,
+                    animationSpec = infiniteRepeatable(tween(1100), repeatMode = RepeatMode.Restart),
+                    label = "profile pulse scale",
+                )
+                val alpha by pulse.animateFloat(
+                    initialValue = 0.45f,
+                    targetValue = 0f,
+                    animationSpec = infiniteRepeatable(tween(1100), repeatMode = RepeatMode.Restart),
+                    label = "profile pulse alpha",
+                )
+                Canvas(Modifier.size(42.dp).graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                    this.alpha = alpha
+                }) {
+                    drawCircle(
+                        color = CustomerHomeTokens.red,
+                        radius = size.minDimension / 2f,
+                        style = Stroke(width = 3.dp.toPx()),
+                    )
+                }
+            }
+            Surface(
+                onClick = onProfile,
+                modifier = Modifier.size(38.dp).semantics { contentDescription = profileDescription },
+                shape = CircleShape,
+                color = CustomerHomeTokens.ink,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(profileName.trim().firstOrNull()?.uppercase() ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_u_b2c7c0c),
+                        color = Color.White, fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge)
+                }
             }
         }
     }
@@ -138,8 +183,9 @@ internal fun HomePromoBanner(
     fallbackImageUrl: String?,
     onClick: (() -> Unit)?,
 ) {
-    val title = banner?.title?.takeIf(String::isNotBlank) ?: "Fresh Meat\nDelivered Daily"
-    val subtitle = banner?.subtitle?.takeIf(String::isNotBlank) ?: "100% Fresh & Hygienic"
+    val textEnabled = banner?.textEnabled != false
+    val title = if (textEnabled) banner?.title?.takeIf(String::isNotBlank) ?: "Fresh Meat\nDelivered Daily" else ""
+    val subtitle = if (textEnabled) banner?.subtitle?.takeIf(String::isNotBlank) ?: "100% Fresh & Hygienic" else ""
     val clickModifier = if (onClick == null) Modifier else Modifier.clickable(onClick = onClick)
     Surface(
         modifier = Modifier.fillMaxWidth().height(176.dp).then(clickModifier),
@@ -158,12 +204,14 @@ internal fun HomePromoBanner(
             if (banner?.textPlacement != null) com.spacetecsolutions.meatapp.core.designsystem.component.PositionedBannerContent(banner)
             else if (banner == null || banner.contentAlignment == BannerContentAlignment.BOTTOM_START) {
                 Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(16.dp)) {
-                    Text(subtitle, color = Color.White.copy(alpha = .92f),
-                        style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold,
-                        maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    Spacer(Modifier.height(7.dp))
+                    if (textEnabled) {
+                        Text(subtitle, color = Color.White.copy(alpha = .92f),
+                            style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold,
+                            maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        Spacer(Modifier.height(7.dp))
+                    }
                     Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(title, Modifier.weight(1f), color = Color.White,
+                        if (textEnabled) Text(title, Modifier.weight(1f), color = Color.White,
                             style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold,
                             maxLines = 2, overflow = TextOverflow.Ellipsis)
                         if (onClick != null && (banner == null || banner.buttonEnabled)) {
@@ -186,16 +234,18 @@ internal fun HomePromoBanner(
                     .fillMaxWidth(.72f).padding(AppSpacing.medium),
                 horizontalAlignment = banner.contentAlignment.horizontal(),
             ) {
-                Text(
-                    title, color = Color.White, style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = banner.contentAlignment.textAlign(),
-                )
-                Spacer(Modifier.height(AppSpacing.extraSmall))
-                Text(
-                    subtitle, color = Color.White.copy(alpha = .82f),
-                    style = MaterialTheme.typography.labelSmall, maxLines = 2,
-                )
+                if (textEnabled) {
+                    Text(
+                        title, color = Color.White, style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = banner.contentAlignment.textAlign(),
+                    )
+                    Spacer(Modifier.height(AppSpacing.extraSmall))
+                    Text(
+                        subtitle, color = Color.White.copy(alpha = .82f),
+                        style = MaterialTheme.typography.labelSmall, maxLines = 2,
+                    )
+                }
                 if (onClick != null && banner.buttonEnabled) {
                     Spacer(Modifier.height(AppSpacing.compact))
                     Surface(color = if (banner.buttonColor == "WHITE") Color.White else MaterialTheme.colorScheme.primary,

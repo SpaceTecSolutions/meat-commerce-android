@@ -19,6 +19,7 @@ data class PromotionBanner(
     val buttonTextColor: String = "WHITE",
     val buttonShape: String = "ROUNDED",
     val buttonArrow: Boolean = false,
+    val textEnabled: Boolean = true,
 )
 
 data class BannerPlacement(val x: Float = 0f, val y: Float = 0f, val alignment: String = "LEFT")
@@ -48,6 +49,7 @@ data class BannerInput(
     val buttonTextColor: String = "WHITE",
     val buttonShape: String = "ROUNDED",
     val buttonArrow: Boolean = false,
+    val textEnabled: Boolean = true,
 )
 
 data class BannerImageUpload(val token: String)

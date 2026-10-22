@@ -10,8 +10,13 @@ import com.spacetecsolutions.meatapp.core.domain.repository.CustomerCartReposito
 import com.spacetecsolutions.meatapp.core.domain.repository.ProductRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.AuthenticationRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.FeatureManagementRepository
+import com.spacetecsolutions.meatapp.core.domain.repository.CodOrderRepository
+import com.spacetecsolutions.meatapp.core.model.OrderStatus
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.filterNotNull
 import com.spacetecsolutions.meatapp.core.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,6 +35,7 @@ class CustomerHomeViewModel @Inject constructor(
     private val cart: CustomerCartRepository,
     private val auth: AuthenticationRepository,
     private val features: FeatureManagementRepository,
+    private val orders: CodOrderRepository,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(CustomerHomeUiState())
     val state = mutableState.asStateFlow()
@@ -49,6 +55,18 @@ class CustomerHomeViewModel @Inject constructor(
                 mutableState.update { it.copy(data = it.data?.copy(unreadNotifications = result.value)) }
             } else { unreadCount = 0; mutableState.update { it.copy(data = it.data?.copy(unreadNotifications = 0)) } }
         } }
+        viewModelScope.launch {
+            auth.authenticatedUserId.flatMapLatest { uid ->
+                if (uid == null) flowOf(false)
+                else orders.observeCustomerOrders().map { result ->
+                    (result as? AppResult.Success)?.value?.any { order ->
+                        order.orderStatus !in setOf(OrderStatus.DELIVERED, OrderStatus.CANCELLED)
+                    }
+                }.filterNotNull().onStart { emit(false) }
+            }.collect { active ->
+                mutableState.update { it.copy(activeOrderInProgress = active) }
+            }
+        }
     }
 
     fun refresh() = load(refreshing = true)

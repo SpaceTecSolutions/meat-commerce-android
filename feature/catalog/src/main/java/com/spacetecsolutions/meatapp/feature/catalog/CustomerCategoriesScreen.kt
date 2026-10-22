@@ -28,6 +28,7 @@ fun CustomerCategoriesRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var searchVisible by rememberSaveable { mutableStateOf(false) }
+    var subcategorySearch by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(initialProductId) {
         initialProductId?.let {
             viewModel.openProduct(it)
@@ -82,12 +83,16 @@ fun CustomerCategoriesRoute(
     }
 
     BackHandler(state.selectedCategory != null && !searchVisible) {
+        subcategorySearch = ""
         if (state.selectedSubcategory != null) viewModel.showSubcategories() else viewModel.showCategories()
     }
     BackHandler(searchVisible) {
         searchVisible = false
-        if (state.selectedCategory == null) viewModel.updateCategorySearch("")
-        else viewModel.updateSearch("")
+        when {
+            state.selectedCategory == null -> viewModel.updateCategorySearch("")
+            state.subcategories.isNotEmpty() && state.selectedSubcategory == null -> subcategorySearch = ""
+            else -> viewModel.updateSearch("")
+        }
     }
     Column(Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.surface)) {
         val selectedCategory = state.selectedCategory
@@ -109,6 +114,7 @@ fun CustomerCategoriesRoute(
                 state = state,
                 onCategory = { id, name ->
                     searchVisible = false
+                    subcategorySearch = ""
                     viewModel.selectCategory(id, name)
                 },
                 onRefresh = viewModel::refresh,
@@ -119,7 +125,11 @@ fun CustomerCategoriesRoute(
                 placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_search_products_b73f756),
                 searchVisible = false,
                 searchQuery = "",
-                onBack = viewModel::showCategories,
+                onBack = {
+                    searchVisible = false
+                    subcategorySearch = ""
+                    viewModel.showCategories()
+                },
                 onSearch = {}, onSearchChange = {}, onCloseSearch = {},
                 cartCount = state.cartQuantity, onCart = onCart,
             )
@@ -130,13 +140,41 @@ fun CustomerCategoriesRoute(
             CustomerSearchTopBar(
                 title = selectedCategory.name,
                 placeholder = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_search_subcategories_e87dd4a),
-                searchVisible = false,
-                searchQuery = "",
+                searchVisible = searchVisible,
+                searchQuery = subcategorySearch,
                 onBack = viewModel::showCategories,
-                onSearch = {}, onSearchChange = {}, onCloseSearch = {},
+                onSearch = { searchVisible = true },
+                onSearchChange = { subcategorySearch = it },
+                onCloseSearch = {
+                    searchVisible = false
+                    subcategorySearch = ""
+                },
                 cartCount = state.cartQuantity, onCart = onCart,
             )
-            CustomerSubcategoryBrowser(selectedCategory.name, state.subcategories, viewModel::selectSubcategory)
+            val visibleSubcategories = remember(state.subcategories, subcategorySearch) {
+                val query = subcategorySearch.trim()
+                if (query.isEmpty()) state.subcategories else state.subcategories.filter {
+                    it.name.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
+                }
+            }
+            if (visibleSubcategories.isEmpty()) {
+                androidx.compose.foundation.layout.Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = androidx.compose.ui.Alignment.Center,
+                ) {
+                    androidx.compose.material3.Text(
+                        androidx.compose.ui.res.stringResource(
+                            com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_matching_subcategories,
+                        ),
+                    )
+                }
+            } else {
+                CustomerSubcategoryBrowser(selectedCategory.name, visibleSubcategories) { subcategory ->
+                    searchVisible = false
+                    subcategorySearch = ""
+                    viewModel.selectSubcategory(subcategory)
+                }
+            }
         } else {
             CustomerSearchTopBar(
                 title = state.selectedSubcategory?.name ?: selectedCategory.name,

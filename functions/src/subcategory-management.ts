@@ -57,12 +57,13 @@ export const adminSaveSubcategory = onCall(catalogOptions, async (request) => {
   const ref = id ? shop(context).collection("subcategories").doc(id) : shop(context).collection("subcategories").doc();
   const image = await finalizeUpload(context, value.imageUploadToken, "subcategories", ref.id);
   const category = await shop(context).collection("categories").doc(value.categoryId).get();
-  if (!category.exists) throw new HttpsError("failed-precondition", "Category not found");
+  if (!category.exists || category.get("active") !== true) throw new HttpsError("failed-precondition", "Category is unavailable");
   const duplicate = await shop(context).collection("subcategories").where("categoryId", "==", value.categoryId).get();
   if (duplicate.docs.some((doc) => doc.id !== ref.id && normalize(text(doc.get("name"))) === normalize(value.name)))
     throw new HttpsError("already-exists", "Subcategory already exists");
   const previous = await ref.get(); const expected = integer(request.data?.expectedRevision, -1);
   if (previous.exists && integer(previous.get("revision")) !== expected) throw new HttpsError("aborted", "Subcategory changed");
+  if (!previous.exists) value.sortOrder = Math.max(-1, ...duplicate.docs.map((doc) => integer(doc.get("sortOrder")))) + 1;
   const replacedImageUrl = image && previous.exists ? previous.get("imageUrl") : null;
   const next: Record<string, unknown> = {...value, normalizedName: normalize(value.name),
     revision: previous.exists ? expected + 1 : 0,

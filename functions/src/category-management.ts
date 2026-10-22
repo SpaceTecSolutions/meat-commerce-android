@@ -30,8 +30,10 @@ export const adminCreateCategory = onCall(catalogOptions, async (request) => {
   const result = await getFirestore().runTransaction(async (transaction) => {
     const duplicate = await transaction.get(shop(context).collection("categories")
       .where("normalizedName", "==", normalize(input.name)).limit(1));
+    const existing = await transaction.get(shop(context).collection("categories"));
     if (!duplicate.empty) duplicateCategory();
-    const value = {...input, imageUrl: image?.url ?? null, normalizedName: normalize(input.name),
+    const sortOrder = Math.max(-1, ...existing.docs.map((doc) => integer(doc.get("sortOrder")))) + 1;
+    const value = {...input, sortOrder, imageUrl: image?.url ?? null, normalizedName: normalize(input.name),
       productCount: 0, activeProductCount: 0, revision: 0, createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(), updatedBy: context.uid};
     delete value.imageUploadToken;

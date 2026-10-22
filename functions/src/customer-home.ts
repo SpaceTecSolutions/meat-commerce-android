@@ -128,7 +128,7 @@ function bannerResponse(id: string, value: FirebaseFirestore.DocumentData) {
     (text(value.actionType).toUpperCase() === "PRODUCT" && text(value.actionTargetId) ?
       `product:${text(value.actionTargetId)}` : null);
   return {
-    id, title: text(value.title), subtitle: text(value.subtitle), imageUrl: value.imageUrl ?? null,
+    id, title: text(value.title), subtitle: text(value.subtitle), textEnabled: value.textEnabled !== false, imageUrl: value.imageUrl ?? null,
     actionRoute, active: value.active === true, sortOrder: integer(value.sortOrder),
     contentAlignment: text(value.contentAlignment, "BOTTOM_START"),
     textPlacement: value.textPlacement ?? null, buttonPlacement: value.buttonPlacement ?? null,

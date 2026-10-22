@@ -26,7 +26,10 @@ internal fun DeliveryOtpVerificationSheet(order: CodOrder, value: String, error:
     busy: Boolean, change: (String) -> Unit, verify: () -> Unit, dismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = { if (!busy) dismiss() },
         containerColor = T.surface, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+            confirmValueChange = { target -> !busy || target != SheetValue.Hidden },
+        )) {
         Column(Modifier.fillMaxWidth().navigationBarsPadding()
             .padding(horizontal = 20.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)) {

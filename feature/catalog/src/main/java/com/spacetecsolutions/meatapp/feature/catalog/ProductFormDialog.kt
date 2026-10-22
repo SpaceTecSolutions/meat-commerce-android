@@ -194,7 +194,7 @@ private fun CategorySelector(
     select: (String) -> Unit, manage: () -> Unit, canManageCategories: Boolean,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val available = categories.filter { it.active || it.id == form.categoryId }
+    val available = categories.filter(ProductCategory::active)
     if (available.isEmpty()) Column {
         OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_a3c686e)) },
             placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_available_38ae64e)) })

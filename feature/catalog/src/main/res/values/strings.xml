@@ -89,6 +89,7 @@
     <string name="ui_search_categories_1bf5c01">Search categories...</string>
     <string name="ui_search_products_b73f756">Search products...</string>
     <string name="ui_search_subcategories_e87dd4a">Search subcategories...</string>
+    <string name="ui_no_matching_subcategories">No matching subcategories</string>
     <string name="ui_try_a_different_search_1bdc3a2">Try a different search.</string>
     <string name="ui_try_another_category_name_2672bb6">Try another category name.</string>
     <string name="ui_unable_to_load_categories_5e27dca">Unable to load categories</string>

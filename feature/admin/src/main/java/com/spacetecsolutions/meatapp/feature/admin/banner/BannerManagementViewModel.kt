@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.admin.banner
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.AppError
@@ -26,6 +27,7 @@ data class BannerForm(
     val subtitlePlacement: BannerPlacement = BannerPlacement(0f, .45f),
     val buttonColor: String = "RED", val buttonTextColor: String = "WHITE", val buttonShape: String = "ROUNDED",
     val buttonArrow: Boolean = false,
+    val textEnabled: Boolean = true,
 )
 
 data class BannerUiState(
@@ -37,6 +39,7 @@ data class BannerUiState(
 
 @HiltViewModel
 class BannerManagementViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val repository: BannerRepository,
     private val products: com.spacetecsolutions.meatapp.core.domain.repository.ProductRepository,
 ) : ViewModel() {
@@ -66,7 +69,8 @@ class BannerManagementViewModel @Inject constructor(
         if (banner == null && state.value.banners.size >= 5) {
             mutableState.update { it.copy(message = "Maximum 5 banners allowed") }; return
         }
-        mutableState.update { it.copy(form = banner?.toForm() ?: BannerForm(sortOrder = it.banners.size.toString())) }
+        val nextOrder = (state.value.banners.maxOfOrNull(PromotionBanner::sortOrder) ?: -1) + 1
+        mutableState.update { it.copy(form = banner?.toForm() ?: BannerForm(sortOrder = nextOrder.toString())) }
     }
     fun update(transform: (BannerForm) -> BannerForm) = mutableState.update { state ->
         state.form?.let { state.copy(form = transform(it), message = null) } ?: state
@@ -76,8 +80,10 @@ class BannerManagementViewModel @Inject constructor(
 
     fun save() = viewModelScope.launch {
         val form = state.value.form ?: return@launch
-        if (form.title.isBlank() || (form.existingImage == null && form.selectedImage == null)) {
-            mutableState.update { it.copy(message = "Add a banner image and title") }; return@launch
+        if (form.existingImage == null && form.selectedImage == null) {
+            mutableState.update { it.copy(message = context.getString(
+                com.spacetecsolutions.meatapp.feature.admin.R.string.ui_banner_image_required,
+            )) }; return@launch
         }
         mutableState.update { it.copy(busy = true) }
         val token = form.selectedImage?.let { uri ->
@@ -98,6 +104,7 @@ class BannerManagementViewModel @Inject constructor(
             subtitlePlacement = form.subtitlePlacement, buttonColor = form.buttonColor,
             buttonTextColor = form.buttonTextColor,
             buttonShape = form.buttonShape, buttonArrow = form.buttonArrow,
+            textEnabled = form.textEnabled,
         )
         when (val result = repository.save(input)) {
             is AppResult.Success -> mutableState.update { current -> current.copy(
@@ -143,7 +150,7 @@ private fun PromotionBanner.toForm() = BannerForm(
     buttonPlacement = buttonPlacement ?: BannerPlacement(0f, .95f),
     subtitlePlacement = subtitlePlacement ?: BannerPlacement(0f, .45f),
     buttonColor = buttonColor, buttonTextColor = buttonTextColor,
-    buttonShape = buttonShape, buttonArrow = buttonArrow,
+    buttonShape = buttonShape, buttonArrow = buttonArrow, textEnabled = textEnabled,
 )
 private fun AppError.text() = when (this) {
     is AppError.Validation -> message

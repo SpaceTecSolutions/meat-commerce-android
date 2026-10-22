@@ -43,6 +43,7 @@ export const customerGetProducts = onCall(catalogOptions, async (request) => {
     productQuery.limit(500).get(), activeCategoryIds(base, categoryId),
     context ? customerCart(context.uid).limit(100).get() : null,
   ]);
+  const activeSubcategories = await activeSubcategoryIds(base, categoryId, subcategoryId);
   const search = normalize(text(request.data?.search));
   const filter = text(request.data?.filter, "ALL");
   const pageSize = Math.min(40, Math.max(1, integer(request.data?.pageSize, 24)));
@@ -50,6 +51,7 @@ export const customerGetProducts = onCall(catalogOptions, async (request) => {
   const visible = products.docs.filter((doc) => {
     const value = doc.data();
     return value.active === true && value.archived !== true && activeCategories.has(text(value.categoryId)) &&
+      (!text(value.subcategoryId) || activeSubcategories.has(text(value.subcategoryId))) &&
       (!categoryId || value.categoryId === categoryId) && (!subcategoryId || value.subcategoryId === subcategoryId) &&
       (!search || normalize(text(value.name)).includes(search)) &&
       (filter !== "IN_STOCK" || number(value.stockQuantity) > 0) &&
@@ -73,7 +75,13 @@ export const customerGetProduct = onCall(catalogOptions, async (request) => {
   const category = await getFirestore().collection("shops").doc(shopId).collection("categories")
     .doc(text(product.get("categoryId"))).get();
   if (!category.exists || category.get("active") !== true) unavailable();
-  return {product: productResponse(product.id, product.data()!)};
+  const subcategoryId = text(product.get("subcategoryId"));
+  if (subcategoryId) {
+    const subcategory = await getFirestore().collection("shops").doc(shopId).collection("subcategories")
+      .doc(subcategoryId).get();
+    if (!subcategory.exists || subcategory.get("active") !== true || text(subcategory.get("categoryId")) !== category.id) unavailable();
+  }
+  return {product: productResponse(product.id, {...product.data(), categoryName: text(category.get("name"), text(product.get("categoryName")))} )};
 });
 
 export const customerAddToCart = onCall(catalogOptions, async (request) => {
@@ -140,6 +148,7 @@ export const adminCreateProduct = onCall({...catalogOptions, invoker: "public"},
       transaction.get(getFirestore().collection("appConfig").doc("features")), transaction.get(duplicateQuery),
     ]);
     if (!category.exists || category.get("active") !== true) inactiveCategory();
+    if (input.subcategoryId) await assertActiveSubcategory(transaction, context, input.categoryId, input.subcategoryId);
     if (duplicate.docs.some((doc) => doc.get("archived") !== true && doc.get("normalizedName") === normalize(input.name))) duplicateProduct();
     const count = counter.exists ? integer(counter.get("productCount")) : initialCount;
     const maximum = integer(config.get("maxProducts"), 100);
@@ -176,6 +185,7 @@ export const adminUpdateProduct = onCall(catalogOptions, async (request) => {
     const categories = await Promise.all(categoryReferences.map((category) => transaction.get(category)));
     const targetCategory = categories.find((category) => category.id === input.categoryId);
     if (!targetCategory?.exists || targetCategory.get("active") !== true) inactiveCategory();
+    if (input.subcategoryId) await assertActiveSubcategory(transaction, context, input.categoryId, input.subcategoryId);
     const duplicate = await transaction.get(shop(context).collection("products").where("categoryId", "==", input.categoryId).limit(500));
     if (duplicate.docs.some((doc) => doc.id !== productId && doc.get("archived") !== true &&
         doc.get("normalizedName") === normalize(input.name))) duplicateProduct();
@@ -309,6 +319,26 @@ async function activeCategoryIds(base: FirebaseFirestore.DocumentReference, cate
   }
   const categories = await base.collection("categories").limit(200).get();
   return new Set(categories.docs.filter((doc) => doc.get("active") === true).map((doc) => doc.id));
+}
+async function activeSubcategoryIds(base: FirebaseFirestore.DocumentReference, categoryId: string,
+  subcategoryId: string): Promise<Set<string>> {
+  if (subcategoryId) {
+    const snapshot = await base.collection("subcategories").doc(subcategoryId).get();
+    return new Set(snapshot.exists && snapshot.get("active") === true &&
+      (!categoryId || text(snapshot.get("categoryId")) === categoryId) ? [snapshot.id] : []);
+  }
+  let query: FirebaseFirestore.Query = base.collection("subcategories").where("active", "==", true);
+  if (categoryId) query = query.where("categoryId", "==", categoryId);
+  const snapshot = await query.get();
+  return new Set(snapshot.docs.map((doc) => doc.id));
+}
+async function assertActiveSubcategory(transaction: FirebaseFirestore.Transaction, context: AdminContext,
+  categoryId: string, subcategoryId: string) {
+  const reference = shop(context).collection("subcategories").doc(subcategoryId);
+  const subcategory = await transaction.get(reference);
+  if (!subcategory.exists || subcategory.get("active") !== true || text(subcategory.get("categoryId")) !== categoryId) {
+    throw new HttpsError("failed-precondition", "Choose an active subcategory", {reason: "SUBCATEGORY_INACTIVE"});
+  }
 }
 function productFilter(value: FirebaseFirestore.DocumentData, filter: string) { return filter === "ACTIVE" ? value.active === true : filter === "INACTIVE" ? value.active !== true : filter === "LOW_STOCK" ? number(value.stockQuantity) <= number(value.lowStockThreshold, -1) : true; }
 function limitReached(): never { throw new HttpsError("resource-exhausted", "Product limit reached", {reason: "PRODUCT_LIMIT_REACHED"}); }

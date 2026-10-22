@@ -131,6 +131,8 @@
     <string name="ui_total_revenue_f3a8370">Total Revenue</string>
     <string name="ui_update_password_61dcf34">Update Password</string>
     <string name="ui_use_a_landscape_image_the_d5770cb">Use a landscape image. The photo fills the entire banner; check that text remains readable.</string>
+    <string name="ui_banner_display_text">Display banner text</string>
+    <string name="ui_show_banner_title_and_message">Show or hide the title and message on this banner.</string>
     <string name="ui_use_at_least_8_characters_552b16c">Use at least 8 characters with uppercase, lowercase and a number.</string>
     <string name="ui_valid_from_yyyy_mm_dd_d03f44c">Valid from (YYYY-MM-DD)</string>
     <string name="ui_valid_until_yyyy_mm_dd_06879d8">Valid until (YYYY-MM-DD)</string>
@@ -233,4 +235,8 @@
     <string name="ui_the_customer_will_regain_account_7c633ff">The customer will regain account access.</string>
     <string name="ui_unavailable_to_customers_9ee2291">Unavailable to customers</string>
     <string name="ui_visible_1fe5939">Visible</string>
+    <string name="ui_text_color_red">Red</string>
+    <string name="ui_text_color_black">Black</string>
+    <string name="ui_text_color_white">White</string>
+    <string name="ui_banner_image_required">Add a banner image</string>
 </resources>

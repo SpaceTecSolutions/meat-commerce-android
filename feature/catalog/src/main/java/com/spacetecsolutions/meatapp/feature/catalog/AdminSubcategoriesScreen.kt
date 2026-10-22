@@ -7,14 +7,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,7 +51,9 @@ class AdminSubcategoriesViewModel @Inject constructor(private val repository: Ca
             is AppResult.Failure -> mutable.update { it.copy(loading = false,
                 error = result.error.subcategoryMessage("Unable to load subcategories")) }
         } }
-    fun create() = mutable.update { it.copy(form = SubcategoryForm()) }
+    fun create() = mutable.update { state -> state.copy(form = SubcategoryForm(
+        order = ((state.items.maxOfOrNull(ProductSubcategory::sortOrder) ?: -1) + 1).toString(),
+    )) }
     fun edit(item: ProductSubcategory) = mutable.update { it.copy(form = SubcategoryForm(
         id = item.id, name = item.name, description = item.description, order = item.sortOrder.toString(),
         active = item.active, revision = item.revision, existingImageUrl = item.imageUrl,
@@ -126,6 +131,14 @@ fun AdminSubcategoriesRoute(parent: ProductCategory, back: () -> Unit, message: 
     viewModel: AdminSubcategoriesViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle(); LaunchedEffect(parent.id) { viewModel.load(parent.id) }
     val context = LocalContext.current
+    var searchQuery by remember(parent.id) { mutableStateOf("") }
+    val visibleItems = remember(state.items, searchQuery) {
+        val query = searchQuery.trim()
+        state.items.filter { item -> query.isBlank() ||
+            item.name.contains(query, ignoreCase = true) ||
+            item.description.contains(query, ignoreCase = true)
+        }
+    }
     var pendingCacheEviction by remember { mutableStateOf<List<String>>(emptyList()) }
     LaunchedEffect(state.message) { state.message?.let {
         if (it.success && it.text == "Subcategory deleted") {
@@ -138,10 +151,10 @@ fun AdminSubcategoriesRoute(parent: ProductCategory, back: () -> Unit, message: 
             pendingCacheEviction = listOfNotNull(it.imageUrl); viewModel.delete(it)
         } } })
         return }
-    Scaffold(topBar = { AppBackTopBar(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_subcategories_f3da206), back) }, floatingActionButton = {
+    Scaffold(topBar = { AppBackTopBar(stringResource(R.string.ui_subcategories_f3da206), back) }, floatingActionButton = {
         ExtendedFloatingActionButton(
             onClick = viewModel::create, icon = { Icon(AppIcons.Add, null) },
-            text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_subcategory_75e3f6f)) }, containerColor = MaterialTheme.colorScheme.primary,
+            text = { Text(stringResource(R.string.ui_add_subcategory_75e3f6f)) }, containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
         )
     }) { padding -> when {
@@ -150,16 +163,45 @@ fun AdminSubcategoriesRoute(parent: ProductCategory, back: () -> Unit, message: 
             contentPadding = padding, onAction = viewModel::refresh)
         else -> LazyColumn(Modifier.fillMaxSize().padding(padding).widthIn(max = AppDimensions.contentMaxWidth),
             contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_parent_category_parent_name_838f96d, parent.name), fontWeight = FontWeight.SemiBold) }
-            if (state.items.isEmpty()) item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_subcategories_yet_add_the_dc57809, parent.name)) }
-            items(state.items, key = ProductSubcategory::id) { item -> ElevatedCard(onClick = { viewModel.edit(item) }) {
+            item { Text(stringResource(R.string.ui_parent_category_parent_name_838f96d, parent.name), fontWeight = FontWeight.SemiBold) }
+            item {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(stringResource(R.string.ui_search_subcategories_e87dd4a),
+                        style = MaterialTheme.typography.bodySmall) },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) IconButton(onClick = { searchQuery = "" }) {
+                            Icon(AppIcons.Close, stringResource(R.string.ui_clear_search_67300d0))
+                        }
+                    },
+                    shape = RoundedCornerShape(50),
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodySmall,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent, unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                )
+            }
+            if (state.items.isEmpty()) item { Text(stringResource(R.string.ui_no_subcategories_yet_add_the_dc57809, parent.name)) }
+            else if (visibleItems.isEmpty()) item { Text(stringResource(R.string.ui_no_matching_subcategories),
+                color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            items(visibleItems, key = ProductSubcategory::id) { item -> SwipeDeleteContainer(
+                enabled = !state.saving, label = item.name, onDelete = {
+                    pendingCacheEviction = listOfNotNull(item.imageUrl)
+                    viewModel.delete(item)
+                },
+            ) { ElevatedCard(onClick = { viewModel.edit(item) }) {
                 Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     CategoryImage(item.imageUrl, item.name, Modifier.size(54.dp))
                     Column(Modifier.weight(1f).padding(horizontal = 12.dp)) { Text(item.name, fontWeight = FontWeight.Bold)
-                        Text(androidx.compose.ui.res.stringResource(R.string.ui_status_order,
-                            androidx.compose.ui.res.stringResource(if (item.active) R.string.ui_active else R.string.ui_inactive), item.sortOrder),
+                        Text(stringResource(R.string.ui_status_order,
+                            stringResource(if (item.active) R.string.ui_active else R.string.ui_inactive), item.sortOrder),
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text(androidx.compose.ui.res.pluralStringResource(R.plurals.ui_product_count,
+                        Text(pluralStringResource(R.plurals.ui_product_count,
                             item.productCount, item.productCount),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant) }
@@ -170,10 +212,11 @@ fun AdminSubcategoriesRoute(parent: ProductCategory, back: () -> Unit, message: 
         }
     } }
 }
+}
 
 @Composable
-private fun SubcategoryFormScreen(parent: ProductCategory, form: SubcategoryForm, saving: Boolean,
-    update: (SubcategoryForm) -> Unit, save: () -> Unit, back: () -> Unit, delete: () -> Unit) {
+fun SubcategoryFormScreen(parent: ProductCategory, form: SubcategoryForm, saving: Boolean,
+                          update: (SubcategoryForm) -> Unit, save: () -> Unit, back: () -> Unit, delete: () -> Unit) {
     val context = LocalContext.current
     var cropSource by remember { mutableStateOf<Uri?>(null) }
     var imageError by remember { mutableStateOf<String?>(null) }
@@ -188,32 +231,32 @@ private fun SubcategoryFormScreen(parent: ProductCategory, form: SubcategoryForm
     } }
     Scaffold(topBar = { AppBackTopBar(if (form.id == null) "Add Subcategory" else "Edit Subcategory", back) },
         bottomBar = { Button(save, Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp), enabled = !saving) {
-            Text(if (form.id == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_save_subcategory_3de39d8) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_save_changes_fa2984b)) } }) { padding ->
+            Text(if (form.id == null) stringResource(R.string.ui_save_subcategory_3de39d8) else stringResource(R.string.ui_save_changes_fa2984b)) } }) { padding ->
         LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            item { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_parent_category_parent_name_f960238, parent.name), fontWeight = FontWeight.Bold) }
+            item { Text(stringResource(R.string.ui_parent_category_parent_name_f960238, parent.name), fontWeight = FontWeight.Bold) }
             item { Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 val image = form.selectedImageUri ?: form.existingImageUrl
                 RoundImage(image, "Subcategory image", 144.dp)
                 TextButton({ picker.launch("image/*") }, enabled = !saving) {
                     Icon(AppIcons.Camera, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp))
-                    Text(if (image == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_photo_560a4bd) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_change_photo_6080b45))
+                    Text(if (image == null) stringResource(R.string.ui_add_photo_560a4bd) else stringResource(R.string.ui_change_photo_6080b45))
                 }
                 imageError?.let { Text(it, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall) }
             } }
             item { OutlinedTextField(form.name, { update(form.copy(name = it.take(60))) }, Modifier.fillMaxWidth(),
-                label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_subcategory_name_1880d9d)) }, singleLine = true) }
+                label = { Text(stringResource(R.string.ui_subcategory_name_1880d9d)) }, singleLine = true) }
             item { OutlinedTextField(form.description, { update(form.copy(description = it.take(300))) },
-                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_description_optional_388de6f)) }, minLines = 3) }
+                Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.ui_description_optional_388de6f)) }, minLines = 3) }
             item { OutlinedTextField(form.order, { update(form.copy(order = it.filter(Char::isDigit).take(4))) },
-                Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_display_order_04af3db)) }, singleLine = true,
+                Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.ui_display_order_04af3db)) }, singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)) }
             item { Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) {
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_visible_to_customers_4c05670), fontWeight = FontWeight.SemiBold); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_show_in_the_customer_catalog_429cbac),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant) }; Switch(form.active,
-                    { update(form.copy(active = it)) }, colors = appSwitchColors()) } }
-            if (form.id != null) item { TextButton(delete, Modifier.fillMaxWidth()) { Icon(AppIcons.Delete, null); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_delete_subcategory_29ace08)) } }
+                Text(stringResource(R.string.ui_visible_to_customers_4c05670), fontWeight = FontWeight.SemiBold); Text(stringResource(R.string.ui_show_in_the_customer_catalog_429cbac),
+                color = MaterialTheme.colorScheme.onSurfaceVariant) }; Switch(form.active,
+                { update(form.copy(active = it)) }, colors = appSwitchColors()) } }
+            if (form.id != null) item { TextButton(delete, Modifier.fillMaxWidth()) { Icon(AppIcons.Delete, null); Text(stringResource(R.string.ui_delete_subcategory_29ace08)) } }
         }
     }
 }
