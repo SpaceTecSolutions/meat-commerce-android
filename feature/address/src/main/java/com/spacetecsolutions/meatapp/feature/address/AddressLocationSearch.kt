@@ -188,7 +188,7 @@ internal fun AddressLocationSearchBar(
                 dismissedQuery = null
             },
             modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable),
-            leadingIcon = { Icon(AppIcons.Search, null, tint = T.red) },
+            leadingIcon = { Icon(AppIcons.Search, null, tint = T.muted) },
             placeholder = { Text(stringResource(R.string.ui_search_address_or_landmark_dcd28a7),
                 maxLines = 1, style = MaterialTheme.typography.bodySmall) },
             trailingIcon = {

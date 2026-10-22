@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,6 +27,7 @@ import com.spacetecsolutions.meatapp.core.designsystem.theme.CustomerOrdersToken
 import com.spacetecsolutions.meatapp.core.model.CodOrder
 import com.spacetecsolutions.meatapp.core.model.OrderItemSnapshot
 import com.spacetecsolutions.meatapp.core.model.OrderStatus
+import com.spacetecsolutions.meatapp.core.model.ProductUnit
 
 @Composable
 internal fun AdminOrderProgress(order: CodOrder) {
@@ -85,14 +87,14 @@ internal fun AdminCancelledHero(order: CodOrder) {
         Surface(color = T.red, shape = RoundedCornerShape(50)) {
             Icon(AppIcons.Close, null, Modifier.padding(18.dp).size(30.dp), tint = T.surface)
         }
-        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_cancelled_65dcde9), style = MaterialTheme.typography.titleSmall,
+        Text(stringResource(R.string.ui_order_cancelled_65dcde9), style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold, color = T.red)
         Surface(shape = RoundedCornerShape(16.dp), color = T.rose,
             border = BorderStroke(1.dp, T.red.copy(alpha = .25f))) {
             Column(Modifier.fillMaxWidth().padding(15.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_cancelled_a124561), fontWeight = FontWeight.Bold, color = T.red)
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_no_further_delivery_actions_can_b1355df),
+                Text(stringResource(R.string.ui_order_cancelled_a124561), fontWeight = FontWeight.Bold, color = T.red)
+                Text(stringResource(R.string.ui_no_further_delivery_actions_can_b1355df),
                     style = MaterialTheme.typography.bodySmall, color = T.ink)
                 order.cancelledAtEpochMillis?.let { Text(it.orderDateTime(),
                     style = MaterialTheme.typography.labelSmall, color = T.muted) }
@@ -110,9 +112,9 @@ internal fun AdminDeliveredHero(order: CodOrder) {
             verticalAlignment = Alignment.CenterVertically) {
             Icon(AppIcons.Check, null, tint = T.surface)
             Column {
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_delivered_successfully_ffa5816), fontWeight = FontWeight.Bold,
+                Text(stringResource(R.string.ui_order_delivered_successfully_ffa5816), fontWeight = FontWeight.Bold,
                     color = T.surface)
-                order.deliveredAtEpochMillis?.let { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_delivered_it_orderdatetime_d07fdbd, it.orderDateTime()),
+                order.deliveredAtEpochMillis?.let { Text(stringResource(R.string.ui_delivered_it_orderdatetime_d07fdbd, it.orderDateTime()),
                     style = MaterialTheme.typography.bodySmall,
                     color = T.surface.copy(alpha = .9f)) }
             }
@@ -129,13 +131,13 @@ internal fun AdminOrderItemsSection(order: CodOrder) {
         Column(Modifier.padding(14.dp).animateContentSize(),
             verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_items_6cb4233), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.ui_order_items_6cb4233), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Surface(Modifier.padding(start = 6.dp), shape = RoundedCornerShape(50), color = T.canvas) {
-                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_order_items_size_items_1100405, order.items.size), Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                    Text(stringResource(R.string.ui_order_items_size_items_1100405, order.items.size), Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
                         style = MaterialTheme.typography.labelSmall, color = T.muted)
                 }
                 Spacer(Modifier.weight(1f))
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_butcher_verified_54bbbcf), style = MaterialTheme.typography.labelSmall,
+                Text(stringResource(R.string.ui_butcher_verified_54bbbcf), style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.SemiBold, color = T.red)
             }
             OrderItemsTableHeader()
@@ -145,7 +147,7 @@ internal fun AdminOrderItemsSection(order: CodOrder) {
             }
             if (order.items.size > 3) OutlinedButton({ expanded = !expanded },
                 Modifier.fillMaxWidth()) {
-                Text(if (expanded) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_show_less_08d205d) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_show_order_items_size_3_0efa99e, order.items.size - 3))
+                Text(if (expanded) stringResource(R.string.ui_show_less_08d205d) else stringResource(R.string.ui_show_order_items_size_3_0efa99e, order.items.size - 3))
             }
         }
     }
@@ -155,12 +157,12 @@ internal fun AdminOrderItemsSection(order: CodOrder) {
 private fun OrderItemsTableHeader() {
     Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_item_ecdda59), Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = T.muted)
-        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_qty_1e5ff9e), Modifier.width(34.dp), style = MaterialTheme.typography.labelSmall,
+        Text(stringResource(R.string.ui_item_ecdda59), Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = T.muted)
+        Text(stringResource(R.string.ui_qty_1e5ff9e), Modifier.width(34.dp), style = MaterialTheme.typography.labelSmall,
             color = T.muted, textAlign = TextAlign.Center)
-        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_unit_f6b935a), Modifier.width(42.dp), style = MaterialTheme.typography.labelSmall,
+        Text(stringResource(R.string.ui_unit_f6b935a), Modifier.width(42.dp), style = MaterialTheme.typography.labelSmall,
             color = T.muted, textAlign = TextAlign.Center)
-        Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_total_b25928c), Modifier.width(78.dp), style = MaterialTheme.typography.labelSmall,
+        Text(stringResource(R.string.ui_total_b25928c), Modifier.width(78.dp), style = MaterialTheme.typography.labelSmall,
             color = T.muted, textAlign = TextAlign.End)
     }
 }
@@ -173,17 +175,22 @@ private fun AdminOrderTableRow(item: OrderItemSnapshot, currencyCode: String) {
             Column(Modifier.weight(1f).padding(start = 8.dp)) {
                 Text(item.name, style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_item_unitpriceminor_money_currencycode_item_4b1414e, item.unitPriceMinor.money(currencyCode), item.unit.name.lowercase()),
+                Text(stringResource(R.string.ui_item_unitpriceminor_money_currencycode_item_4b1414e, item.unitPriceMinor.money(currencyCode), item.unit.homeUnit()),
                     style = MaterialTheme.typography.labelSmall, color = T.muted,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
         Text(item.quantityLabel, Modifier.width(34.dp), style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center)
-        Text(item.unit.name.lowercase(), Modifier.width(42.dp), style = MaterialTheme.typography.labelSmall,
+        Text(item.unit.homeUnit(), Modifier.width(42.dp), style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center, color = T.muted)
         Text(item.lineTotalMinor.money(currencyCode), Modifier.width(78.dp),
             style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold,
             textAlign = TextAlign.End)
     }
+}
+
+private fun ProductUnit.homeUnit() = when (this) {
+    ProductUnit.KILOGRAM -> "kg"; ProductUnit.GRAM -> "g"
+    ProductUnit.PIECE -> "piece"; ProductUnit.PACK -> "pack"
 }

@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.address
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar
 import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.designsystem.theme.CustomerAddressTokens as T
 import com.spacetecsolutions.meatapp.core.model.DetectedAddress
@@ -37,14 +40,14 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
         view.onStart(); view.onResume()
         onDispose { view.onPause(); view.onStop(); view.onDestroy() }
     }
-    androidx.activity.compose.BackHandler(onBack = dismiss)
-    com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar()
+    BackHandler(onBack = dismiss)
+    HideAppBottomBar()
     Scaffold(containerColor = T.canvas, topBar = {
         TopAppBar(title = {
             AddressLocationSearchBar(Modifier.fillMaxWidth()) { selected ->
                 onPlaceSelected(selected)
             }
-        }, navigationIcon = { IconButton(dismiss) { Icon(AppIcons.Back, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_back_b52b36b)) } },
+        }, navigationIcon = { IconButton(dismiss) { Icon(AppIcons.Back, stringResource(R.string.ui_back_b52b36b)) } },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = T.surface))
     }, bottomBar = {
         Surface(color = T.surface, shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
@@ -52,9 +55,9 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
             Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_pin_a940f31), Modifier.weight(1f),
+                    Text(stringResource(R.string.ui_selected_delivery_pin_a940f31), Modifier.weight(1f),
                         style = MaterialTheme.typography.labelSmall, color = T.muted)
-                    if (preview != null) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_location_resolved_8876579),
+                    if (preview != null) Text(stringResource(R.string.ui_location_resolved_8876579),
                         style = MaterialTheme.typography.labelSmall, color = T.success)
                 }
                 Surface(color = T.canvas, shape = RoundedCornerShape(13.dp),
@@ -67,7 +70,7 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                                 ?: if (loading) "Resolving pin..." else "Move map to choose a pin",
                                 fontWeight = FontWeight.SemiBold, maxLines = 1,
                                 overflow = TextOverflow.Ellipsis)
-                            Text(preview?.address ?: androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_search_or_move_the_map_b35168c),
+                            Text(preview?.address ?: stringResource(R.string.ui_search_or_move_the_map_b35168c),
                                 style = MaterialTheme.typography.bodySmall, color = T.muted,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
@@ -81,7 +84,7 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                     colors = ButtonDefaults.buttonColors(containerColor = T.red),
                     shape = RoundedCornerShape(10.dp)) {
                     Icon(AppIcons.Check, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp))
-                    Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_confirm_location_proceed_32c8f1d))
+                    Text(stringResource(R.string.ui_confirm_location_proceed_32c8f1d))
                 }
             }
         }
@@ -111,18 +114,18 @@ internal fun AddressMapPicker(form: AddressFormState, preview: DetectedAddress?,
                 if (form.latitude != null && form.longitude != null)
                     onIdle(form.latitude, form.longitude)
             } } }, modifier = Modifier.fillMaxSize())
-            Icon(AppIcons.Location, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_selected_delivery_pin_f82b203),
+            Icon(AppIcons.Location, stringResource(R.string.ui_selected_delivery_pin_f82b203),
                 Modifier.align(Alignment.Center).padding(bottom = 30.dp).size(48.dp),
                 tint = T.red)
             Surface(Modifier.align(Alignment.TopCenter).padding(top = 12.dp), color = T.ink,
                 shape = RoundedCornerShape(50)) {
-                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_drag_map_to_adjust_delivery_9db6fee), Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                Text(stringResource(R.string.ui_drag_map_to_adjust_delivery_9db6fee), Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.labelSmall, color = T.surface)
             }
             SmallFloatingActionButton(useCurrentLocation,
-                Modifier.align(Alignment.CenterEnd).padding(end = 12.dp),
+                Modifier.align(Alignment.BottomEnd).padding(end = 12.dp),
                 containerColor = T.surface, contentColor = T.red) {
-                Icon(AppIcons.LiveTracking, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_use_current_location_622c745))
+                Icon(AppIcons.LiveTracking, stringResource(R.string.ui_use_current_location_622c745))
             }
         }
     }

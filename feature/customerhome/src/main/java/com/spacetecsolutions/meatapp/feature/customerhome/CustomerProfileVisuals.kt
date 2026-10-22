@@ -75,13 +75,13 @@ internal fun CustomerIdentityCard(user: User, onEdit: () -> Unit) {
                 if (user.active) Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_active_account_9d3c24d), style = MaterialTheme.typography.labelSmall,
                     color = Color(0xFF059669), fontWeight = FontWeight.SemiBold)
             }
-            /*Surface(onClick = onEdit, modifier = Modifier.size(38.dp),
+            Surface(onClick = onEdit, modifier = Modifier.size(38.dp),
                 shape = RoundedCornerShape(12.dp), color = Color.White,
                 border = BorderStroke(1.dp, CustomerProfileColors.border)) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(AppIcons.Edit, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_edit_profile_15141ea), Modifier.size(19.dp), tint = CustomerProfileColors.muted)
                 }
-            }*/
+            }
         }
     }
 }
