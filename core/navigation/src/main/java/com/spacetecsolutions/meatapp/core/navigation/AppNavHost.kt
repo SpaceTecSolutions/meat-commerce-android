@@ -243,11 +243,19 @@ private fun navigateSafely(
     }
     when (val decision = RoleNavigationRegistry.validateRoute(role, route, staffPermissions)) {
         is NavigationDecision.Allowed -> controller.navigate(decision.destination.route) {
-            if (role == UserRole.CUSTOMER && route in setOf(
+            val openingOrdersFromProfile = role == UserRole.CUSTOMER &&
+                route == CustomerRoutes.ORDERS &&
+                controller.currentDestination?.route == CustomerRoutes.PROFILE
+            val continuingCustomerShopping = role == UserRole.CUSTOMER && route in setOf(
+                CustomerRoutes.CATEGORIES, CustomerRoutes.CART, CustomerRoutes.CHECKOUT,
+            )
+            if (continuingCustomerShopping) {
+                launchSingleTop = true
+            } else if (role == UserRole.CUSTOMER && (openingOrdersFromProfile || route in setOf(
                     CustomerRoutes.PROFILE, CustomerRoutes.PROFILE_INFORMATION,
                     CustomerRoutes.NOTIFICATIONS, CustomerRoutes.HELP_SUPPORT,
                     CustomerRoutes.ABOUT, CustomerRoutes.TERMS, CustomerRoutes.PRIVACY, CustomerRoutes.FAQ,
-                    CustomerRoutes.DELETE_ACCOUNT)) {
+                    CustomerRoutes.DELETE_ACCOUNT))) {
                 launchSingleTop = true
             } else {
                 popUpTo(controller.graph.findStartDestination().id) { saveState = true }

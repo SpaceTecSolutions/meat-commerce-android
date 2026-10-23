@@ -96,9 +96,10 @@ export const adminDeleteBanner = onCall(catalogOptions, async (request) => {
 });
 
 function validate(data: any) {
-  const title = text(data?.title).trim(); const subtitle = text(data?.subtitle).trim();
-  const buttonEnabled = data?.buttonEnabled === true; const buttonText = text(data?.buttonText, "Shop Now").trim();
   const textEnabled = data?.textEnabled !== false;
+  const title = textEnabled ? text(data?.title).trim() : "";
+  const subtitle = textEnabled ? text(data?.subtitle).trim() : "";
+  const buttonEnabled = data?.buttonEnabled === true; const buttonText = text(data?.buttonText, "Shop Now").trim();
   const actionRoute = text(data?.actionRoute).trim() || null;
   const contentAlignment = text(data?.contentAlignment, "BOTTOM_START");
   const buttonColor = text(data?.buttonColor, "RED");

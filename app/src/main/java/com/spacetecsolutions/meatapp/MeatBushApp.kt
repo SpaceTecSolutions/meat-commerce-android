@@ -1,21 +1,20 @@
 package com.spacetecsolutions.meatapp
 
-import android.content.Context
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -23,58 +22,61 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarHost
-import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarMessage
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarManager
+import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarMessage
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarType
+import com.spacetecsolutions.meatapp.core.designsystem.theme.AppMotion
 import com.spacetecsolutions.meatapp.core.designsystem.theme.BrandColors
 import com.spacetecsolutions.meatapp.core.designsystem.theme.MeatBushTheme
-import com.spacetecsolutions.meatapp.core.designsystem.theme.AppMotion
+import com.spacetecsolutions.meatapp.core.model.CodActor
+import com.spacetecsolutions.meatapp.core.model.CustomerAddress
+import com.spacetecsolutions.meatapp.core.model.RazorpayPaymentSession
+import com.spacetecsolutions.meatapp.core.model.RazorpaySdkResult
+import com.spacetecsolutions.meatapp.core.model.StaffPermission
+import com.spacetecsolutions.meatapp.core.model.UserRole
 import com.spacetecsolutions.meatapp.core.navigation.AppNavHost
 import com.spacetecsolutions.meatapp.core.navigation.CustomerRoutes
 import com.spacetecsolutions.meatapp.core.navigation.DeliveryRoutes
 import com.spacetecsolutions.meatapp.core.navigation.RoleDestinationPlaceholder
-import com.spacetecsolutions.meatapp.core.navigation.SuperAdminRoutes
+import com.spacetecsolutions.meatapp.core.navigation.RoleNavigationRegistry
 import com.spacetecsolutions.meatapp.core.navigation.StaffRoutes
+import com.spacetecsolutions.meatapp.core.navigation.SuperAdminRoutes
+import com.spacetecsolutions.meatapp.feature.address.AddressInitialAction
+import com.spacetecsolutions.meatapp.feature.address.AddressRoute
+import com.spacetecsolutions.meatapp.feature.admin.faq.AdminFaqManagementRoute
 import com.spacetecsolutions.meatapp.feature.auth.ui.SplashScreen
+import com.spacetecsolutions.meatapp.feature.cart.CartRoute
+import com.spacetecsolutions.meatapp.feature.catalog.AdminCategoriesRoute
+import com.spacetecsolutions.meatapp.feature.catalog.CustomerCategoriesRoute
+import com.spacetecsolutions.meatapp.feature.catalog.ProductManagementRoute
+import com.spacetecsolutions.meatapp.feature.checkout.CheckoutRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerAboutRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerDeleteAccountRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerFaqRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerHomeRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerLegalRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerProfileInformationRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerProfileRoute
+import com.spacetecsolutions.meatapp.feature.customerhome.CustomerSupportRoute
+import com.spacetecsolutions.meatapp.feature.orders.CodOrdersRoute
+import com.spacetecsolutions.meatapp.feature.orders.CustomerOrdersRoute
+import com.spacetecsolutions.meatapp.feature.orders.DeliveryHelpScreen
+import com.spacetecsolutions.meatapp.feature.orders.DeliveryHistoryRoute
+import com.spacetecsolutions.meatapp.feature.orders.DeliveryHomeRoute
+import com.spacetecsolutions.meatapp.feature.orders.DeliveryNotificationsScreen
+import com.spacetecsolutions.meatapp.feature.orders.DeliveryProfileRoute
+import com.spacetecsolutions.meatapp.feature.orders.NotificationHistoryRoute
+import com.spacetecsolutions.meatapp.feature.superadmin.admin.AdminManagementRoute
+import com.spacetecsolutions.meatapp.feature.superadmin.audit.AuditLogRoute
+import com.spacetecsolutions.meatapp.feature.superadmin.audit.SuperAdminMoreScreen
 import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.DashboardQuickAction
 import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.DashboardUiState
 import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.SuperAdminDashboardData
 import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.SuperAdminDashboardScreen
-import com.spacetecsolutions.meatapp.feature.superadmin.admin.AdminManagementRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.features.FeatureManagementRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.features.PaymentMethodsRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.reports.SuperAdminReportsRoute
-import com.spacetecsolutions.meatapp.feature.superadmin.audit.AuditLogRoute
-import com.spacetecsolutions.meatapp.feature.superadmin.audit.SuperAdminMoreScreen
-import com.spacetecsolutions.meatapp.feature.catalog.CustomerCategoriesRoute
-import com.spacetecsolutions.meatapp.feature.catalog.AdminCategoriesRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerHomeRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerProfileRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerProfileInformationRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerSupportRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerAboutRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerLegalRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerDeleteAccountRoute
-import com.spacetecsolutions.meatapp.feature.customerhome.CustomerFaqRoute
-import com.spacetecsolutions.meatapp.feature.cart.CartRoute
-import com.spacetecsolutions.meatapp.feature.address.AddressRoute
-import com.spacetecsolutions.meatapp.feature.address.AddressInitialAction
-import com.spacetecsolutions.meatapp.feature.checkout.CheckoutRoute
-import com.spacetecsolutions.meatapp.feature.orders.CodOrdersRoute
-import com.spacetecsolutions.meatapp.feature.orders.DeliveryHomeRoute
-import com.spacetecsolutions.meatapp.feature.orders.DeliveryHistoryRoute
-import com.spacetecsolutions.meatapp.feature.orders.DeliveryProfileRoute
-import com.spacetecsolutions.meatapp.feature.orders.DeliveryNotificationsScreen
-import com.spacetecsolutions.meatapp.feature.orders.NotificationHistoryRoute
-import com.spacetecsolutions.meatapp.feature.orders.DeliveryHelpScreen
-import com.spacetecsolutions.meatapp.feature.orders.CustomerOrdersRoute
-import com.spacetecsolutions.meatapp.feature.catalog.ProductManagementRoute
-import com.spacetecsolutions.meatapp.feature.admin.faq.AdminFaqManagementRoute
-import com.spacetecsolutions.meatapp.core.model.CodActor
-import com.spacetecsolutions.meatapp.core.model.UserRole
-import com.spacetecsolutions.meatapp.core.model.StaffPermission
-import kotlinx.coroutines.delay
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MeatBushApp(
     deepLink: String? = null,
@@ -82,9 +84,9 @@ fun MeatBushApp(
     notificationOrderId: String? = null,
     onNotificationOrderConsumed: () -> Unit = {},
     viewModel: AppViewModel = hiltViewModel(),
-    razorpaySdkResult: com.spacetecsolutions.meatapp.core.model.RazorpaySdkResult? = null,
+    razorpaySdkResult: RazorpaySdkResult? = null,
     onRazorpayResultConsumed: () -> Unit = {},
-    launchRazorpay: (com.spacetecsolutions.meatapp.core.model.RazorpayPaymentSession) -> Unit = {},
+    launchRazorpay: (RazorpayPaymentSession) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val authViewModel: CustomerAuthViewModel = hiltViewModel()
@@ -117,7 +119,7 @@ fun MeatBushApp(
     var pendingAddressAction by remember { mutableStateOf<AddressInitialAction?>(null) }
     var pendingAddressActionId by remember { mutableStateOf<String?>(null) }
     var selectedCheckoutAddressId by remember { mutableStateOf<String?>(null) }
-    var selectedCartAddress by remember { mutableStateOf<com.spacetecsolutions.meatapp.core.model.CustomerAddress?>(null) }
+    var selectedCartAddress by remember { mutableStateOf<CustomerAddress?>(null) }
     var requestCurrentAddress by remember { mutableStateOf(false) }
     var pendingRoleOrderId by remember { mutableStateOf(notificationOrderId) }
     LaunchedEffect(notificationOrderId) {
@@ -140,7 +142,7 @@ fun MeatBushApp(
                     hostState = snackbarHostState,
                 )
             },
-        ) { padding ->
+        ) {
             Crossfade(
                 targetState = uiState.session,
                 modifier = Modifier.fillMaxSize(),
@@ -182,8 +184,8 @@ fun MeatBushApp(
                         },
                         destinationContent = { destination, navigate ->
                             when (destination.route) {
-                                in com.spacetecsolutions.meatapp.core.navigation.RoleNavigationRegistry
-                                    .graphDestinationsFor(com.spacetecsolutions.meatapp.core.model.UserRole.ADMIN)
+                                in RoleNavigationRegistry
+                                    .graphDestinationsFor(UserRole.ADMIN)
                                     .map { it.route } -> AdminDestinationContent(
                                         destination.route, navigate, uiState, context, snackbarManager,
                                         viewModel::signOut, pendingRoleOrderId, {
@@ -193,7 +195,8 @@ fun MeatBushApp(
                                     )
                                 StaffRoutes.HOME -> uiState.authenticatedUser?.let { StaffHomeRoute(it, navigate) }
                                     ?: StaffAccessDenied()
-                                StaffRoutes.ORDERS -> if (uiState.authenticatedUser?.permissions?.contains(StaffPermission.VIEW_ORDERS) == true)
+                                StaffRoutes.ORDERS -> if (uiState.authenticatedUser?.permissions?.contains(
+                                        StaffPermission.VIEW_ORDERS) == true)
                                     CodOrdersRoute(actor = CodActor.ADMIN, onMessage = { message -> snackbarManager.show(
                                         AppSnackbarMessage(message.text, if (message.success) AppSnackbarType.SUCCESS else AppSnackbarType.ERROR)) },
                                         operatorPermissions = uiState.authenticatedUser?.permissions,
@@ -352,7 +355,7 @@ fun MeatBushApp(
                                     },
                                 )
                                 CustomerRoutes.CATEGORIES -> CustomerCategoriesRoute(
-                                    onBack = { navigate(CustomerRoutes.HOME) },
+                                    onBack = { backDispatcher?.onBackPressed() ?: navigate(CustomerRoutes.HOME) },
                                     onCart = { navigate(CustomerRoutes.CART) },
                                     initialProductId = pendingCustomerProductId,
                                     onInitialProductConsumed = { pendingCustomerProductId = null },
@@ -372,7 +375,7 @@ fun MeatBushApp(
                                     },
                                 )
                                 CustomerRoutes.CART -> CartRoute(
-                                    onBack = { navigate(CustomerRoutes.HOME) },
+                                    onBack = { backDispatcher?.onBackPressed() ?: navigate(CustomerRoutes.HOME) },
                                     onStartShopping = { navigate(CustomerRoutes.CATEGORIES) },
                                     onChangeAddress = {
                                         addressReturnRoute = CustomerRoutes.CART
@@ -396,7 +399,7 @@ fun MeatBushApp(
                                 )
                                 CustomerRoutes.ORDERS -> CustomerOrdersRoute(
                                     onStartShopping = { navigate(CustomerRoutes.CATEGORIES) },
-                                    onHelp = { navigate(CustomerRoutes.PROFILE) },
+                                    onHelp = { navigate(CustomerRoutes.HELP_SUPPORT) },
                                     onBack = { backDispatcher?.onBackPressed() },
                                     onNavigate = { address -> openNavigation(context, address) },
                                     onCall = { mobile -> openDialer(context, mobile) },
@@ -414,8 +417,8 @@ fun MeatBushApp(
                                     CustomerProfileRoute(
                                         user = user,
                                         showNotifications = uiState.featureConfig?.inAppNotificationsEnabled != false,
-//                                        onBack = { backDispatcher?.onBackPressed() },
-                                        onBack = { navigate(CustomerRoutes.HOME) },
+                                        onBack = { backDispatcher?.onBackPressed() },
+//                                        onBack = { navigate(CustomerRoutes.HOME) },
                                         openProfileInformation = { navigate(CustomerRoutes.PROFILE_INFORMATION) },
                                         openAddresses = {
                                             addressReturnRoute = CustomerRoutes.PROFILE

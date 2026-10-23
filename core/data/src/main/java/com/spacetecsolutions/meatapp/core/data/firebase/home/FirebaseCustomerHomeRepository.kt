@@ -1,5 +1,7 @@
 package com.spacetecsolutions.meatapp.core.data.firebase.home
 
+import android.util.Log
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.spacetecsolutions.meatapp.core.common.result.AppError
@@ -40,6 +42,7 @@ internal class FirebaseCustomerHomeRepository @Inject constructor(
         cachedCatalog = home.publicCatalogSnapshot()
         AppResult.Success(home)
     } catch (error: Exception) {
+        Log.e("CustomerHome", "customerGetHome failed", error)
         val appError = error.toHomeError()
         val cached = cachedCatalog
         if (cached != null && appError in setOf(AppError.Network, AppError.Timeout, AppError.Offline)) {
@@ -102,11 +105,17 @@ private fun Map<*, *>.number(key: String) = this[key] as? Number ?: 0
 
 private fun Throwable.toHomeError(): AppError {
     val exception = this as? FirebaseFunctionsException
-    return when (exception?.code) {
-        FirebaseFunctionsException.Code.UNAUTHENTICATED -> AppError.Unauthorized
-        FirebaseFunctionsException.Code.PERMISSION_DENIED -> AppError.Forbidden
-        FirebaseFunctionsException.Code.UNAVAILABLE -> AppError.Network
-        FirebaseFunctionsException.Code.DEADLINE_EXCEEDED -> AppError.Timeout
+    return when {
+        hasConnectivityCause() -> AppError.Network
+        exception?.code == FirebaseFunctionsException.Code.UNAUTHENTICATED -> AppError.Unauthorized
+        exception?.code == FirebaseFunctionsException.Code.PERMISSION_DENIED -> AppError.Forbidden
+        exception?.code == FirebaseFunctionsException.Code.UNAVAILABLE -> AppError.Network
+        exception?.code == FirebaseFunctionsException.Code.DEADLINE_EXCEEDED -> AppError.Timeout
         else -> AppError.Unknown(this)
     }
 }
+
+private fun Throwable.hasConnectivityCause(): Boolean =
+    generateSequence(this as Throwable?) { it.cause }.take(8).any {
+        it is java.io.IOException || it is FirebaseNetworkException
+    }

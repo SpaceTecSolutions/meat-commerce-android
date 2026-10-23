@@ -60,7 +60,10 @@ fun CustomerSupportRoute(back: () -> Unit, call: (String) -> Unit,
                 Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_direct_support_3750b67), fontSize = 12.sp, color = AccountStyle.muted)
             }
             when {
-                state.loading -> CircularProgressIndicator(color = AccountStyle.red)
+                state.loading -> Box(
+                    Modifier.fillMaxWidth().heightIn(min = 180.dp),
+                    contentAlignment = Alignment.Center,
+                ) { CircularProgressIndicator(color = AccountStyle.red) }
                 state.error != null -> AccountCard(Modifier.fillMaxWidth()) {
                     Text(state.error.orEmpty())
                     TextButton(onClick = viewModel::refresh) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_retry_9f5cd8a)) }

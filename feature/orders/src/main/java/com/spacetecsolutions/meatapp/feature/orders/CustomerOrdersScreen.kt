@@ -136,6 +136,12 @@ fun CustomerOrdersRoute(
     }
 }
 
+private object DatesThroughToday : SelectableDates {
+    private fun todayUtcMillis() = java.time.LocalDate.now().toEpochDay() * 86_400_000L
+    override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis <= todayUtcMillis()
+    override fun isSelectableYear(year: Int) = year <= java.time.LocalDate.now().year
+}
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun CustomerOrdersListScreen(
@@ -153,7 +159,10 @@ private fun CustomerOrdersListScreen(
         } ?: true
     }
     if (datePickerOpen) {
-        val picker = rememberDatePickerState(initialSelectedDateMillis = selectedDate)
+        val picker = rememberDatePickerState(
+            initialSelectedDateMillis = selectedDate,
+            selectableDates = DatesThroughToday,
+        )
         DatePickerDialog(onDismissRequest = { datePickerOpen = false },
             confirmButton = { TextButton({ selectedDate = picker.selectedDateMillis; datePickerOpen = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_apply_cfea419)) } },
             dismissButton = { TextButton({ selectedDate = null; datePickerOpen = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_all_dates_69feaaf)) } }) {
