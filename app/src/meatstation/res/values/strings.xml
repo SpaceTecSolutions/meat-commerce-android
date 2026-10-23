@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Meat Station</string>
     <string name="deep_link_scheme" translatable="false">meatstation</string>
+    <string name="firebase_realtime_database_url" translatable="false">https://meatstationmobileapp-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </resources>
