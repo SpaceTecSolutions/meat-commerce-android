@@ -1,5 +1,7 @@
 package com.spacetecsolutions.meatapp.core.data.firebase.checkout
 
+import android.util.Log
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.spacetecsolutions.meatapp.core.common.result.*
@@ -35,6 +37,8 @@ internal class FirebaseCheckoutRepository @Inject constructor(
         AppResult.Success(placedOrder)
     } catch (error: Exception) {
         val code = (error as? FirebaseFunctionsException)?.code
+        val reason = ((error as? FirebaseFunctionsException)?.details as? Map<*, *>)?.get("reason")
+        Log.e("CustomerCheckout", "customerPlaceOrder failed: code=${code ?: "LOCAL"}, reason=${reason ?: "NONE"}", error)
         if (code == FirebaseFunctionsException.Code.UNAVAILABLE || code == FirebaseFunctionsException.Code.DEADLINE_EXCEEDED)
             AppResult.Failure(AppError.Timeout)
         else AppResult.Failure(error.toCheckoutError())
@@ -124,6 +128,7 @@ private fun Throwable.toCheckoutError(): AppError {
     val exception = this as? FirebaseFunctionsException
     val reason = (exception?.details as? Map<*, *>)?.get("reason") as? String
     return when {
+        hasConnectivityCause() -> AppError.Network
         reason == "PRICE_CHANGED" -> AppError.Validation(
             message = "Some prices have changed. Please review your updated order.",
         )
@@ -145,3 +150,8 @@ private fun Throwable.toCheckoutError(): AppError {
         else -> AppError.Unknown(this)
     }
 }
+
+private fun Throwable.hasConnectivityCause(): Boolean =
+    generateSequence(this as Throwable?) { it.cause }.take(8).any {
+        it is java.io.IOException || it is FirebaseNetworkException
+    }

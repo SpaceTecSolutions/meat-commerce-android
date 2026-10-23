@@ -25,15 +25,17 @@ class AddressViewModel @Inject constructor(
     init { refresh() }
 
     fun refresh() = viewModelScope.launch {
-        mutableState.update { it.copy(loading = true, error = null) }
+        mutableState.update { it.copy(
+            loading = it.addresses.isEmpty(), refreshing = it.addresses.isNotEmpty(), error = null,
+        ) }
         when (val result = repository.getAddresses()) {
             is AppResult.Success -> mutableState.update { current -> current.copy(
-                loading = false, addresses = result.value,
+                loading = false, refreshing = false, addresses = result.value,
                 selectedAddressId = current.selectedAddressId?.takeIf { id -> result.value.any { it.id == id } }
                     ?: result.value.firstOrNull { it.isDefault }?.id ?: result.value.firstOrNull()?.id,
             ) }
             is AppResult.Failure -> mutableState.update {
-                it.copy(loading = false, error = result.error.displayMessage(context))
+                it.copy(loading = false, refreshing = false, error = result.error.displayMessage(context))
             }
         }
     }
@@ -161,7 +163,9 @@ class AddressViewModel @Inject constructor(
     fun delete() = viewModelScope.launch {
         val address = state.value.deleteConfirmation ?: return@launch
         mutableState.update { it.copy(submitting = true) }
-        handleMutation(repository.delete(address.id, address.revision), context.getString(R.string.address_deleted))
+        val result = repository.delete(address.id, address.revision)
+        handleMutation(result, context.getString(R.string.address_deleted))
+        if (result is AppResult.Success) refresh()
     }
 
     fun setDefault(address: CustomerAddress) = viewModelScope.launch {

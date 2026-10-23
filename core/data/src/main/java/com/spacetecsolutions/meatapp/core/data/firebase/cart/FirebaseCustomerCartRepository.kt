@@ -2,6 +2,7 @@ package com.spacetecsolutions.meatapp.core.data.firebase.cart
 
 import android.util.Log
 import android.content.Context
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
@@ -69,7 +70,12 @@ internal class FirebaseCustomerCartRepository @Inject constructor(
             val count = (response["cartQuantity"] as? Number)?.toInt() ?: 0
             badgeStore.update(count)
             AppResult.Success(CartMutation(count))
-        } catch (error: Exception) { AppResult.Failure(error.toCartError()) }
+        } catch (error: Exception) {
+            val callable = error as? FirebaseFunctionsException
+            val reason = (callable?.details as? Map<*, *>)?.get("reason") as? String
+            Log.e("CustomerCart", "customerAddToCart failed: code=${callable?.code ?: "LOCAL"}, reason=${reason ?: "NONE"}", error)
+            AppResult.Failure(error.toCartError())
+        }
         val lines = guestLines()
         lines[productId] = ((lines[productId] ?: 0) + quantity).coerceIn(1, 99)
         return when (val quote = call("customerQuoteGuestCart", payload(lines))) {
@@ -151,6 +157,7 @@ private fun Throwable.toCartError(): AppError {
     val exception = this as? FirebaseFunctionsException
     val reason = (exception?.details as? Map<*, *>)?.get("reason") as? String
     return when {
+        hasConnectivityCause() -> AppError.Network
         reason == "OUT_OF_STOCK" -> AppError.Validation(message = "Stock changed. Your cart was refreshed")
         reason == "PRODUCT_UNAVAILABLE" -> AppError.NotFound
         exception?.code == FirebaseFunctionsException.Code.UNAUTHENTICATED -> AppError.Unauthorized
@@ -160,3 +167,8 @@ private fun Throwable.toCartError(): AppError {
         else -> AppError.Unknown(this)
     }
 }
+
+private fun Throwable.hasConnectivityCause(): Boolean =
+    generateSequence(this as Throwable?) { it.cause }.take(8).any {
+        it is java.io.IOException || it is FirebaseNetworkException
+    }

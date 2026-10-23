@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -126,33 +127,41 @@ fun AddressRoute(onBack: () -> Unit, onMessage: (AddressMessage) -> Unit,
             }
         }
     }) { padding ->
-        when {
-            state.loading -> ContentStateView(ContentState.Loading, Modifier.padding(padding))
-            state.error != null -> ContentStateView(ContentState.Error(description = state.error),
-                Modifier.padding(padding), onAction = viewModel::refresh)
-            state.addresses.isEmpty() -> ContentStateView(ContentState.Empty(
-                title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_no_saved_addresses_ec37dcd), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_add_an_address_for_delivery_947e319)),
-                Modifier.padding(padding), onAction = viewModel::add)
-            else -> LazyColumn(Modifier.fillMaxSize().padding(padding)
-                .wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = AppDimensions.contentMaxWidth),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                item {
-                    Text(state.addresses.size.toString() + " saved " +
-                        if (state.addresses.size == 1) "location" else "locations",
-                        style = MaterialTheme.typography.bodyMedium, color = T.muted)
-                }
-                items(state.addresses, key = CustomerAddress::id) { address ->
-                    SwipeDeleteContainer(!state.submitting, { viewModel.confirmDelete(address) }) {
-                        SelectableAddressCard(address, state.selectedAddressId == address.id,
-                            state.submitting, selectionMode,
-                            { viewModel.select(address.id); onSelect?.invoke(address.id)
-                                onSelectAddress?.invoke(address) },
-                            { viewModel.edit(address) }, { viewModel.confirmDelete(address) },
-                            { viewModel.setDefault(address) })
+        PullToRefreshBox(
+            isRefreshing = state.refreshing,
+            onRefresh = { viewModel.refresh() },
+            modifier = Modifier.fillMaxSize().padding(padding),
+        ) {
+            when {
+                state.loading -> ContentStateView(ContentState.Loading, Modifier.fillMaxSize())
+                state.error != null -> ContentStateView(ContentState.Error(description = state.error),
+                    Modifier.fillMaxSize(), onAction = viewModel::refresh)
+                state.addresses.isEmpty() -> ContentStateView(ContentState.Empty(
+                    title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_no_saved_addresses_ec37dcd), description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.address.R.string.ui_add_an_address_for_delivery_947e319)),
+                    Modifier.fillMaxSize(), onAction = viewModel::add)
+                else -> {
+                LazyColumn(Modifier.fillMaxSize()
+                    .wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = AppDimensions.contentMaxWidth),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    item {
+                        Text(state.addresses.size.toString() + " saved " +
+                            if (state.addresses.size == 1) "location" else "locations",
+                            style = MaterialTheme.typography.bodyMedium, color = T.muted)
+                    }
+                    items(state.addresses, key = CustomerAddress::id) { address ->
+                        SwipeDeleteContainer(!state.submitting, { viewModel.confirmDelete(address) }) {
+                            SelectableAddressCard(address, state.selectedAddressId == address.id,
+                                state.submitting, selectionMode,
+                                { viewModel.select(address.id); onSelect?.invoke(address.id)
+                                    onSelectAddress?.invoke(address) },
+                                { viewModel.edit(address) }, { viewModel.confirmDelete(address) },
+                                { viewModel.setDefault(address) })
+                        }
                     }
                 }
             }
         }
     }
+}
 }

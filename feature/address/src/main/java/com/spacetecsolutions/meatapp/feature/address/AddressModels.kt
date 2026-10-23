@@ -24,6 +24,7 @@ enum class AddressVerification { IDLE, VALIDATING, VALID, NOT_FOUND, TEMPORARY_E
 
 data class AddressUiState(
     val loading: Boolean = true,
+    val refreshing: Boolean = false,
     val submitting: Boolean = false,
     val addresses: List<CustomerAddress> = emptyList(),
     val form: AddressFormState? = null,

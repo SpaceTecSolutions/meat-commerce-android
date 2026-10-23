@@ -8,6 +8,7 @@ import com.spacetecsolutions.meatapp.core.domain.repository.CategoryRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.CustomerCartRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.ProductRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.CatalogContentRepository
+import com.spacetecsolutions.meatapp.core.domain.service.CartBadgeStore
 import com.spacetecsolutions.meatapp.core.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -20,17 +21,37 @@ class CustomerCategoriesViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val productRepository: ProductRepository,
     private val cartRepository: CustomerCartRepository,
+    private val cartBadgeStore: CartBadgeStore,
     private val contentRepository: CatalogContentRepository,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(CustomerCategoriesUiState())
     val state = mutableState.asStateFlow()
-    init { refreshCategories(initial = true) }
+    init {
+        refreshCategories(initial = true)
+        viewModelScope.launch {
+            cartBadgeStore.quantity.collect { quantity ->
+                mutableState.update { it.copy(cartQuantity = quantity) }
+            }
+        }
+    }
 
     fun refresh() {
         if (state.value.selectedCategory == null) refreshCategories(initial = false)
         else if (state.value.selectedSubcategory == null && state.value.subcategories.isEmpty()) {
             state.value.selectedCategory?.let { selectCategory(it.id, it.name) }
         } else loadProducts(reset = true, showRefresh = true)
+    }
+
+    fun refreshCart() = viewModelScope.launch {
+        when (val result = cartRepository.getCart()) {
+            is AppResult.Success -> mutableState.update {
+                it.copy(
+                    cartQuantity = result.value.distinctItemCount,
+                    cartQuantities = result.value.lines.associate { line -> line.productId to line.quantity },
+                )
+            }
+            is AppResult.Failure -> Unit
+        }
     }
 
     fun updateCategorySearch(value: String) = mutableState.update { it.copy(categorySearch = value) }

@@ -62,7 +62,7 @@ internal fun CustomerOrderStatusChip(model: CustomerOrderUiModel) {
         order.orderStatus == OrderStatus.CANCELLED -> T.rose
         else -> order.orderStatus.softColor()
     }
-    Surface(color = background, shape = RoundedCornerShape(50),
+    Surface(modifier = Modifier.wrapContentWidth(), color = background, shape = RoundedCornerShape(50),
         border = BorderStroke(1.dp, foreground.copy(alpha = .25f))) {
         Text(model.displayStatus, Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
             style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold,

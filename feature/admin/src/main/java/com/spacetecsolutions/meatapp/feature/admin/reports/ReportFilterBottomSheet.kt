@@ -107,8 +107,9 @@ private fun ReportDateRangePicker(
     select: (String, String) -> Unit,
 ) {
     val picker = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = start?.toEpochMillis(),
-        initialSelectedEndDateMillis = end?.toEpochMillis(),
+        initialSelectedStartDateMillis = start?.toEpochMillis()?.coerceAtMost(todayUtcMillis()),
+        initialSelectedEndDateMillis = end?.toEpochMillis()?.coerceAtMost(todayUtcMillis()),
+        selectableDates = DatesThroughToday,
     )
     DatePickerDialog(
         onDismissRequest = dismiss,
@@ -141,3 +142,9 @@ private fun ReportPeriodType.filterLabel() = when (this) {
 }
 private fun String.toEpochMillis() = LocalDate.parse(this).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
 private fun Long.toIsoDate() = Instant.ofEpochMilli(this).atZone(ZoneOffset.UTC).toLocalDate().toString()
+private fun todayUtcMillis() = LocalDate.now().toEpochDay() * 86_400_000L
+
+private object DatesThroughToday : SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis <= todayUtcMillis()
+    override fun isSelectableYear(year: Int) = year <= LocalDate.now().year
+}

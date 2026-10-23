@@ -1,6 +1,7 @@
 package com.spacetecsolutions.meatapp.core.data.firebase.product
 
 import android.util.Log
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.spacetecsolutions.meatapp.core.data.firebase.image.FirebaseImageUploader
@@ -58,6 +59,7 @@ internal class FirebaseProductRepository @Inject constructor(
         cartBadgeStore.update(page.cartQuantity)
         AppResult.Success(page)
     } catch (error: Exception) {
+        Log.e("CustomerProduct", "customerGetProducts failed", error)
         AppResult.Failure(error.toAppError())
     }
 
@@ -207,6 +209,7 @@ private fun Throwable.toAppError(): AppError {
     val exception = this as? FirebaseFunctionsException
     val reason = (exception?.details as? Map<*, *>)?.get("reason") as? String
     return when {
+        hasConnectivityCause() -> AppError.Network
         reason == "PRODUCT_LIMIT_REACHED" -> AppError.Validation(
             field = "productLimit",
             message = "Product limit reached. Archive a product or ask the Super Admin to increase it",
@@ -245,3 +248,8 @@ private fun Throwable.toAppError(): AppError {
         else -> AppError.Unknown(this)
     }
 }
+
+private fun Throwable.hasConnectivityCause(): Boolean =
+    generateSequence(this as Throwable?) { it.cause }.take(8).any {
+        it is java.io.IOException || it is FirebaseNetworkException
+    }

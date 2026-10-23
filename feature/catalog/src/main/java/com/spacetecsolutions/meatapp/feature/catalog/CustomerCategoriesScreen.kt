@@ -10,6 +10,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.spacetecsolutions.meatapp.core.designsystem.component.HideAppBottomBar
 
 @Composable
@@ -29,8 +31,11 @@ fun CustomerCategoriesRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     var searchVisible by rememberSaveable { mutableStateOf(false) }
     var subcategorySearch by rememberSaveable { mutableStateOf("") }
+    var returnHomeAfterShortcutProduct by remember { mutableStateOf(false) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshCart() }
     LaunchedEffect(initialProductId) {
         initialProductId?.let {
+            returnHomeAfterShortcutProduct = true
             viewModel.openProduct(it)
             onInitialProductConsumed()
         }
@@ -57,9 +62,15 @@ fun CustomerCategoriesRoute(
     }
 
     val detailOpen = state.detailProductId != null
+    val closeProduct = {
+        if (returnHomeAfterShortcutProduct) {
+            returnHomeAfterShortcutProduct = false
+            onBack()
+        } else viewModel.closeProduct()
+    }
     if (state.selectedCategory != null || detailOpen) HideAppBottomBar()
     if (detailOpen) {
-        BackHandler(onBack = viewModel::closeProduct)
+        BackHandler(onBack = closeProduct)
         CustomerProductDetails(
             product = state.selectedProduct,
             loading = state.detailLoading,
@@ -70,7 +81,7 @@ fun CustomerCategoriesRoute(
             adding = state.selectedProduct?.id in state.addingProductIds,
             inCart = (state.cartQuantities[state.selectedProduct?.id] ?: 0) > 0,
             onCart = onCart,
-            onBack = viewModel::closeProduct,
+            onBack = closeProduct,
             onRetry = viewModel::retryProductDetails,
             onQuantity = { delta -> state.selectedProduct?.let { product ->
                 if ((state.cartQuantities[product.id] ?: 0) > 0)

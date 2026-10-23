@@ -93,7 +93,9 @@ class BannerManagementViewModel @Inject constructor(
             }
         }
         val input = BannerInput(
-            bannerId = form.id, title = form.title.trim(), subtitle = form.subtitle.trim(),
+            bannerId = form.id,
+            title = if (form.textEnabled) form.title.trim() else "",
+            subtitle = if (form.textEnabled) form.subtitle.trim() else "",
             imageUploadToken = token, actionRoute = if (!form.buttonEnabled) null
             else form.productId.trim().takeIf(String::isNotBlank)?.let { "product:$it" }
                 ?: form.categoryId.takeIf(String::isNotBlank)?.let { "category:$it" } ?: "products",

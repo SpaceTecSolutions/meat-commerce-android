@@ -174,7 +174,7 @@ private fun CheckoutDeliverySelection(
     Box(Modifier.fillMaxSize().background(CustomerCommerceTokens.canvas).padding(padding),
         contentAlignment = Alignment.TopCenter) {
         LazyColumn(
-            Modifier.fillMaxHeight().fillMaxWidth().widthIn(max = AppDimensions.formMaxWidth).imeNestedScroll(),
+            Modifier.fillMaxHeight().fillMaxWidth().widthIn(max = AppDimensions.formMaxWidth),
             contentPadding = PaddingValues(horizontal = AppSpacing.medium, vertical = AppSpacing.small),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.compact),
         ) {
