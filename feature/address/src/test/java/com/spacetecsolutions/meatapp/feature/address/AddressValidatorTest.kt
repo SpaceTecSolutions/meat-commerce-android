@@ -23,7 +23,9 @@ class AddressValidatorTest {
     @Test
     fun `valid Indian address is accepted and mobile normalized`() {
         assertTrue(validator.validate(valid()).isEmpty())
-        assertEquals("+919876543210", validator.normalizedMobile("09876543210"))
+        assertEquals("+919876543210", validator.normalizedMobile("9876543210"))
+        assertEquals("+919876543210", validator.normalizedMobile("+91 98765-43210"))
+        assertEquals("+9109876543210", validator.normalizedMobile("09876543210"))
     }
 
     @Test

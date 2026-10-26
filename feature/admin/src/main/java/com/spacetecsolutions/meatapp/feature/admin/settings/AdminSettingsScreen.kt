@@ -8,11 +8,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.spacetecsolutions.meatapp.core.designsystem.component.*
 import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.designsystem.theme.*
 import com.spacetecsolutions.meatapp.core.model.User
+import com.spacetecsolutions.meatapp.feature.admin.R
 import com.spacetecsolutions.meatapp.feature.admin.promotion.PromotionManagementRoute
 import com.spacetecsolutions.meatapp.feature.admin.promotion.PromotionMessage
 import com.spacetecsolutions.meatapp.feature.admin.staff.DeliveryStaffRoute
@@ -133,7 +134,7 @@ fun AdminSettingsScreen(
             AdminAccountGroup("Information & Support") {
                 AdminAccountRow(AppIcons.Help, "FAQ Management", "Customer questions and answers", onFaq)
                 AdminAccountRow(AppIcons.Help, "Help & Support", "Customer support contacts", onHelpSupport)
-                AdminAccountRow(AppIcons.Info, "About", "About our shop and services", onAbout, false)
+//                AdminAccountRow(AppIcons.Info, "About", "About our shop and services", onAbout, false)
             }
             AdminAccountGroup("Account Access") {
                 AdminAccountRow(AppIcons.Logout, "Log Out", "Signed in as ${user?.mobileNumber.orEmpty()}", onLogout, false)
@@ -147,8 +148,8 @@ fun AdminSettingsScreen(
 @Composable
 private fun LogoutDialog(role: String, dismiss: () -> Unit, confirm: () -> Unit) = AlertDialog(
     onDismissRequest = dismiss,
-    title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_logout_d9be757)) },
-    text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_you_will_need_to_sign_ec125cb, role)) },
-    confirmButton = { Button(confirm) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_logout_e43d612)) } },
-    dismissButton = { TextButton(dismiss) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_cancel_77dfd21)) } },
+    title = { Text(stringResource(R.string.ui_logout_d9be757)) },
+    text = { Text(stringResource(R.string.ui_you_will_need_to_sign_ec125cb, role)) },
+    confirmButton = { Button(confirm) { Text(stringResource(R.string.ui_logout_e43d612)) } },
+    dismissButton = { TextButton(dismiss) { Text(stringResource(R.string.ui_cancel_77dfd21)) } },
 )

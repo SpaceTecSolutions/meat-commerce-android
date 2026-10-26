@@ -17,8 +17,8 @@ class AddressValidator @Inject constructor(private val phoneConfig: PhoneNumberC
     fun normalizedMobile(value: String): String {
         val compact = value.filterNot { it.isWhitespace() || it in "-()" }
         val national = when {
+            compact.length == phoneConfig.nationalNumberLength -> compact
             compact.startsWith(phoneConfig.countryCode) -> compact.removePrefix(phoneConfig.countryCode)
-            compact.startsWith("0") -> compact.drop(1)
             else -> compact
         }
         return phoneConfig.countryCode + national

@@ -117,7 +117,8 @@ private fun ReportDateRangePicker(
             TextButton({
                 val from = picker.selectedStartDateMillis?.toIsoDate()
                 val to = picker.selectedEndDateMillis?.toIsoDate()
-                if (from != null && to != null) select(from, to)
+                val today = LocalDate.now().toString()
+                if (from != null && to != null && from <= today && to <= today) select(from, to)
             }, enabled = picker.selectedStartDateMillis != null && picker.selectedEndDateMillis != null) {
                 Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_apply_cfea419))
             }

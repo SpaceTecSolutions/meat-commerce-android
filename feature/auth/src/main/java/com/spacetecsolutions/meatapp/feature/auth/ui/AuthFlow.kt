@@ -71,28 +71,24 @@ fun AuthenticationFlow(
 
 @Composable
 fun SplashScreen(appName: String, @DrawableRes bgRes: Int,@DrawableRes logoRes: Int, modifier: Modifier = Modifier) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Image(
             painter = painterResource(bgRes),
             contentDescription = appName,
-            contentScale = ContentScale.Crop
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds,
         )
-    }
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Image(
-            painter = painterResource(logoRes),
-            contentDescription = appName,
-            modifier = Modifier.size(180.dp),
-        )
-        /*Text(
-            text = appName,
-            modifier = Modifier.padding(top = AppSpacing.medium),
-            style = MaterialTheme.typography.headlineSmall,
-        )*/
-        CircularProgressIndicator(modifier = Modifier.padding(top = AppSpacing.large).size(28.dp))
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Image(
+                painter = painterResource(logoRes),
+                contentDescription = appName,
+                modifier = Modifier.size(180.dp),
+            )
+            CircularProgressIndicator(modifier = Modifier.padding(top = AppSpacing.large).size(28.dp))
+        }
     }
 }

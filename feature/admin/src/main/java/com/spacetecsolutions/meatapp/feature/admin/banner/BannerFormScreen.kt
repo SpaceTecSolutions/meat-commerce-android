@@ -23,6 +23,7 @@ import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.designsystem.theme.*
 import com.spacetecsolutions.meatapp.core.model.BannerContentAlignment
 import com.spacetecsolutions.meatapp.core.model.PromotionBanner
+import banner.label
 
 @Composable
 internal fun BannerFormScreen(form: BannerForm, busy: Boolean, actions: BannerManagementViewModel) {
