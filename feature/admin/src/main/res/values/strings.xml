@@ -158,7 +158,7 @@
     <string name="ui_report_completedorders_completed_orders_repor_abd01d9">%1$s completed orders · %2$s</string>
     <string name="ui_revenue_symbol_fc8d1ff">Revenue (%1$s)</string>
     <string name="ui_shop_shopname_offers_fresh_meat_5d64b0d">%1$s offers fresh meat with convenient ordering and scheduled doorstep delivery.</string>
-    <string name="ui_state_banners_count_it_active_31c40e0">${state.banners.count { it.active }} visible • %1$s/5 banners</string>
+    <string name="ui_state_banners_count_it_active_31c40e0">%1$s/5 banners</string>
     <string name="ui_target_alignment_58e08c1">%1$s alignment</string>
     <string name="ui_total_spending_details_customer_totalspending_a490f84">Total spending: %1$s</string>
     <string name="ui_valid_promotion_validfromepochmillis_date_pro_10727c8">Valid %1$s – %2$s</string>
@@ -213,6 +213,12 @@
     <string name="ui_choose_banner_image_069e607">Choose banner image</string>
     <string name="ui_configured_668c5ff">Configured</string>
     <string name="ui_create_staff_a716c36">Create Staff</string>
+    <string name="ui_staff_mobile_or_email_exists">That mobile number or email is already registered.</string>
+    <string name="ui_staff_sign_in_again">Your session expired. Sign in again.</string>
+    <string name="ui_staff_permission_denied">You do not have permission to manage staff.</string>
+    <string name="ui_staff_connection_failed">Could not connect. Check your connection and try again.</string>
+    <string name="ui_staff_save_failed">Could not save staff. Please try again.</string>
+    <string name="ui_india_country_code_91">+91</string>
     <string name="ui_custom_date_d993d77">Custom Date</string>
     <string name="ui_deactivate_customer_b3433e8">Deactivate customer?</string>
     <string name="ui_deactivate_d65ded9">Deactivate</string>

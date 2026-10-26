@@ -2,6 +2,8 @@ package com.spacetecsolutions.meatapp
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import banner.BannerManagementRoute
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarManager
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarMessage
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppSnackbarType
@@ -18,8 +20,6 @@ import com.spacetecsolutions.meatapp.feature.admin.settings.AdminProfileInformat
 import com.spacetecsolutions.meatapp.feature.admin.settings.AdminChangePasswordRoute
 import com.spacetecsolutions.meatapp.feature.admin.settings.AdminHelpSupportRoute
 import com.spacetecsolutions.meatapp.feature.admin.settings.AdminAboutRoute
-import com.spacetecsolutions.meatapp.feature.admin.banner.BannerManagementRoute
-import com.spacetecsolutions.meatapp.feature.admin.settings.AdminAppSettingsRoute
 import com.spacetecsolutions.meatapp.feature.catalog.AdminCategoriesRoute
 import com.spacetecsolutions.meatapp.feature.catalog.ProductManagementRoute
 import com.spacetecsolutions.meatapp.feature.orders.CodOrdersRoute
@@ -118,7 +118,7 @@ internal fun AdminDestinationContent(
                 onNotificationOrderId(it.orderId)
                 it.deepLinkRoute?.let(navigate)
             },
-        ) else androidx.compose.runtime.LaunchedEffect(Unit) { navigate(AdminRoutes.MORE) }
+        ) else LaunchedEffect(Unit) { navigate(AdminRoutes.MORE) }
         AdminRoutes.REPORTS -> AdminReportsRoute(
             back = { navigate(AdminRoutes.MORE) },
         )
@@ -126,7 +126,7 @@ internal fun AdminDestinationContent(
             back = { navigate(AdminRoutes.MORE) },
             onMessage = { snackbar.show(AppSnackbarMessage(it, AppSnackbarType.SUCCESS)) },
         )
-        AdminRoutes.APP_SETTINGS -> androidx.compose.runtime.LaunchedEffect(Unit) { navigate(AdminRoutes.MORE) }
+        AdminRoutes.APP_SETTINGS -> LaunchedEffect(Unit) { navigate(AdminRoutes.MORE) }
         AdminRoutes.BANNERS -> BannerManagementRoute(
             back = { navigate(AdminRoutes.MORE) },
             onMessage = { snackbar.show(AppSnackbarMessage(it, AppSnackbarType.INFO)) },
@@ -158,7 +158,7 @@ internal fun AdminDestinationContent(
         AdminRoutes.STAFF -> if (uiState.featureConfig?.staffManagementAllowed == true) StaffManagementRoute(
             back = { navigate(AdminRoutes.MORE) },
             onMessage = { snackbar.show(it.text, it.success) },
-        ) else androidx.compose.runtime.LaunchedEffect(Unit) { navigate(AdminRoutes.MORE) }
+        ) else LaunchedEffect(Unit) { navigate(AdminRoutes.MORE) }
     }
 }
 

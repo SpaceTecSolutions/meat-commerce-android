@@ -255,7 +255,7 @@ private fun navigateSafely(
                     CustomerRoutes.PROFILE, CustomerRoutes.PROFILE_INFORMATION,
                     CustomerRoutes.NOTIFICATIONS, CustomerRoutes.HELP_SUPPORT,
                     CustomerRoutes.ABOUT, CustomerRoutes.TERMS, CustomerRoutes.PRIVACY, CustomerRoutes.FAQ,
-                    CustomerRoutes.DELETE_ACCOUNT))) {
+                    CustomerRoutes.DELETE_ACCOUNT, CustomerRoutes.ADDRESSES))) {
                 launchSingleTop = true
             } else {
                 popUpTo(controller.graph.findStartDestination().id) { saveState = true }

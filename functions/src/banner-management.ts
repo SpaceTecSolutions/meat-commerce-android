@@ -66,12 +66,9 @@ export const adminSetBannerActive = onCall(catalogOptions, async (request) => {
   const expected = integer(request.data?.expectedRevision, -1); const active = request.data?.active === true;
   const collection = shop(context).collection("banners"); const reference = collection.doc(id);
   const result = await reference.firestore.runTransaction(async (transaction) => {
-    const [current, activeBanners] = await Promise.all([
-      transaction.get(reference), transaction.get(collection.where("active", "==", true)),
-    ]);
+    const current = await transaction.get(reference);
     if (!current.exists) throw new HttpsError("not-found", "Banner not found");
     if (integer(current.get("revision")) !== expected) changed();
-    if (!active && current.get("active") === true && activeBanners.size <= 1) minimum();
     const update = {active, revision: expected + 1, updatedAt: FieldValue.serverTimestamp(), updatedBy: context.uid};
     transaction.update(reference, update); return response(id, {...current.data(), ...update});
   });

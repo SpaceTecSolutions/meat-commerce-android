@@ -46,8 +46,15 @@ export const adminCreateStaff = onCall(options, async (request) => {
     if (error?.code !== "auth/user-not-found") throw error;
   }
   if (existing) throw new HttpsError("already-exists", "Mobile number is already registered");
-  const auth = await getAuth().createUser({phoneNumber: value.mobileNumber, displayName: value.displayName,
-    email: value.email ?? undefined, disabled: !value.active});
+  let auth: Awaited<ReturnType<ReturnType<typeof getAuth>["createUser"]>>;
+  try {
+    auth = await getAuth().createUser({phoneNumber: value.mobileNumber, displayName: value.displayName,
+      email: value.email ?? undefined, disabled: !value.active});
+  } catch (error: any) {
+    if (error?.code === "auth/phone-number-already-exists" || error?.code === "auth/email-already-exists")
+      throw new HttpsError("already-exists", "Mobile number or email is already registered");
+    throw error;
+  }
   const profile = {...value, role: "STAFF", shopId: context.shopId, createdBy: context.uid,
     createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp()};
   try {

@@ -521,7 +521,10 @@ fun MeatBushApp(
                                     },
                                 )
                                 CustomerRoutes.ADDRESSES -> AddressRoute(
-                                    onBack = { navigate(addressReturnRoute) },
+                                    onBack = {
+                                        if (backDispatcher != null) backDispatcher.onBackPressed()
+                                        else navigate(addressReturnRoute)
+                                    },
                                     onSelect = if (addressReturnRoute == CustomerRoutes.CHECKOUT) ({ id ->
                                         checkoutAddressId = id
                                         selectedCheckoutAddressId = id

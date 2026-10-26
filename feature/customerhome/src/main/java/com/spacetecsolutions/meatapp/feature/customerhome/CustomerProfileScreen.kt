@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -100,7 +101,7 @@ fun CustomerProfileRoute(
                     tint = CustomerProfileColors.red, iconBackground = Color(0xFFFFEEEE))
             }*/
             CustomerProfileLogout(user.mobileNumber) { confirmLogout = true }
-            version?.let { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_v_it_d6970f4, it),
+            version?.let { Text(" App Version "+ stringResource(R.string.ui_v_it_d6970f4, it),
                 Modifier.fillMaxWidth().padding(top = 12.dp),
                 style = MaterialTheme.typography.labelSmall, color = CustomerProfileColors.muted,
                 textAlign = TextAlign.Center) }
@@ -110,10 +111,10 @@ fun CustomerProfileRoute(
     }
     if (confirmLogout) AlertDialog(
         onDismissRequest = { confirmLogout = false },
-        title = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_logout_d9be757)) },
-        text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_you_will_need_to_sign_f757a0b)) },
-        confirmButton = { Button({ confirmLogout = false; logout() }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_logout_e43d612)) } },
-        dismissButton = { TextButton({ confirmLogout = false }) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.customerhome.R.string.ui_cancel_77dfd21)) } },
+        title = { Text(stringResource(R.string.ui_logout_d9be757)) },
+        text = { Text(stringResource(R.string.ui_you_will_need_to_sign_f757a0b)) },
+        confirmButton = { Button({ confirmLogout = false; logout() }) { Text(stringResource(R.string.ui_logout_e43d612)) } },
+        dismissButton = { TextButton({ confirmLogout = false }) { Text(stringResource(R.string.ui_cancel_77dfd21)) } },
     )
 }
 

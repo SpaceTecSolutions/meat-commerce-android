@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.admin.staff
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,7 +31,10 @@ data class StaffState(val loading: Boolean = true, val saving: Boolean = false, 
     val message: StaffMessage? = null)
 
 @HiltViewModel
-class StaffManagementViewModel @Inject constructor(private val repository: StaffRepository) : ViewModel() {
+class StaffManagementViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
+    private val repository: StaffRepository,
+) : ViewModel() {
     private val mutable = MutableStateFlow(StaffState()); val state = mutable.asStateFlow()
     init { load() }
     fun load() = viewModelScope.launch { mutable.update { it.copy(loading = true, error = null) }
@@ -41,24 +45,53 @@ class StaffManagementViewModel @Inject constructor(private val repository: Staff
     fun search(value: String) = mutable.update { it.copy(query = value.take(80)) }
     fun activeOnly(value: Boolean) = mutable.update { it.copy(activeOnly = value) }
     fun create() = mutable.update { it.copy(form = EmployeeForm()) }
-    fun edit(user: User) = mutable.update { it.copy(form = EmployeeForm(user.id, user.displayName, user.mobileNumber,
+    fun edit(user: User) = mutable.update { it.copy(form = EmployeeForm(user.id, user.displayName, staffPhoneNationalPart(user.mobileNumber),
         user.email.orEmpty(), user.active, user.permissions)) }
     fun update(form: EmployeeForm) = mutable.update { it.copy(form = form, error = null) }
     fun close() = mutable.update { if (it.saving) it else it.copy(form = null) }
-    fun save() { val form = state.value.form ?: return; val digits = form.mobile.filter(Char::isDigit).takeLast(10)
-        if (form.name.trim().length < 2 || digits.length != 10 || digits.firstOrNull() !in '6'..'9' ||
+    fun save() { val form = state.value.form ?: return; val nationalNumber = normalizedIndianMobile(form.mobile)
+        if (form.name.trim().length < 2 || nationalNumber == null || nationalNumber.firstOrNull() !in '6'..'9' ||
             (form.email.isNotBlank() && !form.email.contains('@'))) {
             mutable.update { it.copy(error = "Enter valid staff details") }; return }
         viewModelScope.launch { mutable.update { it.copy(saving = true) }
-            when (val result = repository.saveStaff(StaffInput(form.id, form.name.trim(), "+91$digits",
+            when (val result = repository.saveStaff(StaffInput(form.id, form.name.trim(), "+91$nationalNumber",
                 form.email.trim().ifBlank { null }, form.active, form.permissions))) {
                 is AppResult.Success -> mutable.update { current -> current.copy(saving = false, form = null,
                     staff = (current.staff.filterNot { it.id == result.value.id } + result.value).sortedBy(User::displayName),
                     message = StaffMessage("Staff saved", true)) }
-                is AppResult.Failure -> mutable.update { it.copy(saving = false, message = StaffMessage("Unable to save staff", false)) }
+                is AppResult.Failure -> mutable.update { it.copy(saving = false,
+                    message = StaffMessage(result.error.staffMessage(context), false)) }
             } }
     }
     fun consume() = mutable.update { it.copy(message = null) }
+}
+
+private fun com.spacetecsolutions.meatapp.core.common.result.AppError.staffMessage(context: Context): String = when (this) {
+    is com.spacetecsolutions.meatapp.core.common.result.AppError.Validation -> message
+    com.spacetecsolutions.meatapp.core.common.result.AppError.DuplicateAccount -> context.getString(
+        com.spacetecsolutions.meatapp.feature.admin.R.string.ui_staff_mobile_or_email_exists,
+    )
+    com.spacetecsolutions.meatapp.core.common.result.AppError.Unauthorized -> context.getString(
+        com.spacetecsolutions.meatapp.feature.admin.R.string.ui_staff_sign_in_again,
+    )
+    com.spacetecsolutions.meatapp.core.common.result.AppError.Forbidden -> context.getString(
+        com.spacetecsolutions.meatapp.feature.admin.R.string.ui_staff_permission_denied,
+    )
+    com.spacetecsolutions.meatapp.core.common.result.AppError.Network,
+    com.spacetecsolutions.meatapp.core.common.result.AppError.Offline -> context.getString(
+        com.spacetecsolutions.meatapp.feature.admin.R.string.ui_staff_connection_failed,
+    )
+    else -> context.getString(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_staff_save_failed)
+}
+
+private fun normalizedIndianMobile(value: String): String? {
+    val compact = value.filterNot { it.isWhitespace() || it in "-()" }
+    val nationalNumber = when {
+        compact.length == 10 -> compact
+        compact.startsWith("+91") -> compact.removePrefix("+91")
+        else -> return null
+    }
+    return nationalNumber.takeIf { it.length == 10 && it.all(Char::isDigit) }
 }
 
 @Composable
@@ -111,8 +144,14 @@ private fun EmployeeFormScreen(form: EmployeeForm, saving: Boolean, update: (Emp
 ) { padding -> LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
     verticalArrangement = Arrangement.spacedBy(14.dp)) {
     item { OutlinedTextField(form.name, { update(form.copy(name = it.take(80))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_full_name_0756876)) }) }
-    item { OutlinedTextField(form.mobile, { update(form.copy(mobile = it.take(14))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_mobile_number_5c5448f)) }) }
-    item { OutlinedTextField(form.email, { update(form.copy(email = it.take(120))) }, Modifier.fillMaxWidth(), label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_email_optional_5c10b58)) }) }
+    item { OutlinedTextField(
+        value = form.mobile,
+        onValueChange = { update(form.copy(mobile = staffPhoneNationalPart(it).take(10))) },
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_mobile_number_5c5448f)) },
+        prefix = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_india_country_code_91)) },
+        singleLine = true,
+    ) }
     item { Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) {
         Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_active_status_bde34d0), fontWeight = FontWeight.SemiBold); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_inactive_staff_cannot_sign_in_799e5fd))
     }; Switch(form.active, { update(form.copy(active = it)) }, colors = appSwitchColors()) } }
@@ -136,4 +175,10 @@ private fun StaffPermission.description() = when (this) {
     StaffPermission.MANAGE_PRODUCTS -> "Create and edit products"
     StaffPermission.MANAGE_STOCK -> "Update stock availability"
     StaffPermission.MANAGE_FAQ -> "Manage customer FAQs"
+}
+
+private fun staffPhoneNationalPart(value: String): String {
+    val compact = value.filterNot { it.isWhitespace() || it in "-()" }
+    val national = if (compact.startsWith("+91")) compact.removePrefix("+91") else compact
+    return national.filter(Char::isDigit)
 }
