@@ -16,17 +16,18 @@ import com.spacetecsolutions.meatapp.core.designsystem.theme.CustomerOrdersToken
 import com.spacetecsolutions.meatapp.core.model.CodOrder
 import com.spacetecsolutions.meatapp.core.model.DeliveryOtp
 import com.spacetecsolutions.meatapp.core.model.OrderStatus
+import com.spacetecsolutions.meatapp.core.model.ShopSupport
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CustomerOrderDetailsScreen(order: CodOrder, nowEpochMillis: Long, busy: Boolean,
+internal fun CustomerOrderDetailsScreen(order: CodOrder, shopDetails: ShopSupport?, nowEpochMillis: Long, busy: Boolean,
     onBack: () -> Unit, onHelp: () -> Unit, onTrack: () -> Unit, onNavigate: () -> Unit,
     onCancel: () -> Unit, onReorder: () -> Unit,
     deliveryOtp: DeliveryOtp?, deliveryOtpError: Boolean, onRetryOtp: () -> Unit) {
     val model = order.toCustomerOrderUi(nowEpochMillis)
     var showInvoice by remember { mutableStateOf(false) }
     var requestedOption by remember { mutableStateOf<String?>(null) }
-    if (showInvoice) CustomerInvoiceDialog(order = order, onDismiss = { showInvoice = false })
+    if (showInvoice) CustomerInvoiceDialog(order = order, shopDetails = shopDetails ,onDismiss = { showInvoice = false })
     requestedOption?.let { option -> AlertDialog(onDismissRequest = { requestedOption = null },
         title = { Text(option) },
         text = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_tell_us_what_went_wrong_1a11e02)) },

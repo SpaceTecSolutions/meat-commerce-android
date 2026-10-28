@@ -20,6 +20,7 @@ export const customerGetOrders = onCall(catalogOptions, async (request) => {
     return {...orderResponse(document.id, value),
       shopName: text(shopProfile.get("shopName"), text(shopProfile.get("displayName"), "Meat Station")),
       shopAddress: text(shopProfile.get("address")),
+      shopContactPhone: text(shopProfile.get("contactPhone")),
       realtimeTrackingAvailable: trackingEnabled && realtimeOrderEligible(value)};
   })
     .sort((a, b) => (b.createdAtEpochMillis ?? 0) - (a.createdAtEpochMillis ?? 0))};

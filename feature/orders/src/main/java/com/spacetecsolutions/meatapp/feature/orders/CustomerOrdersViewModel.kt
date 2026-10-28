@@ -8,9 +8,11 @@ import com.spacetecsolutions.meatapp.core.common.result.AppError
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
 import com.spacetecsolutions.meatapp.core.domain.repository.CodOrderRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.LiveTrackingRepository
+import com.spacetecsolutions.meatapp.core.domain.repository.ShopSupportRepository
 import com.spacetecsolutions.meatapp.core.model.CodOrder
 import com.spacetecsolutions.meatapp.core.model.DeliveryLocation
 import com.spacetecsolutions.meatapp.core.model.DeliveryRoute
+import com.spacetecsolutions.meatapp.core.model.ShopSupport
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +28,7 @@ data class CustomerOrdersUiState(
     val refreshing: Boolean = false,
     val orders: List<CodOrder> = emptyList(),
     val selectedOrder: CodOrder? = null,
+    val shopSupport: ShopSupport? = null,
     val destination: CustomerOrderDestination = CustomerOrderDestination.LIST,
     val selectedTab: CustomerOrderTab = CustomerOrderTab.ONGOING,
     val cancelOrder: CodOrder? = null,
@@ -51,6 +54,7 @@ data class CustomerOrderMessage(val text: String, val success: Boolean)
 class CustomerOrdersViewModel @Inject constructor(
     private val repository: CodOrderRepository,
     private val liveTrackingRepository: LiveTrackingRepository,
+    private val shopRepository: ShopSupportRepository,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(CustomerOrdersUiState())
     val state = mutableState.asStateFlow()
@@ -64,6 +68,7 @@ class CustomerOrdersViewModel @Inject constructor(
     private var trackingForeground = true
     private var otpJob: Job? = null
     private var otpLastRequestedAt = 0L
+    private var shopSupportJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -82,10 +87,12 @@ class CustomerOrdersViewModel @Inject constructor(
     }
 
     fun load() {
+        loadShopSupport()
         if (ordersJob == null) observeOrders(showFullLoader = state.value.orders.isEmpty())
     }
 
     fun refresh(showFullLoader: Boolean = false) {
+        loadShopSupport()
         ordersJob?.cancel()
         ordersJob = null
         observeOrders(showFullLoader)
@@ -105,6 +112,7 @@ class CustomerOrdersViewModel @Inject constructor(
                         val selected = pending ?: current.selectedOrder?.id?.let { id -> sorted.firstOrNull { it.id == id } }
                         current.copy(
                             loading = false, refreshing = false, orders = sorted, selectedOrder = selected,
+                            shopSupport = current.shopSupport ?: sorted.firstOrNull()?.toShopSupport(),
                             destination = when {
                                 pending != null -> CustomerOrderDestination.DETAILS
                                 current.selectedOrder != null && selected == null -> CustomerOrderDestination.LIST
@@ -133,8 +141,26 @@ class CustomerOrdersViewModel @Inject constructor(
     }
 
     fun openDetails(order: CodOrder) {
-        mutableState.update { it.copy(selectedOrder = order, destination = CustomerOrderDestination.DETAILS) }
+        mutableState.update {
+            it.copy(
+                selectedOrder = order,
+                shopSupport = it.shopSupport ?: order.toShopSupport(),
+                destination = CustomerOrderDestination.DETAILS,
+            )
+        }
         reconcileOtp()
+    }
+
+    private fun loadShopSupport() {
+        if (shopSupportJob?.isActive == true) return
+        shopSupportJob = viewModelScope.launch {
+            when (val result = shopRepository.getSupport()) {
+                is AppResult.Success -> mutableState.update { current ->
+                    current.copy(shopSupport = result.value.mergeWith(current.shopSupport))
+                }
+                is AppResult.Failure -> Log.w(TAG, "Shop support details unavailable; using order snapshot when present")
+            }
+        }
     }
 
     fun openDetailsById(orderId: String) {
@@ -351,6 +377,20 @@ private fun DeliveryLocation?.distanceTo(other: DeliveryLocation): Float {
     Location.distanceBetween(latitude, longitude, other.latitude, other.longitude, result)
     return result.firstOrNull()?.takeIf(Float::isFinite) ?: Float.MAX_VALUE
 }
+
+private fun CodOrder.toShopSupport() = ShopSupport(
+    shopName = shopName,
+    callNumber = shopContactPhone.takeIf(String::isNotBlank),
+    address = shopAddress.takeIf(String::isNotBlank),
+)
+
+private fun ShopSupport.mergeWith(fallback: ShopSupport?) = copy(
+    shopName = shopName.takeIf(String::isNotBlank) ?: fallback?.shopName.orEmpty(),
+    email = email?.takeIf(String::isNotBlank) ?: fallback?.email,
+    whatsappNumber = whatsappNumber?.takeIf(String::isNotBlank) ?: fallback?.whatsappNumber,
+    callNumber = callNumber?.takeIf(String::isNotBlank) ?: fallback?.callNumber,
+    address = address?.takeIf(String::isNotBlank) ?: fallback?.address,
+)
 
 private fun AppError.ordersText() = when (this) {
     AppError.Network, AppError.Offline, AppError.Timeout -> "Check your connection and try again."
