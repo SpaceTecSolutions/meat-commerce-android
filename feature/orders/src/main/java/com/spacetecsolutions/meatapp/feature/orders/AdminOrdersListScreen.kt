@@ -54,6 +54,7 @@ internal fun AdminOrdersListScreen(
     canAdjustFinalBill: Boolean = true,
     canUpdateStatus: Boolean = true,
     staffPresentation: Boolean = false,
+    loadMore: () -> Unit = {},
 ) {
     var selected by rememberSaveable { mutableStateOf(AdminOrderFilter.ALL) }
     var searchVisible by rememberSaveable { mutableStateOf(staffPresentation) }
@@ -62,10 +63,14 @@ internal fun AdminOrdersListScreen(
     var paymentMethod by rememberSaveable { mutableStateOf<CheckoutPaymentMethod?>(null) }
     var paymentStatus by rememberSaveable { mutableStateOf<PaymentStatus?>(null) }
     var categoryId by rememberSaveable { mutableStateOf<String?>(null) }
+    val supportedPaymentMethod = paymentMethod?.takeIf { it == CheckoutPaymentMethod.COD }
+    val supportedPaymentStatus = paymentStatus?.takeIf {
+        it == PaymentStatus.PENDING || it == PaymentStatus.COLLECTED
+    }
     val selectedCategory = state.categories.firstOrNull { it.id == categoryId }
-    val filtered = remember(state.orders, selected, query, paymentMethod, paymentStatus, selectedCategory) {
+    val filtered = remember(state.orders, selected, query, supportedPaymentMethod, supportedPaymentStatus, selectedCategory) {
         filterAdminOrders(
-            state.orders, selected, query, paymentMethod, paymentStatus,
+            state.orders, selected, query, supportedPaymentMethod, supportedPaymentStatus,
             selectedCategory?.id, selectedCategory?.name,
         )
     }
@@ -80,7 +85,7 @@ internal fun AdminOrdersListScreen(
             } },
             actions = {
                 IconButton(onClick = { searchVisible = !searchVisible }) { Icon(AppIcons.Search, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_search_orders_7ab3015)) }
-                BadgedBox(badge = { if (paymentMethod != null || paymentStatus != null || categoryId != null) Badge() }) {
+                BadgedBox(badge = { if (supportedPaymentMethod != null || supportedPaymentStatus != null || categoryId != null) Badge() }) {
                     IconButton(onClick = { filterOpen = true }) { Icon(AppIcons.Filter, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_filter_orders_16e3044)) }
                 }
             },
@@ -124,12 +129,20 @@ internal fun AdminOrdersListScreen(
                     else ContentState.Error(description = state.error),
                     onAction = refresh,
                 )
-                filtered.isEmpty() -> ContentStateView(ContentState.Empty(
-                    title = if (query.isNotBlank()) "No matching orders found"
-                    else "No ${selected.label.lowercase()} orders",
-                    description = if (query.isNotBlank()) "Try another order ID, customer name or mobile number."
-                    else "Orders in this status will appear here.",
-                ))
+                filtered.isEmpty() -> Column(
+                    Modifier.fillMaxSize().background(T.canvas),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        ContentStateView(ContentState.Empty(
+                            title = if (query.isNotBlank()) "No matching orders found"
+                            else "No ${selected.label.lowercase()} orders",
+                            description = if (query.isNotBlank()) "Try another order ID, customer name or mobile number."
+                            else "Orders in this status will appear here.",
+                        ))
+                    }
+                    if (state.nextCursor != null) LoadMoreOrders(state, loadMore)
+                }
                 else -> BoxWithConstraints(Modifier.fillMaxSize().background(T.canvas), contentAlignment = Alignment.TopCenter) {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth()
@@ -142,14 +155,17 @@ internal fun AdminOrdersListScreen(
                                 { selectOrder(order) }, { confirm(order) }, { reject(order) },
                                 canAdjustFinalBill, canUpdateStatus)
                         }
+                        if (state.nextCursor != null || state.loadingMore || state.loadMoreError != null) {
+                            item(key = "orders-pagination") { LoadMoreOrders(state, loadMore) }
+                        }
                     }
                 }
             }
         }
     }
     if (filterOpen) OrderFilterSheet(
-        selectedMethod = paymentMethod,
-        selectedPaymentStatus = paymentStatus,
+        selectedMethod = supportedPaymentMethod,
+        selectedPaymentStatus = supportedPaymentStatus,
         categories = state.categories,
         selectedCategoryId = categoryId,
         onApply = { method, status, selectedCategory ->
@@ -157,6 +173,24 @@ internal fun AdminOrdersListScreen(
         },
         onDismiss = { filterOpen = false },
     )
+}
+
+@Composable
+private fun LoadMoreOrders(state: CodOrdersUiState, loadMore: () -> Unit) {
+    Column(
+        Modifier.fillMaxWidth().padding(vertical = AppSpacing.small),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
+    ) {
+        state.loadMoreError?.let { Text(it, color = T.red, style = MaterialTheme.typography.bodySmall) }
+        if (state.loadingMore) {
+            CircularProgressIndicator(Modifier.size(24.dp), color = T.red, strokeWidth = 2.dp)
+        } else if (state.nextCursor != null) {
+            OutlinedButton(onClick = loadMore) {
+                Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_load_more_orders))
+            }
+        }
+    }
 }
 
 @Composable

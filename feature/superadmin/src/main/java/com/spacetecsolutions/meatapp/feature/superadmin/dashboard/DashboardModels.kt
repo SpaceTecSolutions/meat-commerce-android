@@ -1,6 +1,7 @@
 package com.spacetecsolutions.meatapp.feature.superadmin.dashboard
 
 import androidx.compose.runtime.Immutable
+import com.spacetecsolutions.meatapp.core.common.result.AppError
 
 @Immutable
 data class SuperAdminDashboardData(
@@ -27,8 +28,7 @@ data class PaymentMethodShare(
 sealed interface DashboardUiState {
     data object Loading : DashboardUiState
     data class Content(val data: SuperAdminDashboardData) : DashboardUiState
-    data class Error(val message: String) : DashboardUiState
-    data object Offline : DashboardUiState
+    data class Error(val error: AppError) : DashboardUiState
 }
 
 enum class DashboardQuickAction {

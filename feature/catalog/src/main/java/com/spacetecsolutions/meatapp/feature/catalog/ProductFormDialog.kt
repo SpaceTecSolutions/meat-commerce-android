@@ -29,15 +29,12 @@ internal fun ProductFormScreen(
     categories: List<ProductCategory>,
     subcategories: List<ProductSubcategory>,
     submitting: Boolean,
-    onManageCategories: () -> Unit,
-    canManageCategories: Boolean,
     actions: ProductFormActions,
 ) {
     val context = LocalContext.current
     var cropQueue by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var croppedImages by remember { mutableStateOf<List<String>>(emptyList()) }
     var imageError by remember { mutableStateOf<String?>(null) }
-    var previewOpen by remember { mutableStateOf(false) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
         val remaining = (MAX_PRODUCT_IMAGES - form.existingImages.size - form.selectedImageUris.size).coerceAtLeast(0)
         val selected = uris.distinct().take(remaining)
@@ -86,8 +83,7 @@ internal fun ProductFormScreen(
                 ProductImageField(form, submitting, imageError, actions.onRemoveImage) { picker.launch("image/*") }
                 ProductField("Product Name", form.name, actions.onName, form.nameError, submitting)
                 AdaptiveFieldPair(
-                    first = { CategorySelector(form, categories, submitting, actions.onCategory, onManageCategories,
-                        canManageCategories) },
+                    first = { CategorySelector(form, categories, submitting, actions.onCategory) },
                     second = { UnitSelector(form.unit, submitting, actions.onUnit) },
                 )
                 if (subcategories.isNotEmpty()) SubcategorySelector(
@@ -132,14 +128,10 @@ internal fun ProductFormScreen(
                     )
                 }
                 AdditionalProductFields(form, submitting, actions)
-                OutlinedButton({ previewOpen = true }, Modifier.fillMaxWidth(), enabled = !submitting) {
-                    Icon(AppIcons.PasswordVisible, null); Spacer(Modifier.width(AppSpacing.small)); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_preview_customer_view_e57ff4e))
-                }
                 Spacer(Modifier.height(AppSpacing.medium))
             }
         }
     }
-    if (previewOpen) ProductCustomerPreviewDialog(form) { previewOpen = false }
 }
 
 @Composable
@@ -191,14 +183,13 @@ private fun ProductField(
 @Composable
 private fun CategorySelector(
     form: ProductFormState, categories: List<ProductCategory>, submitting: Boolean,
-    select: (String) -> Unit, manage: () -> Unit, canManageCategories: Boolean,
+    select: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val available = categories.filter(ProductCategory::active)
     if (available.isEmpty()) Column {
         OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_category_a3c686e)) },
             placeholder = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_no_categories_available_38ae64e)) })
-        if (canManageCategories) TextButton(onClick = manage) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_manage_categories_9a34917)) }
     } else ExposedDropdownMenuBox(expanded, { expanded = it && !submitting }) {
         OutlinedTextField(
             available.firstOrNull { it.id == form.categoryId }?.name.orEmpty(), {},
@@ -211,11 +202,6 @@ private fun CategorySelector(
             available.forEach { category -> DropdownMenuItem({ Text(category.name) }, {
                 select(category.id); expanded = false
             }) }
-        }
-    }
-    if (available.isNotEmpty() && canManageCategories) {
-        TextButton(onClick = manage, enabled = !submitting) {
-            Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_manage_categories_9a34917))
         }
     }
 }
@@ -251,7 +237,6 @@ private fun AdditionalProductFields(form: ProductFormState, submitting: Boolean,
             IconButton({ actions.onRemoveAttribute(index) }) { Icon(AppIcons.Remove, androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_remove_attribute_9792b5c)) }
         } }
         form.attributesError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-        TextButton(onClick = actions.onAddAttribute, enabled = !submitting) { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.catalog.R.string.ui_add_attribute_c0c1819)) }
     }
 }
 
@@ -261,7 +246,7 @@ data class ProductFormActions(
     val onUnit: (ProductUnit) -> Unit, val onPrice: (String) -> Unit, val onOfferPrice: (String) -> Unit,
     val onStock: (String) -> Unit, val onLowStock: (String) -> Unit, val onImages: (List<String>) -> Unit,
     val onRemoveImage: (Int) -> Unit,
-    val onActive: (Boolean) -> Unit, val onAddAttribute: () -> Unit, val onRemoveAttribute: (Int) -> Unit,
+    val onActive: (Boolean) -> Unit, val onRemoveAttribute: (Int) -> Unit,
     val onAttributeKey: (Int, String) -> Unit, val onAttributeValue: (Int, String) -> Unit,
     val onDismiss: () -> Unit, val onSave: () -> Unit,
 )

@@ -231,7 +231,7 @@ private fun AdminOrdersFlow(
                 actions::confirm, actions::showCancel,
                 permissions == null || StaffPermission.ADJUST_FINAL_BILL in permissions,
                 permissions == null || StaffPermission.UPDATE_ORDER_STATUS in permissions,
-                staffPresentation)
+                staffPresentation, actions::loadMore)
         } else {
             AdminOrderDetailsScreen(
                 order = selected,

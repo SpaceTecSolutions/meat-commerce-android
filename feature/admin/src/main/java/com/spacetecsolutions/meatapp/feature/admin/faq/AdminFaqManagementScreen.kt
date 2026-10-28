@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.feature.admin.faq
 
+import android.content.Context
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,11 +18,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
+import com.spacetecsolutions.meatapp.core.common.result.AppError
 import com.spacetecsolutions.meatapp.core.designsystem.component.*
 import com.spacetecsolutions.meatapp.core.designsystem.icon.AppIcons
 import com.spacetecsolutions.meatapp.core.domain.repository.CatalogContentRepository
 import com.spacetecsolutions.meatapp.core.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -33,7 +36,10 @@ data class AdminFaqState(val loading: Boolean = true, val saving: Boolean = fals
     val error: String? = null, val message: String? = null)
 
 @HiltViewModel
-class AdminFaqViewModel @Inject constructor(private val repository: CatalogContentRepository) : ViewModel() {
+class AdminFaqViewModel @Inject constructor(
+    private val repository: CatalogContentRepository,
+    @param:ApplicationContext private val context: Context,
+) : ViewModel() {
     private val mutable = MutableStateFlow(AdminFaqState()); val state = mutable.asStateFlow()
     init { refresh() }
     fun refresh() = viewModelScope.launch { mutable.update { it.copy(loading = true, error = null) }
@@ -47,16 +53,20 @@ class AdminFaqViewModel @Inject constructor(private val repository: CatalogConte
         item.sortOrder.toString(), item.active, item.revision)) }
     fun update(form: FaqForm) = mutable.update { it.copy(form = form, error = null) }
     fun close() = mutable.update { if (it.saving) it else it.copy(form = null) }
-    fun save() { val form = state.value.form ?: return; val order = form.order.toIntOrNull()
+    fun save() { val form = state.value.form ?: return
+        if (state.value.saving) return
+        val order = form.order.toIntOrNull()
         if (form.question.isBlank() || form.answer.isBlank() || order == null || order < 0) {
-            mutable.update { it.copy(error = "Question, answer and a valid display order are required") }; return }
+            mutable.update { it.copy(error = context.getString(
+                com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_required_fields,
+            )) }; return }
         viewModelScope.launch { mutable.update { it.copy(saving = true, error = null) }
             when (val result = repository.saveFaq(FaqInput(form.id, form.question.trim(), form.answer.trim(),
                 form.active, order, form.revision))) {
                 is AppResult.Success -> mutable.update { current -> current.copy(saving = false, form = null,
                     items = (current.items.filterNot { it.id == result.value.id } + result.value).sortedBy(FaqEntry::sortOrder),
                     message = "FAQ saved") }
-                is AppResult.Failure -> mutable.update { it.copy(saving = false, error = "Unable to save FAQ") }
+                is AppResult.Failure -> mutable.update { it.copy(saving = false, error = result.error.publishFaqMessage(context)) }
             } }
     }
     fun delete(item: FaqEntry) = viewModelScope.launch { when (repository.deleteFaq(item.id)) {
@@ -71,7 +81,7 @@ fun AdminFaqManagementRoute(back: () -> Unit, onMessage: (String) -> Unit,
     viewModel: AdminFaqViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.message) { state.message?.let { onMessage(it); viewModel.consume() } }
-    state.form?.let { FaqFormScreen(it, state.saving, viewModel::update, viewModel::save, viewModel::close,
+    state.form?.let { FaqFormScreen(it, state.saving, state.error, viewModel::update, viewModel::save, viewModel::close,
         { it.id?.let { id -> state.items.firstOrNull { entry -> entry.id == id }?.let(viewModel::delete) } }); return }
     val filtered = remember(state.items, state.query) { state.items.filter {
         state.query.isBlank() || it.question.contains(state.query, true) || it.answer.contains(state.query, true) } }
@@ -107,14 +117,18 @@ fun AdminFaqManagementRoute(back: () -> Unit, onMessage: (String) -> Unit,
 }
 
 @Composable
-private fun FaqFormScreen(form: FaqForm, saving: Boolean, update: (FaqForm) -> Unit, save: () -> Unit,
+private fun FaqFormScreen(form: FaqForm, saving: Boolean, error: String?, update: (FaqForm) -> Unit, save: () -> Unit,
     back: () -> Unit, delete: () -> Unit) = Scaffold(
     topBar = { AppBackTopBar(if (form.id == null) "Add FAQ" else "Edit FAQ", back) },
     bottomBar = { Button(save, Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp), enabled = !saving) {
-        Text(if (form.id == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_publish_faq_d4b840c) else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_changes_fa2984b)) } },
+        if (saving) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+        Text(if (saving) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_publishing)
+            else if (form.id == null) androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_publish_faq_d4b840c)
+            else androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_save_changes_fa2984b)) } },
 ) { padding -> LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
     verticalArrangement = Arrangement.spacedBy(14.dp)) {
-    item { OutlinedTextField(form.question, { update(form.copy(question = it.take(200))) }, Modifier.fillMaxWidth(),
+    if (error != null) item { Text(error, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
+    item { OutlinedTextField(form.question, { update(form.copy(question = it.take(160))) }, Modifier.fillMaxWidth(),
         label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_question_2a46396)) }, minLines = 2) }
     item { OutlinedTextField(form.answer, { update(form.copy(answer = it.take(2000))) }, Modifier.fillMaxWidth(),
         label = { Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_answer_661bf4f)) }, minLines = 6) }
@@ -125,3 +139,11 @@ private fun FaqFormScreen(form: FaqForm, saving: Boolean, update: (FaqForm) -> U
     }; Switch(form.active, { update(form.copy(active = it)) }, colors = appSwitchColors()) } }
     if (form.id != null) item { TextButton(delete, Modifier.fillMaxWidth()) { Icon(AppIcons.Delete, null); Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.admin.R.string.ui_delete_faq_897c5e8)) } }
 } }
+
+private fun AppError.publishFaqMessage(context: Context): String = context.getString(when (this) {
+    AppError.Network, AppError.Offline, AppError.Timeout ->
+        com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_connection_failed
+    AppError.Unauthorized -> com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_sign_in_again
+    AppError.Forbidden -> com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_permission_denied
+    else -> com.spacetecsolutions.meatapp.feature.admin.R.string.ui_faq_publish_failed
+})

@@ -134,7 +134,12 @@ fun PaymentDistribution(methods: List<PaymentMethodShare>, modifier: Modifier = 
 private fun PaymentRow(method: PaymentMethodShare, color: Color, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Surface(Modifier.size(10.dp), shape = CircleShape, color = color) {}
-        Text(method.label, Modifier.padding(start = AppSpacing.small).weight(1f))
+        val label = when (method.label) {
+            "COD" -> androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_cash_on_delivery)
+            "ONLINE" -> androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_online_payment)
+            else -> method.label
+        }
+        Text(label, Modifier.padding(start = AppSpacing.small).weight(1f))
         Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_method_percentage_f368d60, method.percentage), style = MaterialTheme.typography.labelLarge)
     }
 }

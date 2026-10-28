@@ -12,6 +12,8 @@ import com.spacetecsolutions.meatapp.core.data.firebase.reports.FirebaseSuperAdm
 import com.spacetecsolutions.meatapp.core.domain.repository.SuperAdminReportsRepository
 import com.spacetecsolutions.meatapp.core.data.firebase.dashboard.FirebaseAdminDashboardRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.AdminDashboardRepository
+import com.spacetecsolutions.meatapp.core.data.firebase.dashboard.FirebaseSuperAdminDashboardRepository
+import com.spacetecsolutions.meatapp.core.domain.repository.SuperAdminDashboardRepository
 import com.spacetecsolutions.meatapp.core.data.firebase.category.FirebaseCategoryRepository
 import com.spacetecsolutions.meatapp.core.domain.repository.CategoryRepository
 import com.spacetecsolutions.meatapp.core.data.firebase.product.FirebaseProductRepository
@@ -189,6 +191,12 @@ internal abstract class FirebaseBindings {
     abstract fun bindAdminDashboardRepository(
         implementation: FirebaseAdminDashboardRepository,
     ): AdminDashboardRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSuperAdminDashboardRepository(
+        implementation: FirebaseSuperAdminDashboardRepository,
+    ): SuperAdminDashboardRepository
 
     @Binds
     @Singleton

@@ -22,7 +22,6 @@
         <item quantity="other">%1$d Products</item>
     </plurals>
     <string name="ui_about_4012d26">ABOUT</string>
-    <string name="ui_add_attribute_c0c1819">Add attribute</string>
     <string name="ui_add_category_6046a84">+ Add Category</string>
     <string name="ui_add_product_ee611e5">Add Product</string>
     <string name="ui_add_subcategory_75e3f6f">Add Subcategory</string>
@@ -31,8 +30,6 @@
     <string name="ui_category_a3c686e">Category</string>
     <string name="ui_category_name_912f070">Category Name</string>
     <string name="ui_close_bbfa773">Close</string>
-    <string name="ui_close_preview_baa5503">Close preview</string>
-    <string name="ui_customer_preview_29007f4">CUSTOMER PREVIEW</string>
     <string name="ui_delete_f6fdbe4">Delete</string>
     <string name="ui_delete_product_ce07177">Delete Product?</string>
     <string name="ui_delete_subcategory_29ace08">Delete Subcategory</string>
@@ -43,10 +40,8 @@
     <string name="ui_edit_5301648">Edit</string>
     <string name="ui_load_more_dfe60ca">Load more</string>
     <string name="ui_load_more_products_e9797b4">Load more products</string>
-    <string name="ui_manage_categories_9a34917">Manage Categories</string>
     <string name="ui_no_categories_available_38ae64e">No categories available</string>
     <string name="ui_no_subcategory_19494fb">No subcategory</string>
-    <string name="ui_preview_customer_view_e57ff4e">Preview customer view</string>
     <string name="ui_select_a_cut_to_view_e4dfdd0">Select a cut to view available products</string>
     <string name="ui_select_quantity_45d0342">SELECT QUANTITY</string>
     <string name="ui_show_in_the_customer_catalog_429cbac">Show in the customer catalog</string>

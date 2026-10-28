@@ -59,7 +59,6 @@ internal fun AdminDestinationContent(
             onInitialOrderConsumed = { onNotificationOrderId(null) },
         )
         AdminRoutes.PRODUCTS -> ProductManagementRoute(
-            onCategories = { navigate(AdminRoutes.CATEGORIES) },
             onMessage = { snackbar.show(it.text, it.success) },
         )
         AdminRoutes.CATEGORIES -> AdminCategoriesRoute(
