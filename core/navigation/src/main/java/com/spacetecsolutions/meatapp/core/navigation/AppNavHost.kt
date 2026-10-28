@@ -241,6 +241,20 @@ private fun navigateSafely(
         }
         return
     }
+    // A successful checkout's "continue shopping" action must leave the checkout/cart
+    // history behind. Otherwise it pushes another Categories destination above Checkout;
+    // pressing Back then reveals the placed-order screen, whose BackHandler pushes Categories
+    // again, creating an endless loop (and can expose the now-empty cart in between).
+    if (role == UserRole.CUSTOMER && route == CustomerRoutes.CATEGORIES &&
+        controller.currentDestination?.route in setOf(CustomerRoutes.CART, CustomerRoutes.CHECKOUT)) {
+        if (!controller.popBackStack(CustomerRoutes.CATEGORIES, false)) {
+            controller.navigate(CustomerRoutes.CATEGORIES) {
+                popUpTo(controller.graph.findStartDestination().id)
+                launchSingleTop = true
+            }
+        }
+        return
+    }
     when (val decision = RoleNavigationRegistry.validateRoute(role, route, staffPermissions)) {
         is NavigationDecision.Allowed -> controller.navigate(decision.destination.route) {
             val openingOrdersFromProfile = role == UserRole.CUSTOMER &&

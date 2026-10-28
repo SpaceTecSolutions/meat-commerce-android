@@ -1,5 +1,6 @@
 package com.spacetecsolutions.meatapp.core.data.firebase.order
 
+import android.util.Log
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.spacetecsolutions.meatapp.core.common.result.*
@@ -136,7 +137,15 @@ internal class FirebaseCodOrderRepository @Inject constructor(
         val data = functions.getHttpsCallable(name).call(payload).await().data as? Map<*, *>
             ?: error("Invalid COD order response")
         AppResult.Success((data["order"] as? Map<*, *> ?: data).toCodOrder())
-    } catch (error: Exception) { AppResult.Failure(error.toCodError()) }
+    } catch (error: Exception) {
+        val functionsError = error as? FirebaseFunctionsException
+        Log.e(TAG, "$name failed (${functionsError?.code ?: error.javaClass.simpleName}): ${functionsError?.message ?: error.message}")
+        AppResult.Failure(error.toCodError())
+    }
+
+    private companion object {
+        const val TAG = "FirebaseCodOrderRepository"
+    }
 }
 
 private fun payload(id: String, revision: Long): Map<String, Any> =
@@ -153,6 +162,7 @@ internal fun Map<*, *>.toCodOrder(): CodOrder {
     addressLabel = firstString("addressLabel").ifBlank { address?.firstString("type") ?: "Home" },
     shopName = firstString("shopName").ifBlank { "Meat Station" },
     shopAddress = firstString("shopAddress"),
+    shopContactPhone = firstString("shopContactPhone"),
     items = maps("items").map { it.toSnapshot() }, subtotalMinor = firstLong("subtotalMinor", "itemTotal"),
     discountMinor = long("discountMinor"), deliveryFeeMinor = long("deliveryFeeMinor"),
     taxMinor = long("taxMinor"),

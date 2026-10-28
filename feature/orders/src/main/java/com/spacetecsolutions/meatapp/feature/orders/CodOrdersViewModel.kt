@@ -308,8 +308,28 @@ class CodOrdersViewModel @Inject constructor(
                     ) }
                     onSuccess(result.value)
                 }
-                is AppResult.Failure -> mutableState.update {
-                    it.copy(busyOrderId = null, message = CodOrderMessage(result.error.text(), false))
+                is AppResult.Failure -> {
+                    // A timed-out response does not prove that the server-side transaction
+                    // failed. Re-read orders before enabling another tap, so a committed
+                    // confirmation is reflected instead of being retried with a stale revision.
+                    val latestOrders = if (result.error in setOf(AppError.Network, AppError.Offline, AppError.Timeout)) {
+                        state.value.actor?.let { actor ->
+                            runCatching { repository.getOrders(actor) }.getOrNull()?.let { refreshResult ->
+                                (refreshResult as? AppResult.Success)?.value
+                            }
+                        }
+                    } else null
+                    mutableState.update { current ->
+                        val refreshed = latestOrders ?: current.orders
+                        current.copy(
+                            busyOrderId = null,
+                            orders = refreshed,
+                            selectedOrder = current.selectedOrder?.let { selected ->
+                                refreshed.firstOrNull { it.id == selected.id } ?: selected
+                            },
+                            message = CodOrderMessage(result.error.text(), false),
+                        )
+                    }
                 }
             }
         }

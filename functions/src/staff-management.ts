@@ -9,7 +9,10 @@ import {mobileLookupId} from "./auth-helpers.js";
 const allowed = new Set(["VIEW_ORDERS", "UPDATE_ORDER_STATUS", "ADJUST_FINAL_BILL", "GENERATE_INVOICE",
   "MANAGE_PRODUCTS", "MANAGE_STOCK", "MANAGE_FAQ"]);
 const hmacKey = defineSecret("AUTH_LOOKUP_HMAC_KEY");
-const options = {...catalogOptions, secrets: [hmacKey]};
+// Cloud Functions v2 callables must be reachable by the Firebase client SDK at the
+// Cloud Run layer. The callable still enforces App Check and verifies the admin
+// Firebase Auth/profile in requireAdmin before it performs any staff operation.
+const options = {...catalogOptions, invoker: "public" as const, secrets: [hmacKey]};
 async function requireEnabled() {
   if ((await getFirestore().collection("appConfig").doc("features").get()).get("staffManagementAllowed") !== true)
     throw new HttpsError("failed-precondition", "Staff Management is disabled", {reason: "FEATURE_DISABLED"});

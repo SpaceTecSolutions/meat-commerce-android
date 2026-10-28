@@ -27,6 +27,7 @@ data class CodOrder(
     val addressLabel: String = "Home",
     val shopName: String = "Meat Station",
     val shopAddress: String = "",
+    val shopContactPhone: String = "",
     val amountDueMinor: Long,
     val items: List<OrderItemSnapshot> = emptyList(),
     val subtotalMinor: Long = 0,
