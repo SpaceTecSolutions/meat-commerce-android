@@ -117,9 +117,6 @@ class ProductManagementViewModel @Inject constructor(
             else -> this
         }
     }
-    fun addAttribute() = updateForm {
-        if (attributes.size >= MAX_ATTRIBUTES) this else copy(attributes = attributes + ProductAttributeInput())
-    }
     fun removeAttribute(index: Int) = updateForm {
         copy(attributes = attributes.filterIndexed { itemIndex, _ -> itemIndex != index })
     }
@@ -291,7 +288,7 @@ class ProductManagementViewModel @Inject constructor(
         it.copy(submitting = false, message = ProductMessage(error.productMessage(), false))
     }
 
-    private companion object { const val MAX_IMAGES = 5; const val MAX_ATTRIBUTES = 20 }
+    private companion object { const val MAX_IMAGES = 5 }
 }
 
 private fun ProductFormState.withErrors(value: ProductValidation) = copy(

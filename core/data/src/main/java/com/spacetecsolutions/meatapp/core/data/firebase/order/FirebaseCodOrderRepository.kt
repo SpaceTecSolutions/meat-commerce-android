@@ -5,6 +5,7 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.spacetecsolutions.meatapp.core.common.result.*
 import com.spacetecsolutions.meatapp.core.domain.repository.CodOrderRepository
+import com.spacetecsolutions.meatapp.core.domain.repository.CodOrderPage
 import com.spacetecsolutions.meatapp.core.domain.service.CartBadgeStore
 import com.spacetecsolutions.meatapp.core.model.*
 import kotlinx.coroutines.tasks.await
@@ -51,6 +52,15 @@ internal class FirebaseCodOrderRepository @Inject constructor(
     override suspend fun getOrders(actor: CodActor) = listCall(
         if (actor == CodActor.ADMIN) "adminGetOrders" else "deliveryGetAssignedCodOrders",
     )
+    override suspend fun getAdminOrderPage(cursor: String?): AppResult<CodOrderPage> = try {
+        val payload = cursor?.takeIf(String::isNotBlank)?.let { mapOf("cursor" to it) }.orEmpty()
+        val data = functions.getHttpsCallable("adminGetOrders").call(payload).await().data as? Map<*, *>
+            ?: error("Invalid COD orders response")
+        val orders = (data["orders"] as? List<*>).orEmpty().mapNotNull {
+            (it as? Map<*, *>)?.toCodOrder()
+        }
+        AppResult.Success(CodOrderPage(orders, data["nextCursor"] as? String))
+    } catch (error: Exception) { AppResult.Failure(error.toCodError()) }
     override suspend fun confirm(orderId: String, expectedRevision: Long) = orderCall(
         "adminConfirmCodOrder", payload(orderId, expectedRevision),
     )

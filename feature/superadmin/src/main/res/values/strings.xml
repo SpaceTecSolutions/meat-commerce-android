@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="ui_dashboard_load_error">Unable to load the Super Admin dashboard. Try again.</string>
+    <string name="ui_dashboard_access_error">You are not authorized to view this dashboard.</string>
+    <string name="ui_dashboard_connection_error">Check your connection and try again.</string>
+    <string name="ui_cash_on_delivery">Cash on delivery</string>
+    <string name="ui_online_payment">Online</string>
     <string name="ui_admin_status_confirmation">%1$s will %2$s Admin access.</string>
     <string name="ui_regain_access">regain</string>
     <string name="ui_lose_access">lose</string>

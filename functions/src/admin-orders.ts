@@ -1,4 +1,4 @@
-import {FieldValue, Timestamp} from "firebase-admin/firestore";
+import {FieldPath, FieldValue, Timestamp} from "firebase-admin/firestore";
 import {randomUUID} from "node:crypto";
 import {getFirestore} from "./database.js";
 import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
@@ -15,12 +15,22 @@ type Mutation = (value: FirebaseFirestore.DocumentData, context: AdminContext) =
 
 export const adminGetOrders = onCall(options, async (request) => {
   const context = await requireOperator(request, "VIEW_ORDERS");
-  const snapshot = await orders(context.shopId).limit(250).get();
-  const records = snapshot.docs.map((doc) => ({id: doc.id, value: doc.data()}));
+  const cursor = typeof request.data?.cursor === "string" ? request.data.cursor.trim() : "";
+  let query = orders(context.shopId)
+    .orderBy("createdAtEpochMillis", "desc")
+    .orderBy(FieldPath.documentId(), "desc");
+  if (cursor) {
+    const cursorSnapshot = await orders(context.shopId).doc(cursor).get();
+    if (!cursorSnapshot.exists) throw new HttpsError("invalid-argument", "Invalid order page cursor");
+    query = query.startAfter(cursorSnapshot);
+  }
+  const snapshot = await query.limit(251).get();
+  const hasMore = snapshot.docs.length > 250;
+  const pageDocs = snapshot.docs.slice(0, 250);
+  const records = pageDocs.map((doc) => ({id: doc.id, value: doc.data()}));
   const enriched = await enrichOrderCategories(context.shopId, records.map((record) => record.value));
-  const values = records.map((record, index) => orderResponse(record.id, enriched[index]))
-    .sort((a, b) => Number(b.createdAtEpochMillis) - Number(a.createdAtEpochMillis));
-  return {orders: values};
+  const values = records.map((record, index) => orderResponse(record.id, enriched[index]));
+  return {orders: values, nextCursor: hasMore ? pageDocs.at(-1)?.id ?? null : null};
 });
 
 async function enrichOrderCategories(shopId: string, values: FirebaseFirestore.DocumentData[]) {

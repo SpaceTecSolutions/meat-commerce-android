@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="ui_load_more_orders">Load more orders</string>
     <string name="invoice_to">INVOICE TO</string>
     <string name="invoice_item">Item</string>
     <string name="invoice_quantity">Qty</string>
@@ -60,8 +61,11 @@
     <string name="ui_close_bbfa773">Close</string>
     <string name="ui_cod_amount_mismatch_reported_collection_88892c6">COD amount mismatch reported — collection pending</string>
     <string name="ui_cod_expected_bc0b6b1">COD expected</string>
+    <string name="ui_cod_payment_status_9dc6ad2">COD collection status</string>
+    <string name="ui_to_collect_2e62dd1">To collect</string>
     <string name="ui_code_temporarily_unavailable_try_again_cef31ba">Code temporarily unavailable. Try again.</string>
     <string name="ui_collected_amount_cannot_be_less_af8468a">Collected amount cannot be less than the final bill.</string>
+    <string name="ui_collected_7d5d140">Collected</string>
     <string name="ui_complete_delivery_fb1dae9">Complete delivery</string>
     <string name="ui_confirm_04a2122">Confirm</string>
     <string name="ui_confirm_cancellation_90977a5">Confirm cancellation</string>

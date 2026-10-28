@@ -70,9 +70,7 @@ import com.spacetecsolutions.meatapp.feature.superadmin.admin.AdminManagementRou
 import com.spacetecsolutions.meatapp.feature.superadmin.audit.AuditLogRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.audit.SuperAdminMoreScreen
 import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.DashboardQuickAction
-import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.DashboardUiState
-import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.SuperAdminDashboardData
-import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.SuperAdminDashboardScreen
+import com.spacetecsolutions.meatapp.feature.superadmin.dashboard.SuperAdminDashboardRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.features.FeatureManagementRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.features.PaymentMethodsRoute
 import com.spacetecsolutions.meatapp.feature.superadmin.reports.SuperAdminReportsRoute
@@ -205,7 +203,7 @@ fun MeatBushApp(
                                 StaffRoutes.PRODUCTS -> if (uiState.authenticatedUser?.permissions?.any {
                                         it == StaffPermission.MANAGE_PRODUCTS || it == StaffPermission.MANAGE_STOCK
                                     } == true)
-                                    ProductManagementRoute(onCategories = { navigate(StaffRoutes.CATEGORIES) }, onMessage = { message -> snackbarManager.show(
+                                    ProductManagementRoute(onMessage = { message -> snackbarManager.show(
                                         AppSnackbarMessage(message.text, if (message.success) AppSnackbarType.SUCCESS else AppSnackbarType.ERROR)) },
                                         operatorPermissions = uiState.authenticatedUser?.permissions)
                                 else StaffAccessDenied()
@@ -228,10 +226,8 @@ fun MeatBushApp(
                                     AdminFaqManagementRoute(back = { navigate(StaffRoutes.MORE) }, onMessage = {
                                         snackbarManager.show(AppSnackbarMessage(it, AppSnackbarType.SUCCESS)) })
                                 else StaffAccessDenied()
-                                "super_admin/dashboard" -> SuperAdminDashboardScreen(
-                                    state = DashboardUiState.Content(SuperAdminDashboardData()),
+                                "super_admin/dashboard" -> SuperAdminDashboardRoute(
                                     onQuickAction = { action -> navigate(action.route) },
-                                    onRetry = {},
                                 )
                                 SuperAdminRoutes.ADMINS -> AdminManagementRoute(onMessage = { message ->
                                     snackbarManager.show(

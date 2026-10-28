@@ -32,6 +32,7 @@ export {
 export {adminGetReport, superAdminGetReport} from "./reports.js";
 export {superAdminGetAuditLog} from "./superadmin-audit.js";
 export {adminGetDashboard} from "./admin-dashboard.js";
+export {superAdminGetDashboard} from "./superadmin-dashboard.js";
 export {
   adminGetPaymentConfig,
   adminUpdatePaymentConfig,

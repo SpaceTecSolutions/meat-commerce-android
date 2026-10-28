@@ -47,16 +47,40 @@ class CodOrdersViewModel @Inject constructor(
 
     fun refresh() = viewModelScope.launch {
         val actor = state.value.actor ?: return@launch
-        mutableState.update { it.copy(loading = true, error = null) }
-        when (val result = repository.getOrders(actor)) {
+        val previousCursor = state.value.nextCursor
+        mutableState.update { it.copy(loading = true, error = null, loadingMore = false,
+            nextCursor = null, loadMoreError = null) }
+        when (val result = if (actor == CodActor.ADMIN) repository.getAdminOrderPage()
+            else repository.getOrders(actor).map { com.spacetecsolutions.meatapp.core.domain.repository.CodOrderPage(it, null) }) {
             is AppResult.Success -> mutableState.update {
-                it.copy(loading = false, orders = result.value, error = null)
+                it.copy(loading = false, orders = result.value.orders, nextCursor = result.value.nextCursor, error = null)
             }
             is AppResult.Failure -> mutableState.update {
-                it.copy(loading = false, error = result.error.text())
+                it.copy(loading = false, nextCursor = previousCursor, error = result.error.text())
             }
         }
         if (actor == CodActor.ADMIN) loadCategories()
+    }
+
+    fun loadMore() = viewModelScope.launch {
+        val current = state.value
+        val cursor = current.nextCursor ?: return@launch
+        if (current.loading || current.loadingMore || current.actor != CodActor.ADMIN) return@launch
+        mutableState.update { it.copy(loadingMore = true, loadMoreError = null) }
+        when (val result = repository.getAdminOrderPage(cursor)) {
+            is AppResult.Success -> mutableState.update { latest ->
+                if (latest.actor != CodActor.ADMIN || latest.nextCursor != cursor) latest.copy(loadingMore = false)
+                else {
+                    val existingIds = latest.orders.mapTo(hashSetOf()) { it.id }
+                    latest.copy(loadingMore = false,
+                        orders = latest.orders + result.value.orders.filterNot { it.id in existingIds },
+                        nextCursor = result.value.nextCursor, loadMoreError = null)
+                }
+            }
+            is AppResult.Failure -> mutableState.update {
+                it.copy(loadingMore = false, loadMoreError = result.error.text())
+            }
+        }
     }
 
     private suspend fun loadCategories() {
@@ -312,18 +336,21 @@ class CodOrdersViewModel @Inject constructor(
                     // A timed-out response does not prove that the server-side transaction
                     // failed. Re-read orders before enabling another tap, so a committed
                     // confirmation is reflected instead of being retried with a stale revision.
-                    val latestOrders = if (result.error in setOf(AppError.Network, AppError.Offline, AppError.Timeout)) {
-                        state.value.actor?.let { actor ->
-                            runCatching { repository.getOrders(actor) }.getOrNull()?.let { refreshResult ->
-                                (refreshResult as? AppResult.Success)?.value
+                    val latestPage = if (result.error in setOf(AppError.Network, AppError.Offline, AppError.Timeout)) {
+                        state.value.actor?.let { actor -> runCatching {
+                            if (actor == CodActor.ADMIN) repository.getAdminOrderPage()
+                            else repository.getOrders(actor).map {
+                                com.spacetecsolutions.meatapp.core.domain.repository.CodOrderPage(it, null)
                             }
+                        }.getOrNull()?.let { refreshResult -> (refreshResult as? AppResult.Success)?.value }
                         }
                     } else null
                     mutableState.update { current ->
-                        val refreshed = latestOrders ?: current.orders
+                        val refreshed = latestPage?.orders ?: current.orders
                         current.copy(
                             busyOrderId = null,
                             orders = refreshed,
+                            nextCursor = latestPage?.nextCursor ?: current.nextCursor,
                             selectedOrder = current.selectedOrder?.let { selected ->
                                 refreshed.firstOrNull { it.id == selected.id } ?: selected
                             },

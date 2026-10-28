@@ -2,9 +2,9 @@ package com.spacetecsolutions.meatapp.core.domain.repository
 
 import com.spacetecsolutions.meatapp.core.common.result.AppResult
 import com.spacetecsolutions.meatapp.core.model.CodActor
-import com.spacetecsolutions.meatapp.core.model.CodOrder
 import com.spacetecsolutions.meatapp.core.model.FinalWeightAdjustment
 import com.spacetecsolutions.meatapp.core.model.OrderSlotOptions
+import com.spacetecsolutions.meatapp.core.model.CodOrder
 import kotlinx.coroutines.flow.Flow
 
 interface CodOrderRepository {
@@ -17,6 +17,7 @@ interface CodOrderRepository {
         orderId: String, expectedRevision: Long, reason: String,
     ): AppResult<CodOrder>
     suspend fun getOrders(actor: CodActor): AppResult<List<CodOrder>>
+    suspend fun getAdminOrderPage(cursor: String? = null): AppResult<CodOrderPage>
     suspend fun confirm(
         orderId: String,
         expectedRevision: Long,
@@ -43,3 +44,5 @@ interface CodOrderRepository {
         actor: CodActor, orderId: String, actualMinor: Long, expectedRevision: Long,
     ): AppResult<CodOrder>
 }
+
+data class CodOrderPage(val orders: List<CodOrder>, val nextCursor: String?)

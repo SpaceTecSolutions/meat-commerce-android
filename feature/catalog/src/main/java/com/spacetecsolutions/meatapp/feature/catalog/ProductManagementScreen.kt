@@ -19,7 +19,6 @@ import com.spacetecsolutions.meatapp.core.model.StaffPermission
 
 @Composable
 fun ProductManagementRoute(
-    onCategories: () -> Unit,
     onMessage: (ProductMessage) -> Unit,
     operatorPermissions: Set<StaffPermission>? = null,
     viewModel: ProductManagementViewModel = hiltViewModel(),
@@ -42,14 +41,14 @@ fun ProductManagementRoute(
         viewModel::requestDelete, canManageProducts, canManageStock, operatorPermissions != null,
     ) else {
         HideAppBottomBar()
-        ProductFormScreen(form, state.categories, state.subcategories, state.submitting, onCategories,
-            canManageProducts, ProductFormActions(
+        ProductFormScreen(form, state.categories, state.subcategories, state.submitting,
+            ProductFormActions(
             viewModel::updateName, viewModel::updateDescription, viewModel::updateCategory,
             viewModel::updateSubcategory,
             viewModel::updateUnit, viewModel::updatePrice, viewModel::updateOfferPrice,
             viewModel::updateStock, viewModel::updateLowStock, viewModel::selectImages,
             viewModel::removeImage,
-            viewModel::updateActive, viewModel::addAttribute, viewModel::removeAttribute,
+            viewModel::updateActive, viewModel::removeAttribute,
             { index, value -> viewModel.updateAttribute(index, key = value) },
             { index, value -> viewModel.updateAttribute(index, value = value) },
             viewModel::closeForm, viewModel::save,

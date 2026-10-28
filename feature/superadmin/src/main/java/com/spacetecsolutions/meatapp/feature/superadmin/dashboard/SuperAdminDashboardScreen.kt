@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spacetecsolutions.meatapp.core.common.result.AppError
 import com.spacetecsolutions.meatapp.core.designsystem.component.AppTopBar
 import com.spacetecsolutions.meatapp.core.designsystem.component.ContentState
 import com.spacetecsolutions.meatapp.core.designsystem.component.ContentStateView
@@ -14,7 +18,16 @@ import com.spacetecsolutions.meatapp.core.designsystem.theme.AppDimensions
 import com.spacetecsolutions.meatapp.core.designsystem.theme.AppSpacing
 
 @Composable
-fun SuperAdminDashboardScreen(
+fun SuperAdminDashboardRoute(
+    onQuickAction: (DashboardQuickAction) -> Unit,
+    viewModel: SuperAdminDashboardViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    SuperAdminDashboardScreen(state, onQuickAction, viewModel::refresh)
+}
+
+@Composable
+private fun SuperAdminDashboardScreen(
     state: DashboardUiState,
     onQuickAction: (DashboardQuickAction) -> Unit,
     onRetry: () -> Unit,
@@ -24,12 +37,12 @@ fun SuperAdminDashboardScreen(
         AppTopBar(title = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_dashboard_d87f47b))
         when (state) {
             DashboardUiState.Loading -> ContentStateView(ContentState.Loading)
-            DashboardUiState.Offline -> ContentStateView(
-                ContentState.Offline(),
-                onAction = onRetry,
-            )
             is DashboardUiState.Error -> ContentStateView(
-                ContentState.Error(description = state.message),
+                if (state.error is AppError.Network || state.error is AppError.Offline || state.error is AppError.Timeout)
+                    ContentState.Offline(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_dashboard_connection_error))
+                else if (state.error is AppError.Forbidden || state.error is AppError.Unauthorized)
+                    ContentState.Error(description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_dashboard_access_error))
+                else ContentState.Error(description = androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.superadmin.R.string.ui_dashboard_load_error)),
                 onAction = onRetry,
             )
             is DashboardUiState.Content -> DashboardContent(state.data, onQuickAction)

@@ -21,9 +21,19 @@ internal fun OrderFilterSheet(
     onApply: (CheckoutPaymentMethod?, PaymentStatus?, String?) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var method by remember { mutableStateOf(selectedMethod) }
-    var status by remember { mutableStateOf(selectedPaymentStatus) }
+    val supportedMethods = listOf(CheckoutPaymentMethod.COD)
+    val codPaymentStatuses = listOf(PaymentStatus.PENDING, PaymentStatus.COLLECTED)
+    var method by remember(selectedMethod) {
+        mutableStateOf(selectedMethod?.takeIf { it in supportedMethods })
+    }
+    var status by remember(selectedPaymentStatus) {
+        mutableStateOf(selectedPaymentStatus?.takeIf { it in codPaymentStatuses })
+    }
     var categoryId by remember { mutableStateOf(selectedCategoryId) }
+    val codStatusLabels = mapOf(
+        PaymentStatus.PENDING to androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_to_collect_2e62dd1),
+        PaymentStatus.COLLECTED to androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_collected_7d5d140),
+    )
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = AppSpacing.medium)
@@ -31,8 +41,15 @@ internal fun OrderFilterSheet(
             verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
         ) {
             Text(androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_filter_orders_4b61250), style = MaterialTheme.typography.titleLarge)
-            FilterGroup("Payment method", CheckoutPaymentMethod.entries, method, { it.name }) { method = it }
-            FilterGroup("Payment status", PaymentStatus.entries, status, { it.name.pretty() }) { status = it }
+            FilterGroup(
+                androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.invoice_payment_method),
+                supportedMethods, method,
+                { androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.invoice_payment_cod) },
+            ) { method = it }
+            FilterGroup(
+                androidx.compose.ui.res.stringResource(com.spacetecsolutions.meatapp.feature.orders.R.string.ui_cod_payment_status_9dc6ad2),
+                codPaymentStatuses, status, { codStatusLabels[it] ?: it.name.pretty() },
+            ) { status = it }
             if (categories.isNotEmpty()) FilterGroup(
                 "Product category", categories, categories.firstOrNull { it.id == categoryId }, { it.name },
             ) {

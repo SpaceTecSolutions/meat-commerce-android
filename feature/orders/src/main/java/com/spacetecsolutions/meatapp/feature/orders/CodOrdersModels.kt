@@ -11,6 +11,9 @@ import com.spacetecsolutions.meatapp.core.model.UserRole
 data class CodOrdersUiState(
     val actor: CodActor? = null,
     val loading: Boolean = true,
+    val loadingMore: Boolean = false,
+    val nextCursor: String? = null,
+    val loadMoreError: String? = null,
     val orders: List<CodOrder> = emptyList(),
     val categories: List<ProductCategory> = emptyList(),
     val selectedStatus: OrderStatus = OrderStatus.PENDING,
