@@ -1,0 +1,5 @@
+html { overflow-x: clip; }
+.site-footer { position: relative; }
+@media (max-width: 620px) {
+  .hero-visual { max-width: min(430px, calc(100vw - 64px)); }
+}
