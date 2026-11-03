@@ -23,7 +23,7 @@ android {
         applicationId = "com.spacetecsolutions.meatapp"
         minSdk = 26
         targetSdk = 37
-        versionCode = 7
+        versionCode = 8
         versionName = "1.0.5"
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
         manifestPlaceholders["deepLinkScheme"] = "meatbush"
